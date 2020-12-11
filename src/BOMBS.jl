@@ -1,5 +1,5 @@
 module BOMBS
 
-# Write your package code here.
+include("logoBOMBS.jl")
 
 end
