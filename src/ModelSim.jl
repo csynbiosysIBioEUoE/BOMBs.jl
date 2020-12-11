@@ -27,7 +27,7 @@ function simulateODEs(model_def, simul_def)
     simuls = Dict();
 
     # Get ODEs function
-    OEDsFun = Symbol(string(join(model_def["NameF"]),"_SolveAll"));
+    ODEsFun = Symbol(string(join(model_def["NameF"]),"_SolveAll"));
 
     # loop over the different experiments to simulate
     for i in 1:simul_def["Nexp"]
@@ -53,7 +53,7 @@ function simulateODEs(model_def, simul_def)
             end
         end
 
-        simul = @eval $OEDsFun(ts, theta, sp, inputs, ivss, samps, pre);
+        simul = @eval $ODEsFun(ts, theta, sp, inputs, ivss, samps, pre);
 
         simuls[string("Exp_", i)] = simul;
     end

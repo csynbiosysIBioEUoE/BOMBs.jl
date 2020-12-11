@@ -357,7 +357,7 @@ function GenerateModel(model_def)
 
         join(model_def["parName"], ", "),", ",join(model_def["inpName"], ", ")," = p;\n \n \n ",
 
-                "        alp = zeros(4); \n \n",
+                "        alp = zeros(",length(model_def["stName"]),"); \n \n",
 
                 join(tet),
                 "        return(alp) \n "));
