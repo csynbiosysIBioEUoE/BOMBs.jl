@@ -1,4 +1,4 @@
-# BOMBS
+# BOMBS.jl
 
 [![Build Status](https://travis-ci.com/DavidGomezC/BOMBS.jl.svg?branch=master)](https://travis-ci.com/DavidGomezC/BOMBS.jl)
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/DavidGomezC/BOMBS.jl?svg=true)](https://ci.appveyor.com/project/DavidGomezC/BOMBS-jl)
