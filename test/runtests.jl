@@ -1,7 +1,9 @@
 using BOMBS
 using Test
 
+
+
 @testset "BOMBS.jl" begin
-    printLogo()
-    versionBOMBS()
+# @test printLogo() == something
+
 end

@@ -16,7 +16,7 @@ println(logo)
 
 end
 
-# printLogo()
+printLogo()
 
 function versionBOMBS()
 
