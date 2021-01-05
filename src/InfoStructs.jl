@@ -13,8 +13,8 @@ function infoAll(woo=[])
 Please, if you want information about one of the package structures, type:
     1) ","\"","model","\""," for the model generation section
     2) ","\"","simulation","\"",", ","\"","simulation","\""," or ","\"","simul","\""," for the model simulation section
-    3) ","\"","pseudo-data","\"",", ","\"","pseudodata","\"",", ","\"","pseudo data","\"",", ","\"","likelihood","\""," for the model pseudo-data generation section
-    4) ","\"","mle","\""," for the maximum likelihood estimation section
+    3) ","\"","pseudo-data","\"",", ","\"","pseudodata","\"",", ","\"","pseudo data","\""," for the model pseudo-data generation section
+    4) ","\"","mle","\"",", ","\"","likelihood","\""," for the maximum likelihood estimation section
     5) ","\"","inference","\"",", ","\"","stan","\"",", ","\"","stan inference","\"",", ","\"","staninference","\""," for the Bayesian parameter inference section
     6) ","\"","oedms","\"",", ","\"","model selection","\"",", ","\"","modelselection","\"",", ","\"","oed model selection","\""," for the optimal experimental design for model selection section
     7) ","\"","oedmc","\"",", ","\"","model calibration","\"",", ","\"","modelcalibration","\"",", ","\"","oed model calibration","\""," for the optimal experimental design for model calibration section
@@ -165,7 +165,7 @@ model_def[","\"","flag","\"","] = [];
 "))
 
 
-    elseif woohoo == "pseudo-data" || woohoo == "pseudodata" || woohoo == "pseudo data" || woohoo == "likelihood"
+    elseif woohoo == "pseudo-data" || woohoo == "pseudodata" || woohoo == "pseudo data"
         print(string(raw"
 
             CALL defPseudoDatStruct()
@@ -263,7 +263,7 @@ pseudo_def[","\"","Noise","\"","] = [];
 
 "))
 
-    elseif woohoo == "mle"
+    elseif woohoo == "mle" || woohoo == "likelihood"
         print(string(raw"
 
                 CALL defMLEStruct()
@@ -740,8 +740,8 @@ oedmc_def[","\"","util","\"","] = [];
 Please, if you want information about one of the package structures, type:
     1) ","\"","model","\""," for the model generation section
     2) ","\"","simulation","\"",", ","\"","simulation","\""," or ","\"","simul","\""," for the model simulation section
-    3) ","\"","pseudo-data","\"",", ","\"","pseudodata","\"",", ","\"","pseudo data","\"",", ","\"","likelihood","\""," for the model pseudo-data generation section
-    4) ","\"","mle","\""," for the maximum likelihood estimation section
+    3) ","\"","pseudo-data","\"",", ","\"","pseudodata","\"",", ","\"","pseudo data","\""," for the model pseudo-data generation section
+    4) ","\"","mle","\"",", ","\"","likelihood","\""," for the maximum likelihood estimation section
     5) ","\"","inference","\"",", ","\"","stan","\"",", ","\"","stan inference","\"",", ","\"","staninference","\""," for the Bayesian parameter inference section
     6) ","\"","oedms","\"",", ","\"","model selection","\"",", ","\"","modelselection","\"",", ","\"","oed model selection","\""," for the optimal experimental design for model selection section
     7) ","\"","oedmc","\"",", ","\"","model calibration","\"",", ","\"","modelcalibration","\"",", ","\"","oed model calibration","\""," for the optimal experimental design for model calibration section

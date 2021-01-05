@@ -6,19 +6,19 @@ module BOMBS
 using CSV
 # using Calculus
 # using CmdStan
-# using DataFrames
+using DataFrames
 using Dates
 using DiffEqBase
 using DifferentialEquations
 # using Distributed
-# using Distributions
+using Distributions
 # using GaussianProcesses
 using JLD
 # using LinearAlgebra
 using ODEInterfaceDiffEq
 using OrdinaryDiffEq
 using Plots
-# using Random
+using Random
 # using Roots
 # # using SharedArrays
 # using Statistics
@@ -41,6 +41,7 @@ export defModStruct
 export checkStruct
 export GenerateModel
 
+# Load section to simulate the model
 include("ModelSim.jl")
 export simulateODEs
 export defSimulStruct
@@ -50,5 +51,15 @@ export defSimulStructFiles
 export extractSimulCSV
 export plotSimsODE
 
+# Load the section to generate pseudo-data
+include("ModelPDat.jl")
+export GenPseudoDat
+export plotPseudoDatODE
+export defPseudoDatStruct
+export checkStructPseudoDat
+# export fileStructInfo
+export defPseudoDatStructFiles
+export extractPseudoDatCSV
+export PDatCSVGen
 
 end
