@@ -17,6 +17,13 @@ Sundials = "c3572dad-4567-51f8-b174-8c6c989267f4"
 [compat]
 DiffEqBase = "6"
 julia = "1"
+CSV = "0.6"
+DifferentialEquations = "6.15"
+JLD = "0.10"
+ODEInterfaceDiffEq = "3.7"
+OrdinaryDiffEq = "5.41"
+Plots = "1.5"
+Sundials = "4.2"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
