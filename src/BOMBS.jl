@@ -2,7 +2,7 @@ module BOMBS
 
 # Load dependencies
 # using BayesianOptimization
-# using BlackBoxOptim
+using BlackBoxOptim
 using CSV
 # using Calculus
 # using CmdStan
@@ -10,19 +10,19 @@ using DataFrames
 using Dates
 using DiffEqBase
 using DifferentialEquations
-# using Distributed
+using Distributed
 using Distributions
 # using GaussianProcesses
 using JLD
-# using LinearAlgebra
+using LinearAlgebra
 using ODEInterfaceDiffEq
 using OrdinaryDiffEq
 using Plots
 using Random
 # using Roots
-# # using SharedArrays
+using SharedArrays
 # using Statistics
-# using StatsBase
+using StatsBase
 # using StatsPlots
 using Sundials
 
@@ -61,5 +61,20 @@ export checkStructPseudoDat
 export defPseudoDatStructFiles
 export extractPseudoDatCSV
 export PDatCSVGen
+
+include("ModelMLE.jl")
+export defMLEStruct
+export SimToMle
+export checkStructMLE
+export selectObsSim_te
+export restructInputs_te
+export UVloglike
+export MVloglike
+export plotMLEResults
+export defCrossValMLEStruct
+export checkStructCrossValMLE
+export plotCrossValMLEResults
+export CrossValMLE
+export MLEtheta
 
 end
