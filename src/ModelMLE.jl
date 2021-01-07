@@ -20,7 +20,7 @@ function defMLEStruct()
     mle_def["runs"] = []; # Integer indicating how many runs of Optimisation will be done
 
     # Optimiser does not allow an initial guess for now, but apparently they are working on it. Will just comment this for now.
-#     mle_def["thetaGUESS"] = []; # Initial guess for theta for each run. This can be empty, so a random initial theta will be generated for each run
+    #     mle_def["thetaGUESS"] = []; # Initial guess for theta for each run. This can be empty, so a random initial theta will be generated for each run
 
 
     mle_def["parallel"] = []; # Bollean or yes/no string indicating if the different runs whant to be done in parallel (true) or series (false). Default is false.
@@ -135,12 +135,12 @@ function checkStructMLE(model_def, mle_def)
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the field Nexp! This should be an integer. ")
         return
-#     elseif (typeof(mle_def["thetaGUESS"]) != Array{Float64,1}) && (typeof(mle_def["thetaGUESS"]) != Array{Float32,1}) &&
-#             (typeof(mle_def["thetaGUESS"]) != Array{Float64,2}) && (typeof(mle_def["thetaGUESS"]) != Array{Float32,2}) &&
-#             (typeof(mle_def["thetaGUESS"]) != Array{String,1}) && (typeof(mle_def["thetaGUESS"]) != String)
-#         println("-------------------------- Process STOPPED!!! --------------------------")
-#         println("Please, check the field thetaGUESS! This should be a vector, matrix or string. ")
-#         return
+    #     elseif (typeof(mle_def["thetaGUESS"]) != Array{Float64,1}) && (typeof(mle_def["thetaGUESS"]) != Array{Float32,1}) &&
+    #             (typeof(mle_def["thetaGUESS"]) != Array{Float64,2}) && (typeof(mle_def["thetaGUESS"]) != Array{Float32,2}) &&
+    #             (typeof(mle_def["thetaGUESS"]) != Array{String,1}) && (typeof(mle_def["thetaGUESS"]) != String)
+    #         println("-------------------------- Process STOPPED!!! --------------------------")
+    #         println("Please, check the field thetaGUESS! This should be a vector, matrix or string. ")
+    #         return
     elseif (mle_def["parallel"] != [])
         try
             if (typeof(mle_def["parallel"]) != Bool) && (typeof(mle_def["parallel"]) != Array{Bool,1}) &&
@@ -198,9 +198,9 @@ function checkStructMLE(model_def, mle_def)
         mle_def["plot"]=false
     end
 
-#     if (typeof(mle_def["thetaGUESS"]) == Array{String,1})
-#         mle_def["thetaGUESS"] = mle_def["thetaGUESS"][1];
-#     end
+    #     if (typeof(mle_def["thetaGUESS"]) == Array{String,1})
+    #         mle_def["thetaGUESS"] = mle_def["thetaGUESS"][1];
+    #     end
 
     if typeof(mle_def["flag"]) == Array{String,1}
         mle_def["flag"] = mle_def["flag"][1];
@@ -275,32 +275,32 @@ function checkStructMLE(model_def, mle_def)
     end
 
 
-#     if (typeof(mle_def["thetaGUESS"]) == Array{Float64,1}) || (typeof(mle_def["thetaGUESS"]) == Array{Float32,1})
-#         if length(mle_def["thetaGUESS"]) != model_def["nPar"]
-#             println("-------------------------- Process STOPPED!!! --------------------------")
-#             println("Number of parameters introduced for thetaGUESS does not match the specidied")
-#             return
-#         end
-#     elseif (typeof(mle_def["thetaGUESS"]) == Array{Float64,2}) || (typeof(mle_def["thetaGUESS"]) == Array{Float32,2})
-#         if size(mle_def["thetaGUESS"])[1] != model_def["nPar"] && size(mle_def["thetaGUESS"])[2] != model_def["nPar"]
-#             println("-------------------------- Process STOPPED!!! --------------------------")
-#             println("Number of parameters introduced for thetaGUESS does not match the specidied")
-#             return
-#         end
-#     elseif (typeof(mle_def["thetaGUESS"]) == String)
-#         if mle_def["thetaGUESS"][end-3:end] != ".csv"
-#             println("-------------------------- Process STOPPED!!! --------------------------")
-#             println("Please, add the .csv termination to the theta file! And no spaces after!")
-#             return
-#         end
-#         if isfile(mle_def["thetaGUESS"])
-#             mle_def["thetaGUESS"] = Matrix(CSV.read(mle_def["thetaGUESS"]));
-#         else
-#             println("-------------------------- Process STOPPED!!! --------------------------")
-#             println("Sorry, but the file path you introduced does not exist!")
-#             return
-#         end
-#     end
+    #     if (typeof(mle_def["thetaGUESS"]) == Array{Float64,1}) || (typeof(mle_def["thetaGUESS"]) == Array{Float32,1})
+    #         if length(mle_def["thetaGUESS"]) != model_def["nPar"]
+    #             println("-------------------------- Process STOPPED!!! --------------------------")
+    #             println("Number of parameters introduced for thetaGUESS does not match the specidied")
+    #             return
+    #         end
+    #     elseif (typeof(mle_def["thetaGUESS"]) == Array{Float64,2}) || (typeof(mle_def["thetaGUESS"]) == Array{Float32,2})
+    #         if size(mle_def["thetaGUESS"])[1] != model_def["nPar"] && size(mle_def["thetaGUESS"])[2] != model_def["nPar"]
+    #             println("-------------------------- Process STOPPED!!! --------------------------")
+    #             println("Number of parameters introduced for thetaGUESS does not match the specidied")
+    #             return
+    #         end
+    #     elseif (typeof(mle_def["thetaGUESS"]) == String)
+    #         if mle_def["thetaGUESS"][end-3:end] != ".csv"
+    #             println("-------------------------- Process STOPPED!!! --------------------------")
+    #             println("Please, add the .csv termination to the theta file! And no spaces after!")
+    #             return
+    #         end
+    #         if isfile(mle_def["thetaGUESS"])
+    #             mle_def["thetaGUESS"] = Matrix(CSV.read(mle_def["thetaGUESS"]));
+    #         else
+    #             println("-------------------------- Process STOPPED!!! --------------------------")
+    #             println("Sorry, but the file path you introduced does not exist!")
+    #             return
+    #         end
+    #     end
 
     if (model_def["nPar"] != length(mle_def["thetaMAX"])) || (model_def["nPar"] != length(mle_def["thetaMIN"]))
         println("-------------------------- Process STOPPED!!! --------------------------")
@@ -308,13 +308,13 @@ function checkStructMLE(model_def, mle_def)
         return
     end
 
-#     if mle_def["thetaGUESS"] != []
-#         if length(mle_def["thetaGUESS"])/mle_def["runs"] != model_def["nPar"]
-#             println("-------------------------- Process STOPPED!!! --------------------------")
-#             println("Sorry, the dimensions of the thetaGUESS introduced does not match the number of runs of optimisation!")
-#             return
-#         end
-#     end
+    #     if mle_def["thetaGUESS"] != []
+    #         if length(mle_def["thetaGUESS"])/mle_def["runs"] != model_def["nPar"]
+    #             println("-------------------------- Process STOPPED!!! --------------------------")
+    #             println("Sorry, the dimensions of the thetaGUESS introduced does not match the number of runs of optimisation!")
+    #             return
+    #         end
+    #     end
 
     if length(mle_def["DataMean"]) != length(mle_def["DataError"])
         println("-------------------------- Process STOPPED!!! --------------------------")
@@ -445,14 +445,14 @@ function checkStructMLE(model_def, mle_def)
     end
 
     # Check warning in case the matrix introduced is simetric
-#     if length(size(mle_def["thetaGUESS"])) == 2
-#         if size(mle_def["thetaGUESS"])[1] == size(mle_def["thetaGUESS"])[2]
-#             println("-------------------------- WARNING --------------------------")
-#             println("Sorry, but the number of rows and columns of the theta matrix is the same, so the checks on correct ")
-#             println("correct orientation will not work. Please make sure that the dimensions follow: ")
-#             println("theta[samples, parameters]")
-#         end
-#     end
+    #     if length(size(mle_def["thetaGUESS"])) == 2
+    #         if size(mle_def["thetaGUESS"])[1] == size(mle_def["thetaGUESS"])[2]
+    #             println("-------------------------- WARNING --------------------------")
+    #             println("Sorry, but the number of rows and columns of the theta matrix is the same, so the checks on correct ")
+    #             println("correct orientation will not work. Please make sure that the dimensions follow: ")
+    #             println("theta[samples, parameters]")
+    #         end
+    #     end
 
     # Check that no step is no smaller than 2 unit of time
     for i in 1:mle_def["Nexp"]
@@ -513,6 +513,7 @@ function checkStructMLE(model_def, mle_def)
     return(mle_def)
 end
 
+## Function to select observables from a simulation
 function selectObsSim_te(simul, Obs, stName)
 
     simObs = zeros(size(simul)[1], length(Obs), size(simul)[3]);
@@ -572,6 +573,7 @@ function selectObsSim_te(simul, Obs, stName)
     return(simObs)
 end
 
+## Function to restructure the inputs for the experiment the way it is needed for BOMBS
 function restructInputs_te(model_def, mle_def, expp)
     r = convert.(Int, 1:model_def["nInp"]:(length(mle_def["uInd"][expp])));
     inputs = zeros(convert.(Int,length(mle_def["uInd"][expp])));
@@ -583,7 +585,7 @@ function restructInputs_te(model_def, mle_def, expp)
     return(inputs)
 end
 
-# Univariate
+## Univariate LLK
 function UVloglike(dats, mes, errs)
 
     # Check that the dimensions of all the vectors are the same
@@ -613,7 +615,7 @@ function UVloglike(dats, mes, errs)
     return(llk);
 end
 
-# Multivariate
+## Multivariate LLK
 function MVloglike(dats, mes, errs)
 
     # Check that the dimensions of all the vectors are the same
@@ -1078,7 +1080,7 @@ function checkStructCrossValMLE(model_def, cvmle_def)
 
     end
 
-#     Check warning in case the matrix introduced is simetric
+    #     Check warning in case the matrix introduced is simetric
     if length(size(cvmle_def["theta"])) == 2
         if size(cvmle_def["theta"])[1] == size(cvmle_def["theta"])[2]
             println("-------------------------- WARNING --------------------------")
@@ -1148,7 +1150,7 @@ function checkStructCrossValMLE(model_def, cvmle_def)
 end
 
 ## Plot of Cross-Validation RESULTS
-function plotCrossValMLEResults(cvmle_res,model_def,cvmle_def)
+function plotCrossValMLEResults(cvmle_res,model_def,cvmle_def,simul_def)
 
     cudi = pwd(); #@__DIR__;
 
@@ -1247,13 +1249,13 @@ function CrossValMLE(model_def, cvmle_def)
 
     SimObs = Dict();
     for k in 1:cvmle_def["Nexp"]
-        SimObs[string("ExpObs_", k)] = selectObsSim_te(simuls[string("Exp_",k)], mle_def["Obs"],model_def["stName"]);
+        SimObs[string("ExpObs_", k)] = selectObsSim_te(simuls[string("Exp_",k)], cvmle_def["Obs"],model_def["stName"]);
     end
 
     dataM = cvmle_def["DataMean"];
     dataE = cvmle_def["DataError"];
 
-    LLK_Exps = zeros(size(SimObs[string("ExpObs_", i)])[3], cvmle_def["Nexp"]);
+    LLK_Exps = zeros(size(SimObs[string("ExpObs_", 1)])[3], cvmle_def["Nexp"]);
     for i in 1:cvmle_def["Nexp"]
         llkobs = zeros(size(SimObs[string("ExpObs_", i)])[3],length(cvmle_def["Obs"]));
         for j in 1:length(cvmle_def["Obs"])
@@ -1294,7 +1296,7 @@ function CrossValMLE(model_def, cvmle_def)
     println("")
 
     if cvmle_def["plot"] == true
-        plotCrossValMLEResults(cvmle_res,model_def,cvmle_def)
+        plotCrossValMLEResults(cvmle_res,model_def,cvmle_def,simul_def)
         println("")
         println("----------------------------------------- PLOTS -----------------------------------------")
         println("Simulation PLOTS are saved in the directory: ")
@@ -1308,6 +1310,47 @@ function CrossValMLE(model_def, cvmle_def)
 
 end
 
+## To save the results in the parallel case
+function finishMLEres(mle_res, model_def, mle_def)
+
+    # Generate results directory
+    cudi = pwd(); #@__DIR__;
+    if !isdir(string(cudi,"\\Results"))
+        mkdir(string(cudi,"\\Results"))
+    end
+    if !isdir(string(cudi, "\\Results\\", model_def["NameF"],"_",today()))
+        mkdir(string(cudi, "\\Results\\", model_def["NameF"],"_",today()))
+    end
+    if !isdir(string(cudi, "\\Results\\", model_def["NameF"],"_",today(), "\\MLEscripts"))
+        mkdir(string(cudi, "\\Results\\", model_def["NameF"],"_",today(), "\\MLEscripts"))
+    end
+
+    mle_def["savepath"] = string(cudi, "\\Results\\", model_def["NameF"],"_",today());
+    mle_def["savename"] = string(model_def["NameF"],"_",today(), "_MLEresults_",mle_def["flag"],".jld");
+
+    save(string(mle_def["savepath"], "\\", mle_def["savename"]), "MLEresults", mle_res, "model_def", model_def, "mle_def", mle_def);
+
+    println("")
+    println("----------------------------------------- RESULTS -----------------------------------------")
+    println("MLE results are saved in the directory: ")
+    println(string("                 ", mle_def["savepath"]))
+    println(string("Under the name ",mle_def["savename"]))
+    println("--------------------------------------------------------------------------------------")
+    println("")
+
+    if mle_def["plot"] == true
+        plotMLEResults(mle_res,model_def,mle_def)
+        println("")
+        println("----------------------------------------- PLOTS -----------------------------------------")
+        println("Simulation PLOTS are saved in the directory: ")
+        println(string("                 ", mle_def["savepath"]))
+        println(string("Under the names PlotMLEResults_Exp(i)_",mle_def["flag"],".png", " and Plot_MLEConvergence_", mle_def["flag"], ".png"))
+        println("--------------------------------------------------------------------------------------")
+        println("")
+    end
+
+    return(mle_res, model_def, mle_def)
+end
 
 ## Main Function
 function MLEtheta(model_def, mle_def)
@@ -1333,11 +1376,21 @@ function MLEtheta(model_def, mle_def)
     if mle_def["parallel"] == true
         paral = "@everywhere ";
         if length(Sys.cpu_info()) > nworkers()
-            cores = string("addprocs(length(Sys.cpu_info())-",nworkers(),")");
+            # cores = string("addprocs(length(Sys.cpu_info())-",nworkers(),")");
+            if length(Sys.cpu_info()) >= nworkers()
+                addprocs(length(Sys.cpu_info())-nworkers());
+            end
+            cores = "";
+    #         cores = string("
+    # if length(Sys.cpu_info()) >= nworkers()
+    #     addprocs(length(Sys.cpu_info())-nworkers());
+    # end
+    #         ")
         else
             cores = "";
         end
     end
+
 
     # Packages needed for the simulations
     Head = string("
@@ -1541,7 +1594,7 @@ function MLEtheta(model_def, mle_def)
     # Function to re-structure inputs to desired form
     inpre = string("
 
-    ",join(paral),"function restructInputs(model_def, mle_def, expp)
+    function restructInputs(model_def, mle_def, expp)
         r = convert.(Int, 1:model_def[","\"","nInp","\"","]:(length(mle_def[","\"","uInd","\"","][expp])));
         inputs = zeros(convert.(Int,length(mle_def[","\"","uInd","\"","][expp])));
         for j in 1:convert.(Int,length(mle_def[","\"","uInd","\"","][expp])/model_def[","\"","nInp","\"","])
@@ -1569,11 +1622,11 @@ function MLEtheta(model_def, mle_def)
     spaw2 = "";
     spaw3 = "";
     if mle_def["parallel"] == true
-        for k in 1:length(Sys.cpu_info())
-            spaw1 = vcat(spaw1, string("        @spawnat ",k," mle_def \n"));
-            spaw2 = vcat(spaw2, string("        @spawnat ",k," model_def \n"));
-            spaw3 = vcat(spaw3, string("        @spawnat ",k," ts \n", "        @spawnat ",k," sp \n", "        @spawnat ",k," ivss \n",
-            "        @spawnat ",k," pre \n", "        @spawnat ",k," samps \n", "        @spawnat ",k," inputs \n"));
+        for k in workers(); #1:length(Sys.cpu_info())
+            spaw1 = vcat(spaw1, string("        @everywhere @spawnat ",k," mle_def2 \n"));
+            spaw2 = vcat(spaw2, string("        @everywhere @spawnat ",k," model_def2 \n"));
+            spaw3 = vcat(spaw3, string("        @spawnat ",k," tim \n", "        @spawnat ",k," esp \n", "        @spawnat ",k," ini \n",
+            "        @spawnat ",k," prr \n", "        @spawnat ",k," smp \n", "        @spawnat ",k," inp \n"));
         end
     end
 
@@ -1581,7 +1634,7 @@ function MLEtheta(model_def, mle_def)
     if mle_def["parallel"] == true
         funrun = string("tet, convcur2 = parOptim(opts);
 
-        convcur3 = Array{Any}(undef,chains)
+        convcur3 = Array{Any}(undef,",mle_def["runs"],")
         i1 = 1;
         i2 = 1;
         k = 1;
@@ -1596,8 +1649,8 @@ function MLEtheta(model_def, mle_def)
                 convcur3[k] = convcur2[i1:i2];
             end
         end
-        ",join(paral),"convcur = Array{Any}(undef,chains);
-        for k in 1:chains
+        ",join(paral),"convcur = Array{Any}(undef,",mle_def["runs"],");
+        for k in 1:",mle_def["runs"],"
             tmpch = convcur3[k][1][2];
             convcur[tmpch] = convcur3[k][2:end];
         end
@@ -1612,60 +1665,57 @@ function MLEtheta(model_def, mle_def)
     # Main function for optimisation
     mainfun = string("
 
-    function RunMLE", model_def["NameF"],"(model_def, mle_def)
+    function RunMLE", model_def["NameF"],"(model_def2, mle_def2)
 
 ",join(spaw1),"
 ",join(spaw2),"
 
-        ",join(paral),"global Nexp = mle_def[","\"","Nexp","\"","];
-        ",join(paral),"global Obs = mle_def[","\"","Obs","\"","];
-        ",join(paral),"global stName = model_def[","\"","stName","\"","];
+        ",join(paral),"global Nexp = mle_def2[","\"","Nexp","\"","];
+        ",join(paral),"global Obs = mle_def2[","\"","Obs","\"","];
+        ",join(paral),"global stName = model_def2[","\"","stName","\"","];
 
-        ",join(paral),"global dataM = mle_def[","\"","DataMean","\"","];
-        ",join(paral),"global dataE = mle_def[","\"","DataError","\"","];
+        ",join(paral),"global dataM = mle_def2[","\"","DataMean","\"","];
+        ",join(paral),"global dataE = mle_def2[","\"","DataError","\"","];
 
-        ",join(paral),"ts = Array{Any,1}(undef,mle_def[","\"","Nexp","\"","]);
-        ",join(paral),"sp = Array{Any,1}(undef,mle_def[","\"","Nexp","\"","]);
-        ",join(paral),"ivss = Array{Any,1}(undef,mle_def[","\"","Nexp","\"","]);
-        ",join(paral),"pre = Array{Any,1}(undef,mle_def[","\"","Nexp","\"","]);
-        ",join(paral),"samps = Array{Any,1}(undef,mle_def[","\"","Nexp","\"","]);
-        ",join(paral),"inputs = Array{Any,1}(undef,mle_def[","\"","Nexp","\"","]);
+        global ts = Array{Any,1}(undef,mle_def2[","\"","Nexp","\"","]);
+        global sp = Array{Any,1}(undef,mle_def2[","\"","Nexp","\"","]);
+        global ivss = Array{Any,1}(undef,mle_def2[","\"","Nexp","\"","]);
+        global pre = Array{Any,1}(undef,mle_def2[","\"","Nexp","\"","]);
+        global samps = Array{Any,1}(undef,mle_def2[","\"","Nexp","\"","]);
+        global inputs = Array{Any,1}(undef,mle_def2[","\"","Nexp","\"","]);
 
-        for i in 1:mle_def[","\"","Nexp","\"","]
-            global ts[i] = collect(0.0:round(mle_def[","\"","finalTime","\"","][i]))';
-            global sp[i] = [convert(Int,v) for v in (round.(mle_def[","\"","switchT","\"","][i])')];
-            global ivss[i] = mle_def[","\"","y0","\"","][i];
-            if model_def[","\"","Y0eqs","\"","] != [] # ON inputs
-                global pre[i] = mle_def[","\"","preInd","\"","][i];
+        for i in 1:mle_def2[","\"","Nexp","\"","]
+            ts[i] = collect(0.0:round(mle_def2[","\"","finalTime","\"","][i]))';
+            sp[i] = [convert(Int,v) for v in (round.(mle_def2[","\"","switchT","\"","][i])')];
+            ivss[i] = mle_def2[","\"","y0","\"","][i];
+            if model_def2[","\"","Y0eqs","\"","] != [] # ON inputs
+                pre[i] = mle_def2[","\"","preInd","\"","][i];
             else
-                global pre[i] = [];
+                pre[i] = [];
             end
-            global samps[i] = convert.(Int, round.(mle_def[","\"","tsamps","\"","][i]));
-            global inputs[i] = restructInputs(model_def, mle_def, i);
+            samps[i] = convert.(Int, round.(mle_def2[","\"","tsamps","\"","][i]));
+            inputs[i] = restructInputs(model_def2, mle_def2, i);
         end
 
+        global tim = ts;
+        global esp = sp;
+        global inp = inputs;
+        global ini = ivss;
+        global prr = pre;
+        global smp = samps;
 ",join(spaw3),"
 
-        ",join(paral),"global tim = ts;
-        ",join(paral),"global esp = sp;
-        ",join(paral),"global inp = inputs;
-        ",join(paral),"global ini = ivss;
-        ",join(paral),"global prr = pre;
-        ",join(paral),"global smp = samps;
-
-
-        ",join(paral),"lb = mle_def[","\"","thetaMIN","\"","];
-        ",join(paral),"up = mle_def[","\"","thetaMAX","\"","];
+        ",join(paral),"lb = mle_def2[","\"","thetaMIN","\"","];
+        ",join(paral),"up = mle_def2[","\"","thetaMAX","\"","];
 
         ",join(paral),"rang = [Array{Tuple{Int, Int}}(undef, length(lb))];
         ",join(paral),"rang = [(lb[i], up[i]) for i in 1:length(lb)];
 
-        ",join(paral),"chains = mle_def[","\"","runs","\"","];
         ",join(paral),"opts = Dict()
 
 
-        ",join(paral),"convcur = Array{Any,1}(undef, chains);
-        for i in 1:chains
+        ",join(paral),"convcur = Array{Any,1}(undef, ",mle_def["runs"],");
+        for i in 1:",mle_def["runs"],"
             convcur[i] = Array{Tuple{Int, Float64},1}();
             callback = oc -> push!(convcur[i], (num_func_evals(oc), best_fitness(oc)))
             opts[string(","\"","Opt_","\"",", i)] = bbsetup(objectiveMLE",model_def["NameF"],"; SearchRange = rang, NumDimensions = length(lb),
@@ -1682,10 +1732,10 @@ function MLEtheta(model_def, mle_def)
         println(","\"","----------------------------------------- OPTIMISATION ENDED -----------------------------------------","\"",")
 
 
-        names = model_def[","\"","parName","\"","];
+        names = model_def2[","\"","parName","\"","];
 
-        alltog = Array{Dict{String,Any},1}(undef,chains)
-        for i in 1:(chains)
+        alltog = Array{Dict{String,Any},1}(undef,",mle_def["runs"],")
+        for i in 1:(",mle_def["runs"],")
             global tmp = Dict{String, Any}()
             for j in 1:length(names)
                 tmp[names[j]] = tet[j,i];
@@ -1727,51 +1777,84 @@ function MLEtheta(model_def, mle_def)
     println("--------------------------------------------------------------------------------------")
     println("")
 
-    # Run Main script and save results
-    include(string(cudi, "\\Results\\", model_def["NameF"],"_",today(), "\\MLEscripts\\", model_def["NameF"], "_MLE.jl"))
 
-    if mle_def["parallel"] == true
-        for k in 1:length(Sys.cpu_info())
-            spaw1a = string("        @spawnat ",k," mle_def \n");
-            spaw2a = string("        @spawnat ",k," model_def \n");
-            p1 = Meta.parse(spaw1a)
-            p2 = Meta.parse(spaw2a)
 
-            @eval $p1
-            @eval $p2
-        end
-    end
     global model_def2 = model_def;
     global mle_def2 = mle_def;
 
-    MLEfun = Symbol(string("RunMLE", model_def["NameF"]));
+    # if mle_def["parallel"] == true
+    #     for k in workers(); #1:length(Sys.cpu_info())+1
+    #         spaw1a = string("        @everywhere @spawnat ",k," mle_def2 \n");
+    #         spaw2a = string("        @everywhere @spawnat ",k," model_def2 \n");
+    #         p1 = Meta.parse(spaw1a)
+    #         p2 = Meta.parse(spaw2a)
+    #
+    #         @eval $p1
+    #         @eval $p2
+    #     end
+    # end
 
-    mle_res = @eval $MLEfun(model_def2, mle_def2);
+    if mle_def["parallel"] != true
 
-    mle_def["savepath"] = string(cudi, "\\Results\\", model_def["NameF"],"_",today());
-    mle_def["savename"] = string(model_def["NameF"],"_",today(), "_MLEresults_",mle_def["flag"],".jld");
+        # Run Main script and save results
+        include(string(cudi, "\\Results\\", model_def["NameF"],"_",today(), "\\MLEscripts\\", model_def["NameF"], "_MLE.jl"))
 
-    save(string(mle_def["savepath"], "\\", mle_def["savename"]), "MLEresults", mle_res, "model_def", model_def, "mle_def", mle_def);
 
-    println("")
-    println("----------------------------------------- RESULTS -----------------------------------------")
-    println("MLE results are saved in the directory: ")
-    println(string("                 ", mle_def["savepath"]))
-    println(string("Under the name ",mle_def["savename"]))
-    println("--------------------------------------------------------------------------------------")
-    println("")
+        MLEfun = Symbol(string("RunMLE", model_def["NameF"]));
 
-    if mle_def["plot"] == true
-        plotMLEResults(mle_res,model_def,mle_def)
+        mle_res = @eval $MLEfun(model_def2, mle_def2);
+
+        mle_def["savepath"] = string(cudi, "\\Results\\", model_def["NameF"],"_",today());
+        mle_def["savename"] = string(model_def["NameF"],"_",today(), "_MLEresults_",mle_def["flag"],".jld");
+
+        save(string(mle_def["savepath"], "\\", mle_def["savename"]), "MLEresults", mle_res, "model_def", model_def, "mle_def", mle_def);
+
         println("")
-        println("----------------------------------------- PLOTS -----------------------------------------")
-        println("Simulation PLOTS are saved in the directory: ")
+        println("----------------------------------------- RESULTS -----------------------------------------")
+        println("MLE results are saved in the directory: ")
         println(string("                 ", mle_def["savepath"]))
-        println(string("Under the names PlotMLEResults_Exp(i)_",mle_def["flag"],".png", " and Plot_MLEConvergence_", mle_def["flag"], ".png"))
+        println(string("Under the name ",mle_def["savename"]))
         println("--------------------------------------------------------------------------------------")
         println("")
-    end
 
+        if mle_def["plot"] == true
+            plotMLEResults(mle_res,model_def,mle_def)
+            println("")
+            println("----------------------------------------- PLOTS -----------------------------------------")
+            println("Simulation PLOTS are saved in the directory: ")
+            println(string("                 ", mle_def["savepath"]))
+            println(string("Under the names PlotMLEResults_Exp(i)_",mle_def["flag"],".png", " and Plot_MLEConvergence_", mle_def["flag"], ".png"))
+            println("--------------------------------------------------------------------------------------")
+            println("")
+        end
+    else
+        mle_res = Dict();
+        println(string("
+
+        You have selected to run the optimisation in parallel. The necessary scripts have been generated,
+        but you need to run the rest by yourself :(
+        I am working on this, but for now let me show you what to do:
+
+        Step 1:First you will need to include the generated script into your path (the one printed avobe ^).
+            Remember that the start up time and memory usage of this will be really high!
+            So, copy and paste this:
+                include(",string(cudi, "\\Results\\", model_def["NameF"],"_",today(), "\\MLEscripts\\", model_def["NameF"], "_MLE.jl"),")
+
+        Step 2: Now run the optimisation using the functions from the file you just uploaded.
+            The function you need to call is named RunMLE", model_def["NameF"],".
+            You can copy and paste this line to run it (be carefull on how you named the function inputs!!!):
+                mle_res = RunMLE", model_def["NameF"],"(model_def, mle_def);
+
+        Step 3: Finally, save the optimisation results and plots (if selected) in the same form as if no
+            parallelisation was done. To do this use the function finishMLEres that will do everything for you!
+            You can copy and paste this line to run it (be carefull on how you named the function inputs!!!):
+                mle_res, model_def, mle_def = finishMLEres(mle_res, model_def, mle_def)
+
+        Step 4: Enjoy your optimisation results!
+
+
+        "));
+    end
 
     return(mle_res, model_def, mle_def)
 end

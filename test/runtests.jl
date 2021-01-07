@@ -2,6 +2,7 @@ using BOMBS
 using Test
 using CSV
 using DataFrames
+using LinearAlgebra
 
 # -------------------------------------------------------- MODEL DEFINITION TESTS
 model_def = Dict();
@@ -150,6 +151,87 @@ pseudo_defCSV2["flag"] = "testPDCSV";
 pseudo_defCSV2["Obs"] = ["B*2"];
 pseudo_defCSV2["Noise"] = [0.1];
 
+# -------------------------------------------------------- MLE TESTS
+mle_def = Dict();
+mle_def["Nexp"] = [];
+mle_def["finalTime"] = [];
+mle_def["switchT"] = [];
+mle_def["y0"] = [];
+mle_def["preInd"] = [];
+mle_def["uInd"] = [];
+mle_def["tsamps"] = [];
+mle_def["plot"] = [];
+mle_def["flag"] = [];
+mle_def["thetaMAX"] = [];
+mle_def["thetaMIN"] = [];
+mle_def["runs"] = [];
+mle_def["parallel"] = [];
+mle_def["DataMean"] = [];
+mle_def["DataError"] = [];
+mle_def["Obs"] = [];
+mle_def["OPTsolver"] = [];
+mle_def["MaxTime"] = [];
+mle_def["MaxFuncEvals"] = [];
+
+mle_def2 = Dict();
+mle_def2["Nexp"] = [1];
+mle_def2["finalTime"] = [40];
+mle_def2["switchT"] = [[0,20,40]];
+mle_def2["y0"] = [[0,0]];
+mle_def2["preInd"] = [[0.1]];
+mle_def2["uInd"] = [[1,1]];
+mle_def2["tsamps"] = [[0,5,10,15,20,25,30,35,40]];
+mle_def2["plot"] = false;
+mle_def2["flag"] = "testmle";
+mle_def2["thetaMAX"] = [0.15 0.25 0.25 0.025];
+mle_def2["thetaMIN"] = [0.1 0.2 0.2 0.02];
+mle_def2["runs"] = 1;
+mle_def2["parallel"] = false;
+mle_def2["DataMean"] = [[0 1 2 3 4 5 6 7 8; 0 1 2 3 4 5 6 7 8]'];
+mle_def2["DataError"] = [[[0,1,2,3,4,5,6,7,8], [0,1,2,3,4,5,6,7,8]]];
+mle_def2["Obs"] = ["A", "B"];
+mle_def2["OPTsolver"] = "adaptive_de_rand_1_bin_radiuslimited";
+mle_def2["MaxTime"] = 4;
+mle_def2["MaxFuncEvals"] = [];
+
+cvmle_def = Dict();
+cvmle_def["Nexp"] = [];
+cvmle_def["finalTime"] = [];
+cvmle_def["switchT"] = [];
+cvmle_def["y0"] = [];
+cvmle_def["preInd"] = [];
+cvmle_def["uInd"] = [];
+cvmle_def["theta"] = [];
+cvmle_def["tsamps"] = [];
+cvmle_def["plot"] = [];
+cvmle_def["flag"] = [];
+cvmle_def["DataMean"] = [];
+cvmle_def["DataError"] = [];
+cvmle_def["Obs"] = [];
+
+cvmle_def2 = Dict();
+cvmle_def2["Nexp"] = [1];
+cvmle_def2["finalTime"] = [40];
+cvmle_def2["switchT"] = [[0,20,40]];
+cvmle_def2["y0"] = [[0,0]];
+cvmle_def2["preInd"] = [[0.1]];
+cvmle_def2["uInd"] = [[1,1]];
+cvmle_def2["theta"] = [0.1 0.2 0.2 0.02];
+cvmle_def2["tsamps"] = [[0,5,10,15,20,25,30,35,40]];
+cvmle_def2["plot"] = false;
+cvmle_def2["flag"] = "cvmletest";
+cvmle_def2["DataMean"] = [[0 1 2 3 4 5 6 7 8]'];
+cvmle_def2["DataError"] = [[[0,1,2,3,4,5,6,7,8]]];;
+cvmle_def2["Obs"] = ["B"];
+
+testdict1 = Dict();
+testdict2 = Dict();
+testdict1["a"] = "a";
+testdict1["b"] = "b";
+testdict2["a"] = [];
+testdict2["b"] = 1;
+
+
 @testset "ModelGenTests" begin
 
     # In case any modification to the structure is made, this will be the test to see if I have forgot some entry
@@ -269,5 +351,78 @@ end
 
     rm(string(pwd(),"\\ModelsFunctions\\", model_def2["NameF"], "_Model.jl"))
     rm(string(pseudo_def2["savepath"], "\\", pseudo_def2["savename"]))
+
+end
+
+@testset "MLESeriesTests" begin
+
+    # First check that both structure calls give what it is supposed to
+    @test mle_def == defMLEStruct();
+    @test cvmle_def == defCrossValMLEStruct();
+
+    # Check functionality of helpping functions
+    testdict3 = SimToMle(testdict1, testdict2);
+    @test testdict3 == testdict2;
+
+    simst = reshape([1 2 3 4; 1 2 3 4; 1 2 3 4], 3,4,1);
+    obst = ["c*2"];
+    stnamest = ["a","b","c","d"];
+    @test sum(selectObsSim_te(simst, obst, stnamest)) == sum(simst[:,3,:]*2);
+    @test (selectObsSim_te(simst, [2], stnamest)) == reshape([2,2,2], 3,1,1);
+
+    ttess1 = Dict();
+    ttess1["nInp"] = 2;
+    ttess2 = Dict();
+    ttess2["uInd"] = [[1 1 1; 2 2 2]'];
+    @test restructInputs_te(ttess1, ttess2, 1) == [1,2,1,2,1,2];
+    ttess1["nInp"] = 3;
+    ttess2["uInd"] = [[1 1 1; 2 2 2; 3 3 3]'];
+    @test restructInputs_te(ttess1, ttess2, 1) == [1,2,3,1,2,3,1,2,3];
+
+    # More tests might be needed?
+    m=10;
+    s=1;
+    d=9;
+    @test (-0.5)*(log(2*pi) + 0 + (1)) == UVloglike(d, m, s);
+    m=[10, 10, 10, 10];
+    s=[1,1,1,1];
+    d=[9, 11, 9, 11];
+    @test ((-0.5)*(log(2*pi) + 0 + (1)))*4 == UVloglike(d, m, s);
+    m=[10, 15, 10, 15];
+    s=[0.5,0.5,0.5,0.5];
+    d=[12, 12, 12, 12];
+    @test ((-0.5)*(log(2*pi) + log(0.25) + (2^2)/0.25)) + ((-0.5)*(log(2*pi) + log(0.25) + (2^2)/0.25)) +
+    ((-0.5)*(log(2*pi) + log(0.25) + (3^2)/0.25)) + ((-0.5)*(log(2*pi) + log(0.25) + (3^2)/0.25)) == UVloglike(d, m, s);
+
+
+    m=[10, 10];
+    s=[1 1; 1 1]; # Diagonal element of 0.1 is added to avoid Infs due to non positive definite covariances.
+    d=[9, 11];
+    correcmat = Diagonal(ones(length(d))).*0.1;
+    @test [MVloglike(d, m, s)] == (-0.5) * ((length(d)*log(2*pi)) .+ log(det(s.+correcmat)) .+ ([-1 1]*inv(s.+correcmat)*[-1,1]));
+
+    # Check structure check functions (with and without CSVs)
+    @test mle_def2 == checkStructMLE(model_def2, mle_def2)
+    @test cvmle_def2 == checkStructCrossValMLE(model_def2, cvmle_def2)
+
+    # Check MLE
+    # MLEtheta
+
+
+
+
+    # Check CV for MLE results
+    # CrossValMLE
+    # finishMLEres
+
+
+
+
+    # Test Plotting
+    # plotMLEResults
+    # plotCrossValMLEResults
+
+
+
 
 end

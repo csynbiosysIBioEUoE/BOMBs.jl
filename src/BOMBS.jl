@@ -75,6 +75,7 @@ export defCrossValMLEStruct
 export checkStructCrossValMLE
 export plotCrossValMLEResults
 export CrossValMLE
+export finishMLEres
 export MLEtheta
 
 end
