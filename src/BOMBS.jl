@@ -5,7 +5,7 @@ module BOMBS
 using BlackBoxOptim
 using CSV
 # using Calculus
-# using CmdStan
+using CmdStan
 using DataFrames
 using Dates
 using DiffEqBase
@@ -19,11 +19,11 @@ using ODEInterfaceDiffEq
 using OrdinaryDiffEq
 using Plots
 using Random
-# using Roots
+using Roots
 using SharedArrays
 # using Statistics
 using StatsBase
-# using StatsPlots
+using StatsPlots
 using Sundials
 
 # laod logo
@@ -77,5 +77,29 @@ export plotCrossValMLEResults
 export CrossValMLE
 export finishMLEres
 export MLEtheta
+
+include("ModelStanInfer.jl")
+export defBayInfStruct
+export defBayInfDataStruct
+export defBayInfDataFromFilesStruct
+export defBasicStanSettingsStruct
+export convertBoundTo2
+export convertBoundToReal
+export fitPriorSamps
+export fitPriorSampsMultiNorm
+export checkStructBayInf
+export checkStructBayInfData
+export checkStructBayInfDataFiles
+export checkStructBayInfStanSettings
+export genStanInitDict
+export reparamDictStan
+export genStanModel
+export restructureDataInference
+export getStanInferenceElements
+export saveStanResults
+export runStanInference
+export plotStanResults
+export StanInfer
+
 
 end

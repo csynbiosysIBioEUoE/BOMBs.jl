@@ -4,6 +4,9 @@ using CSV
 using DataFrames
 using LinearAlgebra
 using Dates
+using Distributions
+using Random
+using CmdStan
 
 # -------------------------------------------------------- MODEL DEFINITION TESTS
 model_def = Dict();
@@ -175,7 +178,7 @@ mle_def["MaxTime"] = [];
 mle_def["MaxFuncEvals"] = [];
 
 mle_def2 = Dict();
-mle_def2["Nexp"] = [1];
+mle_def2["Nexp"] = 1;
 mle_def2["finalTime"] = [40];
 mle_def2["switchT"] = [[0,20,40]];
 mle_def2["y0"] = [[0,0]];
@@ -211,7 +214,7 @@ cvmle_def["DataError"] = [];
 cvmle_def["Obs"] = [];
 
 cvmle_def2 = Dict();
-cvmle_def2["Nexp"] = [1];
+cvmle_def2["Nexp"] = 1;
 cvmle_def2["finalTime"] = [40];
 cvmle_def2["switchT"] = [[0,20,40]];
 cvmle_def2["y0"] = [[0,0]];
@@ -483,4 +486,125 @@ end
 
 end
 
-# rm(pwd(), "\\Results")
+@testset "StanInferenceTests" begin
+
+    # Tests on structure definitions
+    bayinf_def = defBayInfStruct();
+    @test typeof(bayinf_def) <: Dict;
+    entries1 = ["Priors", "Data", "StanSettings", "flag", "plot", "runInf", "MultiNormFit"];
+    @test isempty(symdiff(entries1,keys(bayinf_def)));
+    datinf_def = defBayInfDataStruct();
+    @test typeof(datinf_def) <: Dict;
+    entries2 = ["Nexp", "finalTime", "switchT", "y0", "preInd", "uInd", "tsamps", "Obs", "DataMean", "DataError"];
+    @test isempty(symdiff(entries2,keys(datinf_def)));
+    csvinf_def = defBayInfDataFromFilesStruct();
+    @test typeof(csvinf_def) <: Dict;
+    entries3 = ["Obs", "Observables", "Inputs", "y0"];
+    @test isempty(symdiff(entries3,keys(csvinf_def)));
+    stainf_def = defBasicStanSettingsStruct();
+    @test typeof(stainf_def) <: Dict;
+    entries4 = ["cmdstan_home", "nchains", "nsamples", "nwarmup", "printsummary", "init", "maxdepth", "adaptdelta", "jitter"];
+    @test isempty(symdiff(entries4,keys(stainf_def)));
+
+    # Check structures
+    stainf_def["cmdstan_home"] = "C:/Users/David/.cmdstanpy/cmdstan-2.20.0";
+    stainf_def["nchains"] = 2;
+    stainf_def["nsamples"] = 20;
+    stainf_def["nwarmup"] = 20;
+    stainf_def["printsummary"] = false;
+    stainf_def["init"] = [];
+    stainf_def["maxdepth"] = 13;
+    stainf_def["adaptdelta"] = 0.95;
+    stainf_def["jitter"] = 0.5;
+    @test stainf_def == checkStructBayInfStanSettings(model_def2, stainf_def);
+
+    datinf_def["Nexp"] = 1;
+    datinf_def["finalTime"] = [40];
+    datinf_def["switchT"] = [[0,20,40]];
+    datinf_def["y0"] = [[0,0]];
+    datinf_def["preInd"] = [[0.1]];
+    datinf_def["uInd"] = [[1,1]];
+    datinf_def["tsamps"] = [[0,5,10,15,20,25,30,35,40]];
+    datinf_def["DataMean"] = [[0 1 2 3 4 5 6 7 8; 0 1 2 3 4 5 6 7 8]'];
+    datinf_def["DataError"] = [[[0,1,2,3,4,5,6,7,8], [0,1,2,3,4,5,6,7,8]]];
+    datinf_def["Obs"] = ["A", "B"];
+    @test datinf_def == checkStructBayInfData(model_def2, datinf_def);
+
+    bayinf_def["Priors"] = [0.15 0.25 0.25 0.025; 0.1 0.2 0.2 0.02]'';
+    bayinf_def["Data"] = datinf_def;
+    bayinf_def["StanSettings"] = stainf_def;
+    bayinf_def["flag"] = "stantest";
+    bayinf_def["plot"] = false;
+    bayinf_def["runInf"] = false;
+    bayinf_def["MultiNormFit"] = false;
+    bayinf_def2 =  checkStructBayInf(model_def2, bayinf_def);
+    @test bayinf_def["Data"] == bayinf_def2["Data"]
+    @test bayinf_def["StanSettings"] == bayinf_def2["StanSettings"]
+    @test bayinf_def["flag"] == bayinf_def2["flag"]
+    @test bayinf_def["plot"] == bayinf_def2["plot"]
+    @test bayinf_def["runInf"] == bayinf_def2["runInf"]
+    @test bayinf_def["MultiNormFit"] == bayinf_def2["MultiNormFit"]
+    @test length(bayinf_def2["Priors"]) == 3;
+    @test typeof(bayinf_def2["Priors"]) <: Dict
+    # checkStructBayInfDataFiles(model_def, data_def)
+
+    # Helpper functions tests
+    s1 = [0,1,3,9,10]
+    @test convertBoundTo2(s1, 10, 20) == s1.+10;
+    @test convertBoundTo2(s1.+10, 0, 10) == s1;
+
+    samp1 = rand(Normal(10,1), 80000,4);
+    fipri1 = fitPriorSamps(samp1, model_def2);
+    @test length(fipri1["pars"]) == 4;
+    @test length(fipri1["transpars"]) == 5;
+    @test length(fipri1["pridis"]) == 4;
+    fipri2 = fitPriorSampsMultiNorm(samp1, model_def2);
+    @test length(fipri2["pars"]) < 4;
+    @test length(fipri2["transpars"]) == 5;
+    @test length(fipri2["pridis"]) < 4;
+    kee = ["transpars","mera","cora","pars","pridis","numN"]
+    @test isempty(symdiff(kee,keys(fipri2)));
+
+    dis1 = genStanInitDict(samp1', model_def2["parName"], 10);
+    @test typeof(dis1[1]) <: Dict;
+    @test isempty(symdiff(model_def2["parName"],keys(dis1[1])));
+    @test length(dis1) == 10;
+
+    # reparamDictStan(dis1, bayinf_def)
+
+    # Stan
+    genStanModel(model_def2, bayinf_def)
+    @test isfile(string(pwd(),"\\ModelsFunctions\\", model_def2["NameF"], "_StanModel.stan"))
+    sdat = restructureDataInference(model_def2, bayinf_def);
+    datks = ["elm","tml","ts","tsl","tsmax","Nsp","inputs","evnT","m","stsl","stslm","sts","obser","obSta","nindu","preInd","Means","Y0us","Erros"]
+    for i in 1:length(datks)
+        @test datks[i] in keys(sdat)
+        @test !isempty(sdat[datks[i]])
+    end
+    modelpath, Model, StanModel, inferdata, init, ~, ~ = getStanInferenceElements(model_def2, bayinf_def);
+    @test isfile(modelpath);
+    rm(modelpath)
+    @test typeof(Model) == String;
+    @test typeof(StanModel) == CmdStan.Stanmodel;
+    @test inferdata == sdat;
+    @test isempty(init);
+
+    # saveStanResults(rc, chns, cnames, model_def, bayinf_def)
+    # runStanInference(model_def, bayinf_def)
+
+    stin, ~, ~ = StanInfer(model_def2, bayinf_def);
+    kssm = ["init", "StanModel", "inferdata", "Model", "modelpath"]
+    @test isempty(symdiff(kssm,keys(stin)));
+
+    # Plots
+    # plotStanResults(staninf_res, model_def, bayinf_def)
+
+    rm(string(pwd(),"\\ModelsFunctions\\", model_def2["NameF"], "_StanModel.stan"));
+    rm(string(pwd(),"\\tmp\\", model_def2["NameF"], "_Stan_",bayinf_def["flag"],".stan"));
+end
+
+
+
+# rm(string(pwd(), "\\ModelsFunctions"))
+# rm(string(pwd(), "\\Results"))
+# rm(string(pwd(), "\\tmp"))

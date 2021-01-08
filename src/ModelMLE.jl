@@ -1841,7 +1841,7 @@ function MLEtheta(model_def, mle_def)
         Step 1:First you will need to include the generated script into your path (the one printed avobe ^).
             Remember that the start up time and memory usage of this will be really high!
             So, copy and paste this:
-                include(",string(cudi, "\\Results\\", model_def["NameF"],"_",today(), "\\MLEscripts\\", model_def["NameF"], "_MLE.jl"),")
+                include(","\"",string(replace(cudi, "\\"=>"\\\\"), "\\\\Results\\\\", model_def["NameF"],"_",today(), "\\\\MLEscripts\\\\", model_def["NameF"], "_MLE.jl"),"\"",")
 
         Step 2: Now run the optimisation using the functions from the file you just uploaded.
             The function you need to call is named RunMLE", model_def["NameF"],".
