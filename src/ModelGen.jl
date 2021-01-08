@@ -230,11 +230,11 @@ function checkStruct(model_def)
         return
     end
 
-#     if length(model_def["eqns"]) != model_def["nStat"]
-#         println("-------------------------- Process STOPPED!!! --------------------------")
-#         println("Please, chec eqns and nStat, the number of equations is not the same as the number of states")
-#         return
-#     end
+    #     if length(model_def["eqns"]) != model_def["nStat"]
+    #         println("-------------------------- Process STOPPED!!! --------------------------")
+    #         println("Please, chec eqns and nStat, the number of equations is not the same as the number of states")
+    #         return
+    #     end
 
     # ----------------------------------------> Might need to double check this part
     # Check if in the ODEs all the states are in the equations and with a d in front

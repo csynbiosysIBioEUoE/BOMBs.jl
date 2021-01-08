@@ -3,6 +3,7 @@ using Test
 using CSV
 using DataFrames
 using LinearAlgebra
+using Dates
 
 # -------------------------------------------------------- MODEL DEFINITION TESTS
 model_def = Dict();
@@ -20,7 +21,7 @@ model_def["tols"] = [];
 model_def["solver"] = [];
 
 model_def2 = defModStruct();
-model_def2["NameF"] = ["Test"];
+model_def2["NameF"] = "Test";
 model_def2["nStat"] = 2;
 model_def2["nPar"] = 4;
 model_def2["nInp"] = 1;
@@ -185,14 +186,14 @@ mle_def2["plot"] = false;
 mle_def2["flag"] = "testmle";
 mle_def2["thetaMAX"] = [0.15 0.25 0.25 0.025];
 mle_def2["thetaMIN"] = [0.1 0.2 0.2 0.02];
-mle_def2["runs"] = 1;
+mle_def2["runs"] = 2;
 mle_def2["parallel"] = false;
 mle_def2["DataMean"] = [[0 1 2 3 4 5 6 7 8; 0 1 2 3 4 5 6 7 8]'];
 mle_def2["DataError"] = [[[0,1,2,3,4,5,6,7,8], [0,1,2,3,4,5,6,7,8]]];
 mle_def2["Obs"] = ["A", "B"];
 mle_def2["OPTsolver"] = "adaptive_de_rand_1_bin_radiuslimited";
-mle_def2["MaxTime"] = 4;
-mle_def2["MaxFuncEvals"] = [];
+mle_def2["MaxTime"] = [];
+mle_def2["MaxFuncEvals"] = 10;
 
 cvmle_def = Dict();
 cvmle_def["Nexp"] = [];
@@ -216,7 +217,7 @@ cvmle_def2["switchT"] = [[0,20,40]];
 cvmle_def2["y0"] = [[0,0]];
 cvmle_def2["preInd"] = [[0.1]];
 cvmle_def2["uInd"] = [[1,1]];
-cvmle_def2["theta"] = [0.1 0.2 0.2 0.02];
+cvmle_def2["theta"] = convert(Array, [0.1 0.2 0.2 0.02;0.12 0.22 0.22 0.022]');
 cvmle_def2["tsamps"] = [[0,5,10,15,20,25,30,35,40]];
 cvmle_def2["plot"] = false;
 cvmle_def2["flag"] = "cvmletest";
@@ -271,7 +272,7 @@ end
     rm("TestSimulCSVInps.csv")
     rm("TestSimulCSVObs.csv")
 
-    GenerateModel(model_def2)
+    GenerateModel(model_def2);
     simuls, ~, ~ = simulateODEs(model_def2, simul_def2);
 
     @test length(simuls) == simul_def2["Nexp"]
@@ -291,6 +292,7 @@ end
 
     rm(string(pwd(),"\\ModelsFunctions\\", model_def2["NameF"], "_Model.jl"))
     rm(string(simul_def2["savepath"], "\\", simul_def2["savename"]))
+    rm(string(simul_def2["savepath"]))
 
 end
 
@@ -352,6 +354,13 @@ end
     rm(string(pwd(),"\\ModelsFunctions\\", model_def2["NameF"], "_Model.jl"))
     rm(string(pseudo_def2["savepath"], "\\", pseudo_def2["savename"]))
 
+    for i in 1:2
+        rm(string(pseudo_def2["savepath"], "\\PseudoDataFiles\\", model_def2["NameF"], "_EXP", i, "_", pseudo_def2["flag"], "_Events_Inputs.csv"))
+        rm(string(pseudo_def2["savepath"], "\\PseudoDataFiles\\", model_def2["NameF"], "_EXP", i, "_", pseudo_def2["flag"], "_Observables.csv"))
+        rm(string(pseudo_def2["savepath"], "\\PseudoDataFiles\\", model_def2["NameF"], "_EXP", i, "_", pseudo_def2["flag"], "_Simulations.csv"))
+    end
+    rm(string(pseudo_def2["savepath"], "\\PseudoDataFiles"))
+    rm(string(pseudo_def2["savepath"]))
 end
 
 @testset "MLESeriesTests" begin
@@ -406,23 +415,72 @@ end
     @test cvmle_def2 == checkStructCrossValMLE(model_def2, cvmle_def2)
 
     # Check MLE
-    # MLEtheta
+    GenerateModel(model_def2);
+    mle_res, model_def3, mle_def3 = MLEtheta(model_def2, mle_def2);
 
+    @test !isempty(mle_res);
+    @test typeof(mle_res["StanDict"]) <: Array;
+    @test typeof(mle_res["StanDict"][1]) <: Dict;
+    @test typeof(mle_res["StanDict"][2]) <: Dict;
+    @test symdiff(["k1","k2","k3","k4"],keys(mle_res["StanDict"][1])) == [];
+    @test symdiff(["k1","k2","k3","k4"],keys(mle_res["StanDict"][2])) == [];
 
+    @test length(mle_res["Theta"]) == 4*2;
+    @test size(mle_res["Theta"]) == (4,2);
+
+    @test length(mle_res["convCurv"]) == 2;
+
+    @test (typeof(mle_res["convCurv"][1][1]) == Tuple{Int,Float64} || typeof(mle_res["convCurv"][1][1]) == Tuple{Int,Float32});
+    @test (typeof(mle_res["convCurv"][1][2]) == Tuple{Int,Float64} || typeof(mle_res["convCurv"][1][2]) == Tuple{Int,Float32});
+    @test (typeof(mle_res["convCurv"][2][1]) == Tuple{Int,Float64} || typeof(mle_res["convCurv"][2][1]) == Tuple{Int,Float32});
+    @test (typeof(mle_res["convCurv"][2][2]) == Tuple{Int,Float64} || typeof(mle_res["convCurv"][2][2]) == Tuple{Int,Float32});
+
+    @test length(mle_res["BestTheta"]) == 4;
+    @test length(mle_res["BestCFV"]) == 2;
+
+    #----------------------------- the parallel stuff!!!!
+    mle_def2["parallel"] = true;
+    mle_res2, model_def3, mle_def3 = MLEtheta(model_def2, mle_def2);
+    @test isempty(mle_res2);
+    @test isfile(string(mle_def3["savepath"], "\\MLEScripts\\", model_def3["NameF"], "_MLE.jl"));
+    mle_res3, ~, ~ = finishMLEres(mle_res, model_def2, mle_def2);
+    @test !isempty(mle_res3);
+    mle_def2["parallel"] = false;
 
 
     # Check CV for MLE results
-    # CrossValMLE
-    # finishMLEres
-
-
+    cvmle_res, ~, ~ = CrossValMLE(model_def2, cvmle_def2);
+    @test !isempty(cvmle_res);
+    @test !isempty(cvmle_res["BestSimulations"][1]);
+    @test size(cvmle_res["BestSimulations"][1])[2] == 2;
+    @test length(cvmle_res["Costs"]) == 2;
+    @test !isempty(cvmle_res["BestSimObservables"][1]);
+    @test size(cvmle_res["BestSimObservables"][1])[2] == 1;
+    @test length(cvmle_res["BestTheta"]) == 4;
+    @test typeof(cvmle_res["SimObservables"]) <: Dict;
+    @test size(cvmle_res["SimObservables"]["ExpObs_1"])[2] == 1;
+    @test typeof(cvmle_res["Simulations"]) <: Dict;
+    @test size(cvmle_res["Simulations"]["Exp_1"])[2] == 2;
 
 
     # Test Plotting
-    # plotMLEResults
-    # plotCrossValMLEResults
+    plotMLEResults(mle_res,model_def2,mle_def2)
+    @test isfile(string(mle_def2["savepath"], "\\PlotMLEResults_Exp", 1,"_", mle_def2["flag"], ".png"))
+    @test isfile(string(mle_def2["savepath"], "\\Plot_MLEConvergence", "_", mle_def2["flag"], ".png"))
+    rm(string(mle_def2["savepath"], "\\PlotMLEResults_Exp", 1,"_", mle_def2["flag"], ".png"))
+    rm(string(mle_def2["savepath"], "\\Plot_MLEConvergence", "_", mle_def2["flag"], ".png"))
 
+    rm(string(pwd(),"\\ModelsFunctions\\", model_def2["NameF"], "_Model.jl"))
+    rm(string(mle_def2["savepath"], "\\", mle_def2["savename"]))
 
+    rm(string(mle_def2["savepath"], "\\MLEScripts\\", model_def2["NameF"], "_MLE.jl"))
+    rm(string(mle_def2["savepath"], "\\MLEScripts"))
 
+    rm(string(cvmle_def2["savepath"], "\\", cvmle_def2["savename"]))
+    rm(string(mle_def2["savepath"], "\\",model_def2["NameF"], "_", today(), "_SimulationResults_MLEsimulations1.jld"))
+    rm(string(mle_def2["savepath"], "\\",model_def2["NameF"], "_", today(), "_SimulationResults_MLEsimulations2.jld"))
+    rm(string(mle_def2["savepath"]))
 
 end
+
+# rm(pwd(), "\\Results")

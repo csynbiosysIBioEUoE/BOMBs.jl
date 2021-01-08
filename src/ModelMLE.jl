@@ -1088,6 +1088,9 @@ function checkStructCrossValMLE(model_def, cvmle_def)
             println("correct orientation will not work. Please make sure that the dimensions follow: ")
             println("theta[samples, parameters]")
         end
+        if size(cvmle_def["theta"])[1] != model_def["nPar"]
+            cvmle_def["theta"] = convert(Array, cvmle_def2["theta"]');
+        end
     end
 
     # Check that no step is no smaller than 2 unit of time
