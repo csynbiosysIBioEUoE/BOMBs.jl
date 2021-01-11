@@ -4,7 +4,7 @@ module BOMBS
 # using BayesianOptimization
 using BlackBoxOptim
 using CSV
-# using Calculus
+using Calculus
 using CmdStan
 using DataFrames
 using Dates
@@ -13,6 +13,7 @@ using DifferentialEquations
 using Distributed
 using Distributions
 # using GaussianProcesses
+using GaussianMixtures
 using JLD
 using LinearAlgebra
 using ODEInterfaceDiffEq
@@ -20,6 +21,8 @@ using OrdinaryDiffEq
 using Plots
 using Random
 using Roots
+using ScikitLearn.GridSearch
+using ScikitLearnBase
 using SharedArrays
 # using Statistics
 using StatsBase
@@ -100,6 +103,12 @@ export saveStanResults
 export runStanInference
 export plotStanResults
 export StanInfer
+
+include("ModelEntropyTheta.jl")
+export genSamplesPrior
+export computeH
+export computeHgain
+
 
 
 end

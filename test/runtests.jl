@@ -596,6 +596,26 @@ end
     kssm = ["init", "StanModel", "inferdata", "Model", "modelpath"]
     @test isempty(symdiff(kssm,keys(stin)));
 
+    # Entropy tests
+    ps = genSamplesPrior(model_def2, bayinf_def, 100);
+    @test size(ps) == (100, 4);
+
+    w = [1];
+    E = [[1 0; 0 1]];
+    MU = reshape([10, 10], 2, 1);
+    x = reshape([10, 10], 2, 1);
+    @test round(BOMBS.H_Upper(w,E)) == 3;
+    @test round(BOMBS.mvGauss(x, MU, E[1])[1], digits=2) == 0.16;
+    @test round(BOMBS.H_Lower(w, E, MU'), digits = 1) == 2.5;
+    @test round(BOMBS.GaussMix(x[:,1], convert(Array, MU'), E, w), digits=2) == 0.16;
+    @test round(BOMBS.ZOTSE(MU', E, w)) == 2;
+    # Due to the use of global variables I cannot test the other functions... But I can test that the main script runs.
+    # Do not know why, but I cannot make ScikitLearn work in the test file (works in scripts and jupyter)??? Need to have a look at it.
+    # computeH(ps, model_def2, "test")
+
+
+
+
     # Plots
     # plotStanResults(staninf_res, model_def, bayinf_def)
 
