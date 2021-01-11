@@ -1,7 +1,7 @@
 module BOMBS
 
 # Load dependencies
-# using BayesianOptimization
+using BayesianOptimization
 using BlackBoxOptim
 using CSV
 using Calculus
@@ -12,7 +12,7 @@ using DiffEqBase
 using DifferentialEquations
 using Distributed
 using Distributions
-# using GaussianProcesses
+using GaussianProcesses
 using GaussianMixtures
 using JLD
 using LinearAlgebra
@@ -108,6 +108,17 @@ include("ModelEntropyTheta.jl")
 export genSamplesPrior
 export computeH
 export computeHgain
+
+include("ModelOEDSelection.jl")
+export defODEModelSelectStruct
+export checkStructOEDMS
+export BhattacharyyaDist
+export EuclideanDist
+export genOptimMSFuncts
+export plotOEDMSResults
+export settingsBayesOpt
+export mainOEDMS
+
 
 
 

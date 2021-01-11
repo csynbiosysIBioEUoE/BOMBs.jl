@@ -623,6 +623,111 @@ end
     rm(string(pwd(),"\\tmp\\", model_def2["NameF"], "_Stan_",bayinf_def["flag"],".stan"));
 end
 
+@testset "OEDModelSelectionTests" begin
+
+    # structure definition
+    oedms_def = defODEModelSelectStruct();
+    @test typeof(oedms_def) <: Dict;
+    entries1 = ["Model_1", "Model_2", "Obs", "Theta_M1", "Theta_M2", "y0_M1", "y0_M2", "preInd_M1", "preInd_M2",
+                "finalTime", "switchT", "tsamps", "equalStep",
+                "fixedInp", "fixedStep", "plot", "flag", "uUpper", "uLower", "maxiter"];
+    @test isempty(symdiff(entries1,keys(oedms_def)));
+
+    #structure check
+    model_def3 = defModStruct();
+    model_def3["NameF"] = "Test2";
+    model_def3["nStat"] = 2;
+    model_def3["nPar"] = 4;
+    model_def3["nInp"] = 1;
+    model_def3["stName"] = ["A", "B"];
+    model_def3["parName"] = ["k1", "k2", "k3", "k4"];
+    model_def3["inpName"] = ["inp1"];
+    model_def3["eqns"] = ["dA = k1*A - k2*A*inp1", "dB = k3*(A^2) - k4*B"];
+    model_def3["Y0eqs"] = ["A = 1", "B = k3*(A^2)/k4"];
+    model_def3["Y0ON"] = false;
+    model_def3["tols"] = [1e-5,1e-5];
+    model_def3["solver"] = "CVODE_BDF";
+
+    oedms_def = Dict()
+    oedms_def["Model_1"] = model_def2;
+    oedms_def["Model_2"] = model_def3;
+    oedms_def["Obs"] = ["B"];
+    oedms_def["Theta_M1"] = [0.1 0.2 0.2 0.02; 0.11 0.21 0.21 0.021; 0.12 0.22 0.22 0.022];
+    oedms_def["Theta_M2"] = [0.13 0.23 0.23 0.023; 0.14 0.24 0.24 0.024; 0.15 0.25 0.25 0.025];
+    oedms_def["y0_M1"] = [0,0];
+    oedms_def["y0_M2"] = [0,0];
+    oedms_def["preInd_M1"] = [0.1];
+    oedms_def["preInd_M2"] = [0.1];
+    oedms_def["finalTime"] = [40];
+    oedms_def["switchT"] = [0,20,30,40];
+    oedms_def["tsamps"] = [0,5,10,15,20,25,30,35,40];
+    oedms_def["fixedInp"] = [];
+    oedms_def["fixedStep"] = [(1,[0])];
+    oedms_def["equalStep"] = [[2,3]];
+    oedms_def["plot"] = false;
+    oedms_def["flag"] = "testoedms";
+    oedms_def["uUpper"] = [1];
+    oedms_def["uLower"] = [0];
+    oedms_def["maxiter"] = 5;
+    @test oedms_def == checkStructOEDMS(oedms_def);
+
+    # Distance functions
+    m1 = [10, 10];
+    s1 = [1 0; 0 1];
+    m2 = [11, 11];
+    s2 = [1 0; 0 1];
+    m3 = [15, 15];
+    s3 = [1 0; 0 1];
+    @test BhattacharyyaDist(m1, m1, s1, s1) == 0;
+    @test BhattacharyyaDist(m1, m2, s1, s2) == 0.25;
+    @test BhattacharyyaDist(m1, m3, s1, s3) == 6.25;
+
+    @test EuclideanDist(m1, m1) == 0;
+    @test EuclideanDist(m1, m2) == sqrt(2);
+    @test EuclideanDist(m1, m3) == sqrt(50);
+
+    # Generate utility script
+    oedms_def = genOptimMSFuncts(oedms_def);
+    @test isfile(string(pwd(), "\\ModelsFunctions\\", model_def2["NameF"], "_Model.jl"));
+    @test isfile(string(pwd(), "\\ModelsFunctions\\", model_def3["NameF"], "_Model.jl"));
+    @test isfile(string(pwd(), "\\Results\\", model_def2["NameF"], "_VS_", model_def3["NameF"], "_", today(),
+                        "\\OEDModelSelectionScripts\\", model_def2["NameF"], "_VS_", model_def3["NameF"], "_OEDMS.jl"));
+
+    # Bayes settings
+    # Need to figure out if there is any test I can do here
+    # opt = settingsBayesOpt(oedms_def);
+
+    # Main function
+    oedms_res, oedms_def = mainOEDMS(oedms_def);
+    @test !isempty(oedms_res);
+    @test typeof(oedms_res) <: Dict;
+    @test isfile(string(pwd(), "\\Results\\", model_def2["NameF"], "_VS_", model_def3["NameF"], "_", today(),"\\OEDModelSelectResults_", oedms_def["flag"], ".jld"));
+    @test oedms_res["uInpOpt"]["inp1"][1] == 0;
+    @test oedms_res["uInpOpt"]["inp1"][2] == oedms_res["uInpOpt"]["inp1"][3];
+    @test length(oedms_res["BestUtil"]) == 1;
+    @test size(oedms_res["ConvCurv"])[1] == 5;
+    @test size(oedms_res["Simul_M1"]) == size(oedms_res["Simul_M2"]);
+    @test size(oedms_res["SimulObs_M1"])[2] == size(oedms_res["Simul_M1"])[2]-1;
+    @test size(oedms_res["SimulObs_M2"])[2] == size(oedms_res["Simul_M2"])[2]-1;
+
+
+    # Plot results
+    plotOEDMSResults(oedms_res, oedms_def);
+    @test isfile(string(oedms_def["savepath"], "\\Plot_OEDMSConvergence_", oedms_def["flag"], ".png"));
+    rm(string(oedms_def["savepath"], "\\Plot_OEDMSConvergence_", oedms_def["flag"], ".png"));
+    @test isfile(string(oedms_def["savepath"], "\\PlotOEDMSResults_Exp1_", oedms_def["flag"], ".png"));
+    rm(string(oedms_def["savepath"], "\\PlotOEDMSResults_Exp1_", oedms_def["flag"], ".png"));
+
+    rm(string(pwd(), "\\Results\\", model_def2["NameF"], "_VS_", model_def3["NameF"], "_", today(),"\\OEDModelSelectResults_", oedms_def["flag"], ".jld"));
+    rm(string(pwd(), "\\ModelsFunctions\\", model_def2["NameF"], "_Model.jl"))
+    rm(string(pwd(), "\\ModelsFunctions\\", model_def3["NameF"], "_Model.jl"))
+    rm(string(pwd(), "\\Results\\", model_def2["NameF"], "_VS_", model_def3["NameF"], "_", today(),
+                        "\\OEDModelSelectionScripts\\", model_def2["NameF"], "_VS_", model_def3["NameF"], "_OEDMS.jl"));
+    rm(string(pwd(), "\\Results\\", model_def2["NameF"], "_VS_", model_def3["NameF"], "_", today(),
+                        "\\OEDModelSelectionScripts"));
+    rm(string(pwd(), "\\Results\\", model_def2["NameF"], "_VS_", model_def3["NameF"], "_", today()));
+
+end
 
 
 # rm(string(pwd(), "\\ModelsFunctions"))
