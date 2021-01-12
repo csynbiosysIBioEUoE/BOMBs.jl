@@ -119,7 +119,13 @@ export plotOEDMSResults
 export settingsBayesOpt
 export mainOEDMS
 
-
+include("ModelOEDCalibration.jl")
+export defODEModelCalibrStruct
+export checkStructOEDMC
+export genOptimMCFuncts
+export plotOEDMCResults
+export settingsBayesOptMC
+export mainOEDMC
 
 
 end
