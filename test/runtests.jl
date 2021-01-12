@@ -299,7 +299,6 @@ end
 
 end
 
-
 @testset "PseudoDataGenerationTests" begin
 
     CSV.write("Theta1PD.csv", DataFrame([0.1 0.2 0.2 0.002]))
@@ -728,6 +727,71 @@ end
     rm(string(pwd(), "\\Results\\", model_def2["NameF"], "_VS_", model_def3["NameF"], "_", today()));
 
 end
+
+@testset "OEDModelCalibrationTests" begin
+
+    # structure definition
+    oedmc_def = defODEModelCalibrStruct();
+    @test typeof(oedmc_def) <: Dict;
+    entries1 = ["Model", "Obs", "Theta", "y0", "preInd", "finalTime", "switchT", "tsamps", "equalStep",
+                "fixedInp", "fixedStep", "plot", "flag", "uUpper", "uLower", "maxiter", "util"];
+    @test isempty(symdiff(entries1,keys(oedmc_def)));
+
+    oedmc_def = Dict()
+    oedmc_def["Model"] = model_def2;
+    oedmc_def["Obs"] = ["B"];
+    oedmc_def["Theta"] = [0.1 0.2 0.2 0.02; 0.11 0.21 0.21 0.021; 0.12 0.22 0.22 0.022];
+    oedmc_def["y0"] = [0,0];
+    oedmc_def["preInd"] = [0.1];
+    oedmc_def["finalTime"] = [40];
+    oedmc_def["switchT"] = [0,20,30,40];
+    oedmc_def["tsamps"] = [0,5,10,15,20,25,30,35,40];
+    oedmc_def["fixedInp"] = [];
+    oedmc_def["fixedStep"] = [(1,[0])];
+    oedmc_def["equalStep"] = [[2,3]];
+    oedmc_def["plot"] = false;
+    oedmc_def["flag"] = "testoedmc";
+    oedmc_def["uUpper"] = [1];
+    oedmc_def["uLower"] = [0];
+    oedmc_def["maxiter"] = 5;
+    oedmc_def["util"] = "perc";
+    @test oedmc_def == checkStructOEDMC(oedmc_def);
+
+    # Generate utility script
+    oedmc_def = genOptimMCFuncts(oedmc_def);
+    @test isfile(string(pwd(), "\\ModelsFunctions\\", model_def2["NameF"], "_Model.jl"));
+    @test isfile(string(pwd(), "\\Results\\", model_def2["NameF"], "_", today(),
+                        "\\OEDModelCalibrationScripts\\", model_def2["NameF"], "_OEDMC.jl"));
+
+    # Main function
+    oedmc_res, oedmc_def = mainOEDMC(oedmc_def);
+    @test !isempty(oedmc_res);
+    @test typeof(oedmc_res) <: Dict;
+    @test isfile(string(pwd(), "\\Results\\", model_def2["NameF"], "_", today(),"\\OEDModelCalibrationResults_", oedmc_def["flag"], ".jld"));
+    @test oedmc_res["uInpOpt"]["inp1"][1] == 0;
+    @test oedmc_res["uInpOpt"]["inp1"][2] == oedmc_res["uInpOpt"]["inp1"][3];
+    @test length(oedmc_res["BestUtil"]) == 1;
+    @test size(oedmc_res["ConvCurv"])[1] == 5;
+    @test size(oedmc_res["SimulObs_MC"])[2] == size(oedmc_res["Simul_MC"])[2]-1;
+
+    # Plot results
+    plotOEDMCResults(oedmc_res, oedmc_def);
+    @test isfile(string(oedmc_def["savepath"], "\\Plot_OEDMCConvergence_", oedmc_def["flag"], ".png"));
+    rm(string(oedmc_def["savepath"], "\\Plot_OEDMCConvergence_", oedmc_def["flag"], ".png"));
+    @test isfile(string(oedmc_def["savepath"], "\\PlotOEDMCResults_Exp1_", oedmc_def["flag"], ".png"));
+    rm(string(oedmc_def["savepath"], "\\PlotOEDMCResults_Exp1_", oedmc_def["flag"], ".png"));
+
+
+    rm(string(pwd(), "\\ModelsFunctions\\", model_def2["NameF"], "_Model.jl"));
+    rm(string(pwd(), "\\Results\\", model_def2["NameF"], "_", today(),
+                        "\\OEDModelCalibrationScripts\\", model_def2["NameF"], "_OEDMC.jl"));
+    rm(string(pwd(), "\\Results\\", model_def2["NameF"], "_", today(),"\\OEDModelCalibrationResults_", oedmc_def["flag"], ".jld"));
+
+    rm(string(pwd(), "\\Results\\", model_def2["NameF"],  "_", today(),
+                        "\\OEDModelCalibrationScripts"));
+    rm(string(pwd(), "\\Results\\", model_def2["NameF"], "_", today()));
+end
+
 
 
 # rm(string(pwd(), "\\ModelsFunctions"))
