@@ -313,7 +313,7 @@ function GenerateModel(model_def)
             tet[i] = string("        du[", odec, "] = ", model_def["eqns"][i],";\n");
             odec +=1;
             else # Other equations
-            tet[i] = string("        ", model_def["eqns"][i],";\n");
+            tet[i] = string("            ", model_def["eqns"][i],";\n");
         end
     end;
 
@@ -328,7 +328,7 @@ function GenerateModel(model_def)
 
             ",join(model_def["parName"], ", "),", ",join(model_def["inpName"], ", ")," = p;
 
-    ",join(tet),"
+",join(tet),"
 
         end
         ");
