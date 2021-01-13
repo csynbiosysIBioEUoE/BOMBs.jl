@@ -27,7 +27,7 @@ Pkg.clone("https://github.com/DavidGomezC/BOMBS.jl")
 ```
 ## Package Sections
   ### 1.- Model Generation
-  
+    Read more [here](.\Examples\1_GenerateModel.ipynb)
   ### 2.- Model Simulation
   
   ### 3.- Pseudo-Data Generation
@@ -41,6 +41,11 @@ Pkg.clone("https://github.com/DavidGomezC/BOMBS.jl")
   ### 7.- Optimal Experimental Design for Model Calibration
 
 ## Documentation 
+All source code for the package is included in the directory src and tests sets in the test directory. \
+For deppendencies and version specification, please look at the file Project.toml. \
+A set of example jupyter ntoebooks and files can be found in the directory Examples. \
+Instructions on how to install cmdstan (at least one way to do it, the one that worked for me) can be found in the file InstallStanInJulia.pdf under the directory InstallCmdstanInfo. \
+For more information about what functions are included in each section of the package and some basic information about them have a look at the file BOMBS_Functions_Documentation.pdf under the directory FunctionDocs. 
 
 ## References
   1. 
@@ -52,3 +57,27 @@ Pkg.clone("https://github.com/DavidGomezC/BOMBS.jl")
   7. 
   8. 
   9. 
+  
+## Usefull links to some of the packages used in BOMBS
+  **1. BayesianOptimization.jl:** https://github.com/jbrea/BayesianOptimization.jl \
+  **2. BlackBoxOptim.jl:** https://github.com/robertfeldt/BlackBoxOptim.jl \
+  **3. Calculus.jl:** https://github.com/JuliaMath/Calculus.jl \
+  **4. CmdStan.jl:** https://github.com/StanJulia/CmdStan.jl \
+  **5. DifferentialEquations.jl:** https://github.com/SciML/DifferentialEquations.jl \
+  **6. GaussianProcesses.jl:** https://github.com/STOR-i/GaussianProcesses.jl \
+  **7. GaussianMixtures.jl:** https://github.com/davidavdav/GaussianMixtures.jl \
+  **8. ScikitLearnBase.jl:** https://github.com/DavidGomezC/BOMBS.jl/blob/main/src/BOMBS.jl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
