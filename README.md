@@ -27,7 +27,8 @@ Pkg.clone("https://github.com/DavidGomezC/BOMBS.jl")
 ```
 ## Package Sections
   ### 1.- Model Generation
-    Read more [here](.\Examples\1_GenerateModel.ipynb)
+    Read more [here](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/1_GenerateModel.ipynb)
+    [TEXT here SHOW](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/1_GenerateModel.ipynb)
   ### 2.- Model Simulation
   
   ### 3.- Pseudo-Data Generation
