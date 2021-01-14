@@ -19,7 +19,7 @@ BOMBS is a simulation and optimisation package for Julia (http://julialang.org/)
 ## Installation 
 ```julia
 using Pkg
-Pkg.add("BOMBS")
+Pkg.add("BOMBS") # Note that this installation mode is still not available!
 ```
 or latest master directly from github: 
 ```julia
@@ -27,25 +27,40 @@ Pkg.clone("https://github.com/DavidGomezC/BOMBS.jl")
 ```
 ## Package Sections
   ### 1.- Model Generation
-  For more information about this section and how to use it have a look at the [Notebook1](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/1_GenerateModel.ipynb)
+  The model generation section allows you to generate the necessary Julia functions for simulation of your ODEs with time-varying inputs in an easy manner. You only need to provide some information about the model inside a dictionary structure and that is it! 
+  
+  For more information about this section and how to use it have a look at [Notebook1](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/1_GenerateModel.ipynb) or the brief function documentation of the section from [this document](https://github.com/DavidGomezC/BOMBS.jl/blob/main/FunctionDocs/BOMBS_Functions_Documentation.pdf).
     
   ### 2.- Model Simulation
-  For more information about this section and how to use it have a look at the [Notebook2](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/2_SimulateModel.ipynb)
+  The model simulation section allows you to simulate your ODEs with time-varying inputs by providing the model generated in section one and introducing the specifications of the experiment(s) in a dictionary. Alternatively, you can provide CSV files from which the experimental details will be extracted.  
+  
+  For more information about this section and how to use it have a look at [Notebook2](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/2_SimulateModel.ipynb) or the brief function documentation of the section from [this document](https://github.com/DavidGomezC/BOMBS.jl/blob/main/FunctionDocs/BOMBS_Functions_Documentation.pdf).
   
   ### 3.- Pseudo-Data Generation
-  For more information about this section and how to use it have a look at the [Notebook3](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/3_GeneratePseudoData.ipynb)
+  The pseudo-data generation section works in a similar way than section two, but not also provides you with the simulations for your model but also generates pseudo-data for the observables you select. The only noise option (for now) is additive heteroscedastic noise for the observable where you can choose the percentage of noise used from the simulation. \
+  Thus, the general formulation would be: \
+  <img src="https://render.githubusercontent.com/render/math?math=\hat{y}_t = y_t + \epsilon_t"> \
+  where \
+  <img src="https://render.githubusercontent.com/render/math?math=\epsilon_t = \mathcal{N}(0,y_t*pr)"> \
+  t indicates a time-point, y the observable and pr the percentage of y to be used for the noise. 
+  
+  For more information about this section and how to use it have a look at [Notebook3](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/3_GeneratePseudoData.ipynb) or the brief function documentation of the section from [this document](https://github.com/DavidGomezC/BOMBS.jl/blob/main/FunctionDocs/BOMBS_Functions_Documentation.pdf).
   
   ### 4.- Maximum Likelihood Estimation (MLE)
-  For more information about this section and how to use it have a look at the [Notebook4](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/4_MaximumLikelihoodEstimation.ipynb)
+  The MLE section allows you to quickly estimate the parameters of your model using a (univariate or multivariate) Gaussian distribution form for your likelihood (as a distance measure for the optimisation) between simulations and data. If more than one observable or experiment is present, the average of these will be considered. \
+  For now (expansion might happen in the future), only global optimisation using genetic algorithms (thanks to the package BlackBoxOptim.jl) is present, but multiple instances of the optimisation can be run in parallel if the user desires it. \
+  As in for the other sections, you only need to provide a dictionary with the specifications of the model, experiment and data making the process easy and quick. 
+  
+  For more information about this section and how to use it have a look at [Notebook4](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/4_MaximumLikelihoodEstimation.ipynb) or the brief function documentation of the section from [this document](https://github.com/DavidGomezC/BOMBS.jl/blob/main/FunctionDocs/BOMBS_Functions_Documentation.pdf).
   
   ### 5.- Bayesian Inference of Parameters (Stan)
-  For more information about this section and how to use it have a look at the [Notebook5](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/5_BayesianInferenceStan.ipynb)
+  For more information about this section and how to use it have a look at [Notebook5](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/5_BayesianInferenceStan.ipynb) or the brief function documentation of the section from [this document](https://github.com/DavidGomezC/BOMBS.jl/blob/main/FunctionDocs/BOMBS_Functions_Documentation.pdf).
   
   ### 6.- Optimal Experimental Design for Model Selection
-  For more information about this section and how to use it have a look at the [Notebook6](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/6_OEDModelSelection.ipynb)
+  For more information about this section and how to use it have a look at [Notebook6](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/6_OEDModelSelection.ipynb) or the brief function documentation of the section from [this document](https://github.com/DavidGomezC/BOMBS.jl/blob/main/FunctionDocs/BOMBS_Functions_Documentation.pdf).
   
   ### 7.- Optimal Experimental Design for Model Calibration
-  For more information about this section and how to use it have a look at the [Notebook7](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/7_OEDModelCalibration.ipynb)
+  For more information about this section and how to use it have a look at [Notebook7](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/7_OEDModelCalibration.ipynb) or the brief function documentation of the section from [this document](https://github.com/DavidGomezC/BOMBS.jl/blob/main/FunctionDocs/BOMBS_Functions_Documentation.pdf).
   
 ## Documentation 
 All source code for the package is included in the directory src and tests sets in the test directory. \
