@@ -69,12 +69,6 @@ function checkStruct(model_def)
         return
     end
 
-    if "alp" in model_def["parName"] || "alp" in model_def["inpName"] || "alp" in model_def["stName"]
-        println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Sorry, but the name alp is reserved for something else in the model...")
-        return
-    end
-
     # Checks to see if the content of the fields is the expected (also consier if single value entries have been given as a number or a vector)
     if ((typeof(model_def["NameF"])!=Array{String,1}) && (typeof(model_def["NameF"])!=String))
         println("-------------------------- Process STOPPED!!! --------------------------")
@@ -135,6 +129,11 @@ function checkStruct(model_def)
         return
     end
 
+    if "alp" in model_def["parName"] || "alp" in model_def["inpName"] || "alp" in model_def["stName"]
+        println("-------------------------- Process STOPPED!!! --------------------------")
+        println("Sorry, but the name alp is reserved for something else in the model...")
+        return
+    end
 
     # Take single elements outside vector (if so) to generalise things after
     if typeof(model_def["NameF"]) == Array{String,1}
@@ -215,18 +214,18 @@ function checkStruct(model_def)
     # Check that contents make sense
     if length(model_def["stName"]) != model_def["nStat"]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, chec stName and nStat, they do not make sense")
+        println("Please, check stName and nStat, they do not make sense")
         return
     end
     if length(model_def["inpName"]) != model_def["nInp"]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, chec inpName and nInp, they do not make sense")
+        println("Please, check inpName and nInp, they do not make sense")
         return
     end
 
     if length(model_def["parName"]) != model_def["nPar"]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, chec parName and nPar, they do not make sense")
+        println("Please, check parName and nPar, they do not make sense")
         return
     end
 
