@@ -62,7 +62,7 @@ model_def[","\"","eqns","\"","] = [];
         # work you have to write it in Stan language, but then the Julia code will not work. We recomend that if so,
         # first generate the stan code and then apply all the necessary modifications there. However, if you do not care
         # for the Julia code and just want the Stan code go on. Just know that in this case, if there is a condition in
-        # one of the states, in stan you need to type the full if statement in one same string. 
+        # one of the states, in stan you need to type the full if statement in one same string.
 
 model_def[","\"","Y0eqs","\"","] = [];
         # Vector of strings containing the steady-state equations of the model if desired (if not, just leave
@@ -74,11 +74,13 @@ model_def[","\"","Y0eqs","\"","] = [];
         # please add exp at the beginning of the state (example: Cmrna -> expCmrna).
         # Please, do not use the name alp for anything, since this is reserved.
 
-model_def[","\"","Y0ON","\"","] = [];
+model_def[","\"","Y0Sim","\"","] = [];
         # If analytical solution of the model at steady state is not accurate enough and you want to add
         # an Over-Night simulation before the actual experiment simulation.
         # Allowed vales are true, false, ","\"","Yes","\"",", ","\"","yes","\"",", ","\"","No","\"",", ","\"","no","\"",".
         # Default value is false.
+        # Time-scale for the simulation is assumed in minutes. If this wants to be changed, what should be
+        # introduced here is a number for the time conversion (e.g. 1/60 if to convert to days or 60 if to convert to seconds)
 
 model_def[","\"","tols","\"","] = [];
         # Vector of 2 floats containing the relative and absolute tolerances for the solver (in this order).

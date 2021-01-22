@@ -15,7 +15,7 @@
 
             Vm1, Km1, d1, alpha2, d2, Kf, sc_molec, IPTG, aTc = p;
 
-            du[1] = dCit_mrna=0.5+Vm1*(IPTG^2/(Km1^2+IPTG^2))-d1*Cit_mrna*aTc;
+        du[1] = dCit_mrna=0.5+Vm1*(IPTG^2/(Km1^2+IPTG^2))-d1*Cit_mrna*aTc;
         du[2] = dCit_foldedP=alpha2*Cit_mrna-(d2+Kf)*Cit_foldedP;
         du[3] = dCit_fluo=Kf*Cit_foldedP-d2*Cit_fluo;
         du[4] = dCit_AU = sc_molec*dCit_fluo;

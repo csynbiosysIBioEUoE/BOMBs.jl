@@ -14,7 +14,7 @@ function defModStruct()
     model_def["inpName"] = []; # Name for all the inputs --> Vector of strings
     model_def["eqns"] = []; # Equations defining the model (left and right hand side) --> Vector of strings
     model_def["Y0eqs"] = []; # Steady state equations --> Vector of strings or empty vector if not used. If some element of the equation requires an experimental value for the calculation, please add exp at the beginning of the state(exemple: Cmrna -> expCmrna). Please do not name anything alp.
-    model_def["Y0ON"] = []; # If the ON simulation is required for the steady state --> true, false or a string saying Yes/yes, No/no. If empty the default would be No.
+    model_def["Y0Sim"] = []; # If the ON simulation is required for the steady state --> true, false or a string saying Yes/yes, No/no. If empty the default would be No. Time-scale for the simulation is assumed in minutes. If this wants to be changed, what should be introduced here is a number for the time conversion (e.g. 1/60 if to convert to days or 60 if to convert to seconds)
     model_def["tols"] = []; # Relative and absolute tolerances (in that order) --> vector of 2 floats (can be left empty, where 1e-6 will be taken as default for both)
     model_def["solver"] = []; # IVP solver to solve the ODEs. If nothing specified, the default will be Tsit5(). For more info check https://diffeq.sciml.ai/v2.0/tutorials/ode_example.html
 
@@ -28,7 +28,7 @@ end
 function checkStruct(model_def)
 
     # Check taht all the dictionary entries are correct
-    entries = ["stName","inpName","eqns","nPar","NameF","nInp","parName","nStat","Y0eqs","Y0ON","tols","solver"]
+    entries = ["stName","inpName","eqns","nPar","NameF","nInp","parName","nStat","Y0eqs","Y0Sim","tols","solver"]
     if symdiff(entries,keys(model_def))!=[] && symdiff(entries,keys(model_def))!=["modelpath"]
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the entries of the dictionary, there is soemthign wrong...")
@@ -112,14 +112,16 @@ function checkStruct(model_def)
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the field solver!")
         return
-    elseif model_def["Y0ON"]!=true && model_def["Y0ON"]!="Yes" && model_def["Y0ON"]!="yes" &&
-    model_def["Y0ON"]!= false && model_def["Y0ON"] != "No" && model_def["Y0ON"] != "no"&&
-    model_def["Y0ON"]!=[true] && model_def["Y0ON"]!=["Yes"] && model_def["Y0ON"]!=["yes"] &&
-    model_def["Y0ON"]!= [false] && model_def["Y0ON"] != ["No"] && model_def["Y0ON"] != ["no"]&&
-    model_def["Y0ON"]!= [] && model_def["Y0ON"] != ""
+    elseif model_def["Y0Sim"]!=true && model_def["Y0Sim"]!="Yes" && model_def["Y0Sim"]!="yes" &&
+    model_def["Y0Sim"]!= false && model_def["Y0Sim"] != "No" && model_def["Y0Sim"] != "no"&&
+    model_def["Y0Sim"]!=[true] && model_def["Y0Sim"]!=["Yes"] && model_def["Y0Sim"]!=["yes"] &&
+    model_def["Y0Sim"]!= [false] && model_def["Y0Sim"] != ["No"] && model_def["Y0Sim"] != ["no"]&&
+    model_def["Y0Sim"]!= [] && model_def["Y0Sim"] != "" && (typeof(model_def["Y0Sim"])!=Array{Int,1}) &&
+    (typeof(model_def["Y0Sim"])!=Array{Float64,1}) && (typeof(model_def["Y0Sim"])!=Array{Float32,1}) &&
+    (typeof(model_def["Y0Sim"])!=Int) && (typeof(model_def["Y0Sim"])!=Float64) && (typeof(model_def["Y0Sim"])!=Float32)
 
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the field Y0ON!")
+        println("Please, check the field Y0Sim!")
         return
     elseif (typeof(model_def["tols"])!=Array{Any,1}) && (typeof(model_def["tols"])!=Array{Float64,1}) && (typeof(model_def["tols"])!=Array{Float32,1})
         println("-------------------------- Process STOPPED!!! --------------------------")
@@ -154,13 +156,15 @@ function checkStruct(model_def)
         model_def["nInp"] = model_def["nInp"][1];
     end
 
-    if model_def["Y0ON"]==true || model_def["Y0ON"]=="Yes" || model_def["Y0ON"]=="yes" ||
-    model_def["Y0ON"]==[true] || model_def["Y0ON"]==["Yes"] || model_def["Y0ON"]==["yes"]
-        model_def["Y0ON"]=true;
-    elseif model_def["Y0ON"]== false || model_def["Y0ON"] == "No" || model_def["Y0ON"] == "no"||
-    model_def["Y0ON"]== [false] || model_def["Y0ON"] == ["No"] || model_def["Y0ON"] == ["no"]||
-    model_def["Y0ON"]== [] || model_def["Y0ON"] == ""
-        model_def["Y0ON"]=false;
+    if model_def["Y0Sim"]==true || model_def["Y0Sim"]=="Yes" || model_def["Y0Sim"]=="yes" ||
+    model_def["Y0Sim"]==[true] || model_def["Y0Sim"]==["Yes"] || model_def["Y0Sim"]==["yes"]
+        model_def["Y0Sim"]=true;
+    elseif model_def["Y0Sim"]== false || model_def["Y0Sim"] == "No" || model_def["Y0Sim"] == "no"||
+    model_def["Y0Sim"]== [false] || model_def["Y0Sim"] == ["No"] || model_def["Y0Sim"] == ["no"]||
+    model_def["Y0Sim"]== [] || model_def["Y0Sim"] == ""
+        model_def["Y0Sim"]=false;
+    elseif typeof(model_def["Y0Sim"]) <: Array
+        model_def["Y0Sim"]=model_def["Y0Sim"][1];
     end
 
     if model_def["tols"] == []
@@ -392,9 +396,9 @@ function GenerateModel(model_def)
 
     # Generate Step Wise simulation function
     ONSim = "";
-    if model_def["Y0ON"]==false
+    if model_def["Y0Sim"]==false
         ONSim = "y0 = y_al;";
-    elseif model_def["Y0ON"]==true
+    elseif model_def["Y0Sim"]==true
         if model_def["solver"] == "CVODE_BDF"
             ONSim = string("
                 prob = ODEProblem(",join(model_def["NameF"]),"ODE!,y_al,(0.0,Float64(24*60-1)),pSS);
@@ -406,8 +410,18 @@ function GenerateModel(model_def)
                 ssv = solve(prob, ",join(model_def["solver"]),"(),reltol=",model_def["tols"][1],",abstol=",model_def["tols"][2],");
                 y0 = ssv[:,end]; ");
         end
-
-
+    elseif typeof(model_def["Y0Sim"]) == Float64 || typeof(model_def["Y0Sim"]) == Float32 || typeof(model_def["Y0Sim"]) == Int
+        if model_def["solver"] == "CVODE_BDF"
+            ONSim = string("
+                prob = ODEProblem(",join(model_def["NameF"]),"ODE!,y_al,(0.0,Float64(",model_def["Y0Sim"],"*24*60-1)),pSS);
+                ssv = Sundials.solve(prob, CVODE_BDF(),reltol=",model_def["tols"][1],",abstol=",model_def["tols"][2],");
+                y0 = ssv[:,end]; ");
+        else
+            ONSim = string("
+                prob = ODEProblem(",join(model_def["NameF"]),"ODE!,y_al,(0.0,Float64(",model_def["Y0Sim"],"*24*60-1)),pSS);
+                ssv = solve(prob, ",join(model_def["solver"]),"(),reltol=",model_def["tols"][1],",abstol=",model_def["tols"][2],");
+                y0 = ssv[:,end]; ");
+        end
     end
 
     if model_def["solver"] == "CVOED_BDF"

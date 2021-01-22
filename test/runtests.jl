@@ -19,7 +19,7 @@ model_def["parName"] = [];
 model_def["inpName"] = [];
 model_def["eqns"] = [];
 model_def["Y0eqs"] = [];
-model_def["Y0ON"] = [];
+model_def["Y0Sim"] = [];
 model_def["tols"] = [];
 model_def["solver"] = [];
 
@@ -33,7 +33,7 @@ model_def2["parName"] = ["k1", "k2", "k3", "k4"];
 model_def2["inpName"] = ["inp1"];
 model_def2["eqns"] = ["dA = k1*A - k2*A*inp1", "dB = k3*(A^2) - k4*B"];
 model_def2["Y0eqs"] = ["A = 1", "B = k3*(A^2)/k4"];
-model_def2["Y0ON"] = false;
+model_def2["Y0Sim"] = false;
 model_def2["tols"] = [1e-5,1e-5];
 model_def2["solver"] = "CVODE_BDF";
 
@@ -643,7 +643,7 @@ end
     model_def3["inpName"] = ["inp1"];
     model_def3["eqns"] = ["dA = k1*A - k2*A*inp1", "dB = k3*(A^2) - k4*B"];
     model_def3["Y0eqs"] = ["A = 1", "B = k3*(A^2)/k4"];
-    model_def3["Y0ON"] = false;
+    model_def3["Y0Sim"] = false;
     model_def3["tols"] = [1e-5,1e-5];
     model_def3["solver"] = "CVODE_BDF";
 

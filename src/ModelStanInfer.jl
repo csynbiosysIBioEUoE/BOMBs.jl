@@ -1214,7 +1214,7 @@ functions{
 }
     ");
 
-        if model_def["Y0ON"] == true
+        if model_def["Y0Sim"] == true || typeof(model_def["Y0Sim"]) == Float64 || typeof(model_def["Y0Sim"]) == Float32 || typeof(model_def["Y0Sim"]) == Int
             onvec = string("
     // 24h incubation times for steady state calculation
     int tonil; //-------------------------------------------------------------------> Introduce a check in case Y0 needs steady state simulation
@@ -1345,7 +1345,7 @@ transformed parameters {
 
     ");
 
-        if model_def["Y0ON"] == true
+        if model_def["Y0Sim"] == true || typeof(model_def["Y0Sim"]) == Float64 || typeof(model_def["Y0Sim"]) == Float32 || typeof(model_def["Y0Sim"]) == Int
             ssv = "real ssv[tonil,Neq]; // Real that will include the solution of the ODE for the 24h incubation ";
             ing = string("
             // 24h incubation calculation for the steady state
@@ -1630,7 +1630,11 @@ function restructureDataInference(model_def, bayinf_def)
     ltimes2 = zeros(1,length(ltimes));
     ltimes2[1,:] = ltimes;
 
-    toni = collect(1e-9:24*60);
+    if typeof(model_def["Y0Sim"]) == Float64 || typeof(model_def["Y0Sim"]) == Float32 || typeof(model_def["Y0Sim"]) == Int
+        toni = collect(1e-9:24*60*model_def["Y0Sim"]);
+    else
+        toni = collect(1e-9:24*60);
+    end
 
     obsta = zeros(1,obser);
     if typeof(bayinf_def["Data"]["Obs"]) != Array{String,1}
@@ -1671,7 +1675,7 @@ function restructureDataInference(model_def, bayinf_def)
         data_multi["ErrosMul"] = STDS;
     end
 
-    if model_def["Y0ON"]==true
+    if model_def["Y0Sim"]==true || typeof(model_def["Y0Sim"]) == Float64 || typeof(model_def["Y0Sim"]) == Float32 || typeof(model_def["Y0Sim"]) == Int
         data_multi["toni"] = toni;
         data_multi["tonil"] = length(toni);
     end

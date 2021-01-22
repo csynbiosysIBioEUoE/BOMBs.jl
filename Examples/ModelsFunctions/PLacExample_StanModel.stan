@@ -107,6 +107,11 @@ data {
 
 
 
+    // Prior parameters
+    int numN;
+    vector[numN] mera; // Mean
+    matrix[numN,numN] cora; // Covariance matrix
+    
 }
 
 
