@@ -1138,12 +1138,14 @@ function genStanModel(model_def, bayinf_def)
         sseqs = Array{String,1}(undef, length(model_def["Y0eqs"]));
         for i in 1:length(model_def["Y0eqs"])
             for j in 1:model_def["nStat"]
-                if occursin(string(model_def["stName"][j]), model_def["Y0eqs"][i][1:findfirst("=", model_def["Y0eqs"][i])[1]])
-                    sseqs[i] = string("      alp[",j,"] = ", model_def["Y0eqs"][i][(findfirst("=", model_def["Y0eqs"][i])[1]+1):end], "; \n");
+                if !isnothing(findfirst("=", model_def["Y0eqs"][i]))
+                    if occursin(string(model_def["stName"][j]), model_def["Y0eqs"][i][1:findfirst("=", model_def["Y0eqs"][i])[1]])
+                        sseqs[i] = string("      alp[",j,"] = ", model_def["Y0eqs"][i][(findfirst("=", model_def["Y0eqs"][i])[1]+1):end], "; \n");
+                    end
                 end
             end
             if !isassigned(sseqs, i)
-                sseqs[i] = string("      ", model_def["Y0eqns"][i], "; \n")
+                sseqs[i] = string("      ", model_def["Y0eqs"][i], "; \n")
             end
         end
 
