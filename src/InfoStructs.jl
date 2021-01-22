@@ -56,7 +56,13 @@ model_def[","\"","eqns","\"","] = [];
         # Vector of strings containing all the equations for the model (left and right hand sides).
         # If an equation represents a state, the left hand side has to be one of the strings contained in
         # stName but with a d in front (example: Prot -> dProt = ...).
-        # Equations that are not states of ODEs are also allowed.
+        # Equations that are not states of ODEs are also allowed. Same as Julia expressions (println, for, if, etc.)
+        # If you want to include a condition (if) for a state variable, each one of the if statement has to be
+        # written in a separate string. Be carefull with this, since then your Stan model will not work. To make it
+        # work you have to write it in Stan language, but then the Julia code will not work. We recomend that if so,
+        # first generate the stan code and then apply all the necessary modifications there. However, if you do not care
+        # for the Julia code and just want the Stan code go on. Just know that in this case, if there is a condition in
+        # one of the states, in stan you need to type the full if statement in one same string. 
 
 model_def[","\"","Y0eqs","\"","] = [];
         # Vector of strings containing the steady-state equations of the model if desired (if not, just leave

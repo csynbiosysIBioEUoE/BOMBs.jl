@@ -23,6 +23,8 @@ end
 
 
 ## Function with all the checks
+# NOTE: some checks have been commented since they considered the option that the user would only introduce ODE and steady state equations and nothing else. Code has been changed to allow definition of variables, prints, ifs, fors, etc.
+
 function checkStruct(model_def)
 
     # Check taht all the dictionary entries are correct
@@ -241,25 +243,25 @@ function checkStruct(model_def)
 
     # Check that in the ODEs there is only 1 = sign
     if (findfirst.("=", model_def["eqns"])!=findlast.("=", model_def["eqns"]))
-        println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the number of = signs in your OED equations! You might have put 2 equations in one same string!")
-        return
+        println("-------------------------- WARNING!!! --------------------------")
+        println("Please, check the number of = signs in your OED equations!")
+        println("Make sure it is something desired (ifs, fors, prints, etc.) and not that you put 2 equations in one same string or forgot a right hand side. ")
     end
     if model_def["Y0eqs"] != [] # Avoind the check if no Steady state equations are given
         # Check that in the Steady State Equations there is only 1 equal sign
-        if (findfirst.("=", model_def["Y0eqs"])!=findlast.("=", model_def["Y0eqs"]))
+        if sum((findfirst.("=", model_def["Y0eqs"]).==findlast.("=", model_def["Y0eqs"]))) < model_def["nStat"]
             println("-------------------------- Process STOPPED!!! --------------------------")
             println("Please, check the number of = signs in your Steady State equations! You might have put 2 equations in one same string!")
             return
         end
         # Check that in the Steady state equations all entries have left and right hand side
-        if sum(occursin.("=", model_def["Y0eqs"])) != length(model_def["Y0eqs"])
-            println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Please, check the equations! You might have forgoten a left hand side or add 2 equations in one same string in the Steady State Equation.")
-            return
-        end
+        # if sum(occursin.("=", model_def["Y0eqs"])) != length(model_def["Y0eqs"])
+        #     println("-------------------------- Process STOPPED!!! --------------------------")
+        #     println("Please, check the equations! You might have forgoten a left hand side or add 2 equations in one same string in the Steady State Equation.")
+        #     return
+        # end
         # Check that in the Steady State equations all the states are given as equations
-        ds2 = [model_def["Y0eqs"][i][1:findfirst.("=", model_def["Y0eqs"][i])[1]] for i in 1:model_def["nStat"]]
+        ds2 = [model_def["Y0eqs"][i][1:findfirst.("=", model_def["Y0eqs"][i])[1]] for i in 1:length(model_def["Y0eqs"]) if !isnothing(findfirst.("=", model_def["Y0eqs"][i]))]
         if sum(occursin.(model_def["stName"], join(ds2))) !=  model_def["nStat"]
             println("-------------------------- Process STOPPED!!! --------------------------")
             println("Please, check the equations! You migh have forgoten a Steady State Equation!.")
@@ -268,14 +270,14 @@ function checkStruct(model_def)
     end
 
     # Check that in the ODEs all entries have left and right hand side
-    if sum(occursin.("=", model_def["eqns"])) != length(model_def["eqns"])
-        println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the equations! You might have forgoten a left hand side of the ODEs or add 2 equations in one same string.")
-        return
-    end
+    # if sum(occursin.("=", model_def["eqns"])) != length(model_def["eqns"])
+    #     println("-------------------------- Process STOPPED!!! --------------------------")
+    #     println("Please, check the equations! You might have forgoten a left hand side of the ODEs or add 2 equations in one same string.")
+    #     return
+    # end
 
     # Check that in the ODEs all the states are given as equations
-    ds = [model_def["eqns"][i][1:findfirst.("=", model_def["eqns"][i])[1]] for i in 1:length(model_def["eqns"])];
+    ds = [model_def["eqns"][i][1:findfirst.("=", model_def["eqns"][i])[1]] for i in 1:length(model_def["eqns"]) if !isnothing(findfirst.("=", model_def["eqns"][i]))];
     if sum(occursin.(string.("d", model_def["stName"]), join(ds))) != model_def["nStat"]
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the equations! You migh have forgoten an ODE!.")
@@ -306,12 +308,19 @@ function GenerateModel(model_def)
     # Generate ODEs function
     # String containing the equtions, ODEs and others
     tet = Array{Any,1}(undef, length(model_def["eqns"])); # Vector of strings that will contain the eauqtions for the function
-    odec = 1; # Counter for the ODEs to take into account equations that are not ODEs
+    # odec = 1; # Counter for the ODEs to take into account equations that are not ODEs
     for i in 1:length(model_def["eqns"]) # Loop over number of equations
         if replace(model_def["eqns"][i], " "=>"")[1]=='d' # If the equation starts with a d (differential)
-            tet[i] = string("        du[", odec, "] = ", model_def["eqns"][i],";\n");
-            odec +=1;
-            else # Other equations
+            for j in 1:model_def["nStat"]
+                eqsg = findfirst("=", replace(model_def["eqns"][i], " "=>""))[1];
+                if replace(model_def["eqns"][i], " "=>"")[1:eqsg-1] == string("d", model_def["stName"][j])
+                    tet[i] = string("        du[", j, "] = ", model_def["eqns"][i],";\n");
+                    break;
+                else
+                    tet[i] = string("        ", model_def["eqns"][i],";\n");
+                end
+            end
+        else # Other equations
             tet[i] = string("            ", model_def["eqns"][i],";\n");
         end
     end;
@@ -342,7 +351,14 @@ function GenerateModel(model_def)
     else
         tet = Array{Any,1}(undef, length(model_def["Y0eqs"])); # Vector of strings that will contain the eauqtions for the function
         odec = 1 # Counter for the SSEs to take into account equations that are not SSEs
-        df = [model_def["Y0eqs"][i][1:findfirst.("=", model_def["Y0eqs"][i])[1]] for i in 1:length(model_def["Y0eqs"])]; # Check for the equations that start with the name of the states (to tell apart from other equations)
+        df = Array{Any,1}(undef, length(model_def["Y0eqs"]));
+        for i in 1:length(model_def["Y0eqs"]) # Check for the equations that start with the name of the states (to tell apart from other equations)
+            if !isnothing(findfirst.("=", model_def["Y0eqs"][i]))
+                df[i] = model_def["Y0eqs"][i][1:findfirst.("=", model_def["Y0eqs"][i])[1]]
+            else
+                df[i] = "";
+            end
+        end;
         for i in 1:length(model_def["Y0eqs"]) # Loop over equations
             if sum(occursin.(model_def["stName"], df[i]))!=0 # If the equation looked begins with the name of a state
                 tet[i] = string("        alp[", odec, "] = ", model_def["Y0eqs"][i],";\n");
