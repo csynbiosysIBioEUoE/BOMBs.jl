@@ -79,7 +79,7 @@ model_def[","\"","Y0Sim","\"","] = [];
         # an Over-Night simulation before the actual experiment simulation.
         # Allowed vales are true, false, ","\"","Yes","\"",", ","\"","yes","\"",", ","\"","No","\"",", ","\"","no","\"",".
         # Default value is false.
-        # Time-scale for the simulation is assumed in minutes. If this wants to be changed, what should be
+        # Time-scale for the simulation is assumed in minutes (1440 min). If this wants to be changed, what should be
         # introduced here is a number for the time conversion (e.g. 1/60 if to convert to days or 60 if to convert to seconds)
 
 model_def[","\"","tols","\"","] = [];
