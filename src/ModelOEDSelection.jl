@@ -43,7 +43,7 @@ function checkStructOEDMS(oedms_def)
                 "fixedInp", "fixedStep", "plot", "flag", "uUpper", "uLower", "maxiter"];
     if symdiff(entries,keys(oedms_def))!=[] && symdiff(entries,keys(oedms_def)) != ["savepath", "savename"]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the entries of the dictionary, there is soemthign wrong...")
+        println("Please, check the entries of the dictionary, there is something wrong...")
         println(symdiff(entries,keys(oedms_def)))
         return
     end
@@ -158,7 +158,7 @@ function checkStructOEDMS(oedms_def)
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the field equalStep! This should have the structure of Array{Array{Int,1},1}. ")
         println("Remember, it has to be an array where as each entry you have another array(s) with the indexes")
-        println("of the steps that will be considered as the same step in the optimisation value whise.")
+        println("of the steps that will be considered as the same step in the optimisation value wise.")
         return
     elseif (typeof(oedms_def["flag"]) != Array{String,1}) && (typeof(oedms_def["flag"]) != String) && ((oedms_def["flag"]) != [])
         println("-------------------------- Process STOPPED!!! --------------------------")
@@ -237,13 +237,13 @@ function checkStructOEDMS(oedms_def)
     if (typeof(oedms_def["Theta_M1"]) == Array{Float64,1}) || (typeof(oedms_def["Theta_M1"]) == Array{Float32,1})
         if length(oedms_def["Theta_M1"]) != oedms_def["Model_1"]["nPar"]
             println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Number of parameters introduced does not match the specidied")
+            println("Number of parameters introduced does not match the specified")
             return
         end
     elseif (typeof(oedms_def["Theta_M1"]) == Array{Float64,2}) || (typeof(oedms_def["Theta_M1"]) == Array{Float32,2})
         if size(oedms_def["Theta_M1"])[1] != oedms_def["Model_1"]["nPar"] && size(oedms_def["Theta_M1"])[2] != oedms_def["Model_1"]["nPar"]
             println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Number of parameters introduced does not match the specidied")
+            println("Number of parameters introduced does not match the specified")
             return
         end
     elseif (typeof(oedms_def["Theta_M1"]) == String)
@@ -264,13 +264,13 @@ function checkStructOEDMS(oedms_def)
     if (typeof(oedms_def["Theta_M2"]) == Array{Float64,1}) || (typeof(oedms_def["Theta_M2"]) == Array{Float32,1})
         if length(oedms_def["Theta_M2"]) != oedms_def["Model_2"]["nPar"]
             println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Number of parameters introduced does not match the specidied")
+            println("Number of parameters introduced does not match the specified")
             return
         end
     elseif (typeof(oedms_def["Theta_M2"]) == Array{Float64,2}) || (typeof(oedms_def["Theta_M2"]) == Array{Float32,2})
         if size(oedms_def["Theta_M2"])[1] != oedms_def["Model_2"]["nPar"] && size(oedms_def["Theta_M2"])[2] != oedms_def["Model_2"]["nPar"]
             println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Number of parameters introduced does not match the specidied")
+            println("Number of parameters introduced does not match the specified")
             return
         end
     elseif (typeof(oedms_def["Theta_M2"]) == String)
@@ -288,22 +288,22 @@ function checkStructOEDMS(oedms_def)
         end
     end
 
-    # Check warning in case the matrix introduced is simetric
+    # Check warning in case the matrix introduced is symmetric
     if length(size(oedms_def["Theta_M1"])) == 2
         if size(oedms_def["Theta_M1"])[1] == size(oedms_def["Theta_M1"])[2]
             println("-------------------------- WARNING --------------------------")
-            println("Sorry, but the number of rows and columns of the Theta_M1 matrix is the same, so the checks on correct ")
+            println("Sorry, but the number of rows and columns of the Theta_M1 matrix is the same, so the checks on ")
             println("correct orientation will not work. Please make sure that the dimensions follow: ")
             println("theta[samples, parameters]")
             println("-------------------------------------------------------------")
         end
     end
 
-    # Check warning in case the matrix introduced is simetric
+    # Check warning in case the matrix introduced is symmetric
     if length(size(oedms_def["Theta_M2"])) == 2
         if size(oedms_def["Theta_M2"])[1] == size(oedms_def["Theta_M2"])[2]
             println("-------------------------- WARNING --------------------------")
-            println("Sorry, but the number of rows and columns of the Theta_M2 matrix is the same, so the checks on correct ")
+            println("Sorry, but the number of rows and columns of the Theta_M2 matrix is the same, so the checks on ")
             println("correct orientation will not work. Please make sure that the dimensions follow: ")
             println("theta[samples, parameters]")
             println("-------------------------------------------------------------")
@@ -332,7 +332,7 @@ function checkStructOEDMS(oedms_def)
         end
     else
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Sorry, it seems that you gave a single vector of parameters for one model and ")
+        println("Sorry, it seems that you gave a single vector of parameters for one model ")
         println("and various samples for the other. Please be consistent and either give a single")
         println("or else multiple samples for both models")
         return
@@ -417,7 +417,7 @@ function checkStructOEDMS(oedms_def)
         end
         if size(oedms_def["y0_M1"])[1] == size(oedms_def["y0_M1"])[2]
             println("-------------------------- WARNING --------------------------")
-            println(string("Sorry, but the number of rows and columns of the y0_M1 matrix is the same, so the checks on correct "))
+            println(string("Sorry, but the number of rows and columns of the y0_M1 matrix is the same, so the checks on "))
             println("correct orientation will not work. Please make sure that the dimensions follow: ")
             println("y0_M1[samples, states]")
         end
@@ -440,7 +440,7 @@ function checkStructOEDMS(oedms_def)
         end
         if size(oedms_def["y0_M2"])[1] == size(oedms_def["y0_M2"])[2]
             println("-------------------------- WARNING --------------------------")
-            println(string("Sorry, but the number of rows and columns of the y0_M2 matrix is the same, so the checks on correct "))
+            println(string("Sorry, but the number of rows and columns of the y0_M2 matrix is the same, so the checks on "))
             println("correct orientation will not work. Please make sure that the dimensions follow: ")
             println("y0_M2[samples, states]")
         end
@@ -487,7 +487,7 @@ function checkStructOEDMS(oedms_def)
     if oedms_def["Model_1"]["nInp"] != oedms_def["Model_2"]["nInp"]
         println("-------------------------- WARNING --------------------------")
         println("The amount of inducers is different in the two models.")
-        println("Be carefull on how you configure that. ")
+        println("Be careful on how you configure that. ")
         println("-------------------------------------------------------------")
     end
 
@@ -547,11 +547,11 @@ function checkStructOEDMS(oedms_def)
         return
     elseif length(tmp1) >= oedms_def["Model_1"]["nInp"] && length(tmp2) <= oedms_def["Model_2"]["nInp"]
         println("-------------------------- WARNING --------------------------")
-        println("Be carefull, it seems that all the inputs for Model 1 will be fixed.")
+        println("Be careful, it seems that all the inputs for Model 1 will be fixed.")
         println("-------------------------------------------------------------")
     elseif length(tmp1) <= oedms_def["Model_1"]["nInp"] && length(tmp2) >= oedms_def["Model_2"]["nInp"]
         println("-------------------------- WARNING --------------------------")
-        println("Be carefull, it seems that all the inputs for Model 2 will be fixed.")
+        println("Be careful, it seems that all the inputs for Model 2 will be fixed.")
         println("-------------------------------------------------------------")
     end
 
@@ -609,7 +609,7 @@ function checkStructOEDMS(oedms_def)
         for j in 1:length(fi)
             if length(fi[j]) != maximum([oedms_def["Model_1"]["nInp"], oedms_def["Model_2"]["nInp"]]) - length(oedms_def["fixedInp"])
                 println("-------------------------- Process STOPPED!!! --------------------------")
-                println("Sorry, but it seems that there is a missmatch between the number of inputs and the number of values in the second entry of the tuple for the fixed step entry.")
+                println("Sorry, but it seems that there is a mismatch between the number of inputs and the number of values in the second entry of the tuple for the fixed step entry.")
                 println("Remember that any fixed inputs (fixedInp) are not considered in this field, so you should not include them here.")
                 println("Tip: If you want a fixed input with a fixed value in the experiment, hard-code its value in the definition of the model.")
                 return

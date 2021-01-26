@@ -136,7 +136,7 @@ function fitPriorSamps(priorsamps, model_def)
     if length(size(priorsamps)) == 2
         if size(priorsamps)[1] == size(priorsamps)[2]
             println("-------------------------- WARNING --------------------------")
-            println("Sorry, but the number of rows and columns of the theta matrix is the same, so the checks on correct ")
+            println("Sorry, but the number of rows and columns of the theta matrix is the same, so the checks on ")
             println("correct orientation will not work. Please make sure that the dimensions follow: ")
             println("theta[samples, parameters]")
         elseif size(priorsamps)[1] == model_def["nPar"]
@@ -278,7 +278,7 @@ function fitPriorSampsMultiNorm(priorsamps, model_def)
     if length(size(priorsamps)) == 2
         if size(priorsamps)[1] == size(priorsamps)[2]
             println("-------------------------- WARNING --------------------------")
-            println("Sorry, but the number of rows and columns of the theta matrix is the same, so the checks on correct ")
+            println("Sorry, but the number of rows and columns of the theta matrix is the same, so the checks on ")
             println("correct orientation will not work. Please make sure that the dimensions follow: ")
             println("theta[samples, parameters]")
         elseif size(priorsamps)[1] == model_def["nPar"]
@@ -404,7 +404,7 @@ function checkStructBayInf(model_def, bayinf_def)
     entries = ["Priors", "Data", "StanSettings", "flag", "plot", "runInf", "MultiNormFit"]
     if symdiff(entries,keys(bayinf_def))!=[] && symdiff(entries,keys(bayinf_def)) != ["ModelPath"]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the entries of the dictionary, there is soemthign wrong...")
+        println("Please, check the entries of the dictionary, there is something wrong...")
         println(symdiff(entries,keys(bayinf_def)))
         return
     end
@@ -486,7 +486,7 @@ function checkStructBayInf(model_def, bayinf_def)
             return
         else
             println("-------------------------- WARNING!!! --------------------------")
-            println("Please, be carefull with the definition of parameters, transformations and prior distributions.")
+            println("Please, be careful with the definition of parameters, transformations and prior distributions.")
             println("No check will be done in this section.")
         end
     elseif bayinf_def["Priors"] == [];
@@ -521,7 +521,7 @@ function checkStructBayInf(model_def, bayinf_def)
             else
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println("Please, check the entries of the dictionary in Priors. This has to be the path to a .csv or a .stan")
-                println("file. Also check that there is no spaces after the termination.")
+                println("file. Also check that there are no spaces after the termination.")
                 return
             end
 
@@ -574,7 +574,7 @@ function checkStructBayInfData(model_def, data_def)
     entries = ["Nexp", "finalTime", "switchT", "y0", "preInd", "uInd", "tsamps", "Obs", "DataMean", "DataError"]
     if symdiff(entries,keys(data_def))!=[] && symdiff(entries,keys(data_def)) != ["savepath", "savename"]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the entries of the dictionary, there is soemthign wrong...")
+        println("Please, check the entries of the dictionary, there is something wrong...")
         println(symdiff(entries,keys(data_def)))
         return
     end
@@ -706,7 +706,7 @@ function checkStructBayInfData(model_def, data_def)
             if length(size(data_def["DataError"][i][j])) == 2
                 if (size(data_def["DataError"][i][j]))[1] != (size(data_def["DataError"][i][j]))[2]
                     println("-------------------------- Process STOPPED!!! --------------------------")
-                    println("Sorry, but it seems that you have introduced a covariance matrix for the data but this is not simetric!")
+                    println("Sorry, but it seems that you have introduced a covariance matrix for the data but this is not symmetric!")
                     return
                 end
             end
@@ -745,7 +745,7 @@ function checkStructBayInfData(model_def, data_def)
         if (maximum(data_def["Obs"]) > model_def["nStat"]) || (length(data_def["Obs"]) > model_def["nStat"])
             println("-------------------------- Process STOPPED!!! --------------------------")
             println(string("Sorry, but there is some issue with the contents of the field Obs. It seems that "))
-            println("     you have selected more observables than states or an index higher than the number of observables")
+            println("     you have selected more observables than states or an index higher than the number of observables.")
             return
         end
     end
@@ -780,7 +780,7 @@ function checkStructBayInfDataFiles(model_def, data_def)
     entries = ["Obs", "Observables", "Inputs", "y0"]
     if symdiff(entries,keys(data_def))!=[]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the entries of the dictionary, there is soemthign wrong...")
+        println("Please, check the entries of the dictionary, there is something wrong...")
         println(symdiff(entries,keys(data_def)))
         return
     end
@@ -918,7 +918,7 @@ function checkStructBayInfStanSettings(model_def, stan_def)
     entries = ["cmdstan_home", "nchains", "nsamples", "nwarmup", "printsummary", "init", "maxdepth", "adaptdelta", "jitter"]
     if symdiff(entries,keys(stan_def))!=[] && symdiff(entries,keys(stan_def)) != ["savepath", "savename"]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the entries of the dictionary, there is soemthign wrong...")
+        println("Please, check the entries of the dictionary, there is something wrong...")
         println(symdiff(entries,keys(stan_def)))
         return
     end
@@ -1288,7 +1288,7 @@ transformed data {
     int Neq = ",model_def["nStat"],"; // Total number of equations of the model //-----> Introduce number in generation of script
     int x_i[0]; // Empty x_i object (needs to be defined)
     real x_r[(elm*nindu),m]=inputs; // Input values for each event ordered as IPTG, aTc, IPTG, aTc, ...
-    real ivss[Neq,m] = Y0us; // Initial experimental values for the calculation of the steady state ordered as LacI+RFP, TetR+GFP -------------------------> Carefull to how I define this
+    real ivss[Neq,m] = Y0us; // Initial experimental values for the calculation of the steady state ordered as LacI+RFP, TetR+GFP -------------------------> Careful to how I define this
     real pre[nindu,m]; // Input values during the 24h incubation ordered as IPTG, aTc
 
     for(i in 1:m){

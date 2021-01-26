@@ -35,7 +35,7 @@ function checkStructOEDMC(oedmc_def)
                 "fixedInp", "fixedStep", "plot", "flag", "uUpper", "uLower", "maxiter", "util"];
     if symdiff(entries,keys(oedmc_def))!=[] && symdiff(entries,keys(oedmc_def)) != ["savepath", "savename"]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the entries of the dictionary, there is soemthign wrong...")
+        println("Please, check the entries of the dictionary, there is something wrong...")
         println(symdiff(entries,keys(oedmc_def)))
         return
     end
@@ -119,7 +119,7 @@ function checkStructOEDMC(oedmc_def)
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the field equalStep! This should have the structure of Array{Array{Int,1},1}. ")
         println("Remember, it has to be an array where as each entry you have another array(s) with the indexes")
-        println("of the steps that will be considered as the same step in the optimisation value whise.")
+        println("of the steps that will be considered as the same step in the optimisation value wise.")
         return
     elseif (typeof(oedmc_def["flag"]) != Array{String,1}) && (typeof(oedmc_def["flag"]) != String) && ((oedmc_def["flag"]) != [])
         println("-------------------------- Process STOPPED!!! --------------------------")
@@ -146,7 +146,7 @@ function checkStructOEDMC(oedmc_def)
         return
     elseif oedmc_def["util"] != [] && typeof(oedmc_def["util"]) != String && typeof(oedmc_def["util"]) != Array{String,1}
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the field util! This should be an empty vector or a string contining the word entropy or perc.")
+        println("Please, check the field util! This should be an empty vector or a string containing the word entropy or perc.")
         return
     end
 
@@ -205,7 +205,7 @@ function checkStructOEDMC(oedmc_def)
         oedmc_def["util"] = lowercase(oedmc_def["util"]);
     else
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the field util! This should be an empty vector or a string contining the word entropy or perc according to the utility you wanna use.")
+        println("Please, check the field util! This should be an empty vector or a string containing the word entropy or perc according to the utility you wanna use.")
         return
     end
 
@@ -214,13 +214,13 @@ function checkStructOEDMC(oedmc_def)
     if (typeof(oedmc_def["Theta"]) == Array{Float64,1}) || (typeof(oedmc_def["Theta"]) == Array{Float32,1})
         if length(oedmc_def["Theta"]) != oedmc_def["Model"]["nPar"]
             println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Number of parameters introduced does not match the specidied")
+            println("Number of parameters introduced does not match the specified")
             return
         end
     elseif (typeof(oedmc_def["Theta"]) == Array{Float64,2}) || (typeof(oedmc_def["Theta"]) == Array{Float32,2})
         if size(oedmc_def["Theta"])[1] != oedmc_def["Model"]["nPar"] && size(oedmc_def["Theta"])[2] != oedmc_def["Model"]["nPar"]
             println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Number of parameters introduced does not match the specidied")
+            println("Number of parameters introduced does not match the specified")
             return
         end
     elseif (typeof(oedmc_def["Theta"]) == String)
@@ -245,11 +245,11 @@ function checkStructOEDMC(oedmc_def)
         return
     end
 
-    # Check warning in case the matrix introduced is simetric
+    # Check warning in case the matrix introduced is symmetric
     if length(size(oedmc_def["Theta"])) == 2
         if size(oedmc_def["Theta"])[1] == size(oedmc_def["Theta"])[2]
             println("-------------------------- WARNING --------------------------")
-            println("Sorry, but the number of rows and columns of the Theta matrix is the same, so the checks on correct ")
+            println("Sorry, but the number of rows and columns of the Theta matrix is the same, so the checks on ")
             println("correct orientation will not work. Please make sure that the dimensions follow: ")
             println("theta[samples, parameters]")
             println("-------------------------------------------------------------")
@@ -273,7 +273,7 @@ function checkStructOEDMC(oedmc_def)
     end
     if (oedmc_def["Model"]["Y0eqs"] != []) && oedmc_def["preInd"]==[]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("You specified computation of Y0 as steady state but you have not introduced an inducer value for it!")
+        println("You specified computation of Y0 as steady-state but you have not introduced an inducer value for it!")
         return
     end
 
@@ -328,7 +328,7 @@ function checkStructOEDMC(oedmc_def)
         end
         if size(oedmc_def["y0"])[1] == size(oedmc_def["y0"])[2]
             println("-------------------------- WARNING --------------------------")
-            println(string("Sorry, but the number of rows and columns of the y0 matrix is the same, so the checks on correct "))
+            println(string("Sorry, but the number of rows and columns of the y0 matrix is the same, so the checks on "))
             println("correct orientation will not work. Please make sure that the dimensions follow: ")
             println("y0[samples, states]")
         end
@@ -352,7 +352,7 @@ function checkStructOEDMC(oedmc_def)
     if length(oedmc_def["switchT"]) <= 1
         println("-------------------------- Process STOPPED!!! --------------------------")
         println(string("Sorry, but it seems that you have not introduced a correct switchT"))
-        println("Remember, this are the switching times for the inducer, including time 0 and the final time. ")
+        println("Remember, these are the switching times for the inducer, including time 0 and the final time. ")
         return
     end
 
@@ -447,7 +447,7 @@ function checkStructOEDMC(oedmc_def)
         fi = [oedmc_def["fixedStep"][j][2] for j in 1:length(oedmc_def["fixedStep"])];
         if length(fi) != oedmc_def["Model"]["nInp"] - length(oedmc_def["fixedInp"])
             println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Sorry, but it seems that there is a missmatch between the number of inputs and the number of values in the second entry of the tuple for the fixed step entry.")
+            println("Sorry, but it seems that there is a mismatch between the number of inputs and the number of values in the second entry of the tuple for the fixed step entry.")
             println("Remember that any fixed inputs (fixedInp) are not considered in this field, so you should not include them here.")
             println("Tip: If you want a fixed input with a fixed value in the experiment, hard-code its value in the definition of the model.")
             return
@@ -790,7 +790,7 @@ function genOptimMCFuncts(oedmc_def)
     ")
     else
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Sorry, but there seems to be an issue with the deffinition of the Utility function. ")
+        println("Sorry, but there seems to be an issue with the definition of the Utility function. ")
         return
     end;
 

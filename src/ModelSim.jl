@@ -115,7 +115,7 @@ function checkStructSimul(model_def, simul_def)
     entries = ["Nexp", "finalTime", "switchT", "y0", "preInd", "uInd", "theta", "tsamps", "plot", "flag"]
     if symdiff(entries,keys(simul_def))!=[] && symdiff(entries,keys(simul_def)) != ["savepath", "savename"]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the entries of the dictionary, there is soemthign wrong...")
+        println("Please, check the entries of the dictionary, there is something wrong...")
         println(symdiff(entries,keys(simul_def)))
         return
     end
@@ -228,7 +228,7 @@ function checkStructSimul(model_def, simul_def)
 
     if (model_def["Y0eqs"] != []) && simul_def["preInd"]==[]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("You specified computation of Y0 as steady state but you have not introduced an inducer value for it!")
+        println("You specified computation of Y0 as steady-state but you have not introduced an inducer value for it!")
         return
     end
 
@@ -236,13 +236,13 @@ function checkStructSimul(model_def, simul_def)
     if (typeof(simul_def["theta"]) == Array{Float64,1}) || (typeof(simul_def["theta"]) == Array{Float32,1})
         if length(simul_def["theta"]) != model_def["nPar"]
             println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Number of parameters introduced does not match the specidied")
+            println("Number of parameters introduced does not match the specified")
             return
         end
     elseif (typeof(simul_def["theta"]) == Array{Float64,2}) || (typeof(simul_def["theta"]) == Array{Float32,2})
         if size(simul_def["theta"])[1] != model_def["nPar"] && size(simul_def["theta"])[2] != model_def["nPar"]
             println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Number of parameters introduced does not match the specidied")
+            println("Number of parameters introduced does not match the specified")
             return
         end
     elseif (typeof(simul_def["theta"]) == String)
@@ -293,18 +293,18 @@ function checkStructSimul(model_def, simul_def)
             end
             if size(simul_def["y0"][i])[1] == size(simul_def["y0"][i])[2]
                 println("-------------------------- WARNING --------------------------")
-                println(string("Sorry, but the number of rows and columns of the y0 matrix in experiment ",i," is the same, so the checks on correct "))
+                println(string("Sorry, but the number of rows and columns of the y0 matrix in experiment ",i," is the same, so the checks on "))
                 println("correct orientation will not work. Please make sure that the dimensions follow: ")
                 println("y0[samples, states]")
             end
         end
     end
 
-    # Check warning in case the matrix introduced is simetric
+    # Check warning in case the matrix introduced is symmetric
     if length(size(simul_def["theta"])) == 2
         if size(simul_def["theta"])[1] == size(simul_def["theta"])[2]
             println("-------------------------- WARNING --------------------------")
-            println("Sorry, but the number of rows and columns of the theta matrix is the same, so the checks on correct ")
+            println("Sorry, but the number of rows and columns of the theta matrix is the same, so the checks on ")
             println("correct orientation will not work. Please make sure that the dimensions follow: ")
             println("theta[samples, parameters]")
         end
@@ -349,7 +349,7 @@ function fileStructInfo()
     println("")
     println("The observables file entry should have the following structure: ")
     println("Column 1: Sampling Times for the simulations")
-    println("Column 2 + Number of states: Y0 value for each each state (in order) in each column. ")
+    println("Column 2 + Number of states: Y0 value for each state (in order) in each column. ")
     println("           Value might need to be repeated across all the column, but only the first row will be considered")
     println("")
     println("---------------------------------------------------------------------------------------------------------")
@@ -401,7 +401,7 @@ function extractSimulCSV(model_def, simul_def)
     entries = ["ObservablesFile", "EventInputsFile", "theta", "MainDir", "plot", "flag"]
     if symdiff(entries,keys(simul_def))!=[]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the entries of the dictionary, there is soemthign wrong...")
+        println("Please, check the entries of the dictionary, there is something wrong...")
         println(symdiff(entries,keys(simul_def)))
         return
     end

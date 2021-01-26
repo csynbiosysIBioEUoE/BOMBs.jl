@@ -31,7 +31,7 @@ function checkStruct(model_def)
     entries = ["stName","inpName","eqns","nPar","NameF","nInp","parName","nStat","Y0eqs","Y0Sim","tols","solver"]
     if symdiff(entries,keys(model_def))!=[] && symdiff(entries,keys(model_def))!=["modelpath"]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the entries of the dictionary, there is soemthign wrong...")
+        println("Please, check the entries of the dictionary, there is something wrong...")
         println(symdiff(entries,keys(model_def)))
         return
     end
@@ -47,7 +47,7 @@ function checkStruct(model_def)
         return
     elseif model_def["nPar"] == []
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, introduce the number of paramters!")
+        println("Please, introduce the number of parameters!")
         return
     elseif model_def["nInp"] == []
         println("-------------------------- Process STOPPED!!! --------------------------")
@@ -249,7 +249,7 @@ function checkStruct(model_def)
     if (findfirst.("=", model_def["eqns"])!=findlast.("=", model_def["eqns"]))
         println("-------------------------- WARNING!!! --------------------------")
         println("Please, check the number of = signs in your OED equations!")
-        println("Make sure it is something desired (ifs, fors, prints, etc.) and not that you put 2 equations in one same string or forgot a right hand side. ")
+        println("Make sure it is something desired (ifs, fors, prints, etc.) and not that you put 2 equations in one same string or forgot a right-hand side. ")
     end
     if model_def["Y0eqs"] != [] # Avoind the check if no Steady state equations are given
         # Check that in the Steady State Equations there is only 1 equal sign
@@ -268,7 +268,7 @@ function checkStruct(model_def)
         ds2 = [model_def["Y0eqs"][i][1:findfirst.("=", model_def["Y0eqs"][i])[1]] for i in 1:length(model_def["Y0eqs"]) if !isnothing(findfirst.("=", model_def["Y0eqs"][i]))]
         if sum(occursin.(model_def["stName"], join(ds2))) !=  model_def["nStat"]
             println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Please, check the equations! You migh have forgoten a Steady State Equation!.")
+            println("Please, check the equations! You might have forgotten a Steady State Equation!.")
             return
         end
     end
@@ -284,7 +284,7 @@ function checkStruct(model_def)
     ds = [model_def["eqns"][i][1:findfirst.("=", model_def["eqns"][i])[1]] for i in 1:length(model_def["eqns"]) if !isnothing(findfirst.("=", model_def["eqns"][i]))];
     if sum(occursin.(string.("d", model_def["stName"]), join(ds))) != model_def["nStat"]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the equations! You migh have forgoten an ODE!.")
+        println("Please, check the equations! You might have forgotten an ODE!.")
         println("Remember, ODEs should start with a d and no other equation can.")
         return
     end

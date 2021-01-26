@@ -53,13 +53,13 @@ model_def[","\"","inpName","\"","] = [];
         # Vector of strings indicating the name of all the stimuli (inducers) of the model
 
 model_def[","\"","eqns","\"","] = [];
-        # Vector of strings containing all the equations for the model (left and right hand sides).
-        # If an equation represents a state, the left hand side has to be one of the strings contained in
+        # Vector of strings containing all the equations for the model (left and right-hand sides).
+        # If an equation represents a state, the left-hand side has to be one of the strings contained in
         # stName but with a d in front (example: Prot -> dProt = ...).
         # Equations that are not states of ODEs are also allowed. Same as Julia expressions (println, for, if, etc.)
         # If you want to include a condition (if) for a state variable, each one of the if statement has to be
-        # written in a separate string. Be carefull with this, since then your Stan model will not work. To make it
-        # work you have to write it in Stan language, but then the Julia code will not work. We recomend that if so,
+        # written in a separate string. Be careful with this, since then your Stan model will not work. To make it
+        # work you have to write it in Stan language, but then the Julia code will not work. We recommend that if so,
         # first generate the stan code and then apply all the necessary modifications there. However, if you do not care
         # for the Julia code and just want the Stan code go on. Just know that in this case, if there is a condition in
         # one of the states, in stan you need to type the full if statement in one same string.
@@ -68,7 +68,7 @@ model_def[","\"","Y0eqs","\"","] = [];
         # Vector of strings containing the steady-state equations of the model if desired (if not, just leave
         # it as an empty vector). These equations will be used to compute y0 assuming steady-state reached
         # before the experiment.
-        # All the states must appear (identified in the left hand side, but this time without the d in front),
+        # All the states must appear (identified in the left-hand side, but this time without the d in front),
         # however other equations are allowed.
         # If some  element of the equation requires an experimental value for the calculation,
         # please add exp at the beginning of the state (example: Cmrna -> expCmrna).
@@ -433,7 +433,7 @@ bayinf_def[","\"","MultiNormFit","\"","] = [];
             # or not. the default is false. If some parameter is better fit with a Log-Normal distribution, this
             # will be used with a distribution reparameterisation to begin to be included in the multinormal.
             # If for some parameter a Uniform distribution is better, this parameter will be excluded from
-            # the multinormal and defined as a separate parameter. This can be used as an example on how to set
+            # the multinormal and defined as a separate parameter. This can be used as an example of how to set
             # your Stan Model to use multi_normal priors.
 
 "))
@@ -624,7 +624,7 @@ oedms_def[","\"","fixedInp","\"","] = [];
         # If more than 1 inducer for the system exists, but only 1 input can be dynamic, give a vector
         # of strings indicating which inputs are going to be optimised but as a constant input instead
         # of dynamic. If none, just give an empty vector.
-        # If there is only 1 simuli in the model, this field will be ignored.
+        # If there is only 1 stimuli in the model, this field will be ignored.
 
 oedms_def[","\"","fixedStep","\"","] = [];
         # If you want any of the steps to be fixed to a value. This has to be an empty array if none is fixed
@@ -705,7 +705,7 @@ oedmc_def[","\"","fixedInp","\"","] = [];
         # If more than 1 inducer for the system exists, but only 1 input can be dynamic, give a vector
         # of strings indicating which inputs are going to be optimised but as a constant input instead
         # of dynamic. If none, just give an empty vector.
-        # If there is only 1 simuli in the model, this field will be ignored.
+        # If there is only 1 stimuli in the model, this field will be ignored.
 
 oedmc_def[","\"","fixedStep","\"","] = [];
         # If you want any of the steps to be fixed to a value. This has to be an empty array if none is fixed

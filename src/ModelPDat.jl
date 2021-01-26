@@ -155,7 +155,7 @@ function GenPseudoDat(model_def, pseudo_def)
 
     println("")
     println("----------------------------------------- RESULTS -----------------------------------------")
-    println("Pseudo Data results are saved in the directory: ")
+    println("Pseudo-Data results are saved in the directory: ")
     println(string("                 ", pseudo_def["savepath"]))
     println(string("Under the name ",pseudo_def["savename"]))
     println("--------------------------------------------------------------------------------------")
@@ -168,7 +168,7 @@ function GenPseudoDat(model_def, pseudo_def)
         println("Pseudo-Data PLOTS are saved in the directory: ")
         println(string("                 ", pseudo_def["savepath"]))
         println(string("Under the name PlotPseudoDat_Exp(i)_",pseudo_def["flag"],".png"))
-        println(string("If more than one samples from the parameters are used, the plot will be the average between all traces."))
+        println(string("If more than one sample from the parameters are used, the plot will be the average between all traces."))
         println("--------------------------------------------------------------------------------------")
         println("")
     end
@@ -176,7 +176,7 @@ function GenPseudoDat(model_def, pseudo_def)
     PDatCSVGen(pseudo_res,model_def,pseudo_def);
     println("")
     println("----------------------------------------- CSVs -----------------------------------------")
-    println("Pseudo Data CSVs with results have been generated in the directory: ")
+    println("Pseudo-Data CSVs with results have been generated in the directory: ")
     println(string("                 ", pseudo_def["savepath"], "\\PseudoDataFiles"))
     println(string("Under the names: "))
     println(string("        Simulations: ", model_def["NameF"],"_EXP(i)", "_",
@@ -291,7 +291,7 @@ function checkStructPseudoDat(model_def, pseudo_def)
     entries = ["Nexp", "finalTime", "switchT", "y0", "preInd", "uInd", "theta", "tsamps", "plot", "flag", "Obs", "Noise"]
     if symdiff(entries,keys(pseudo_def))!=[] && symdiff(entries,keys(pseudo_def)) != ["savepath", "savename"]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the entries of the dictionary, there is soemthign wrong...")
+        println("Please, check the entries of the dictionary, there is something wrong...")
         println(symdiff(entries,keys(pseudo_def)))
         return
     end
@@ -411,13 +411,13 @@ function checkStructPseudoDat(model_def, pseudo_def)
     if (typeof(pseudo_def["theta"]) == Array{Float64,1}) || (typeof(pseudo_def["theta"]) == Array{Float32,1})
         if length(pseudo_def["theta"]) != model_def["nPar"]
             println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Number of parameters introduced does not match the specidied")
+            println("Number of parameters introduced does not match the specified")
             return
         end
     elseif (typeof(pseudo_def["theta"]) == Array{Float64,2}) || (typeof(pseudo_def["theta"]) == Array{Float32,2})
         if size(pseudo_def["theta"])[1] != model_def["nPar"] && size(pseudo_def["theta"])[2] != model_def["nPar"]
             println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Number of parameters introduced does not match the specidied")
+            println("Number of parameters introduced does not match the specified")
             return
         end
     elseif (typeof(pseudo_def["theta"]) == String)
@@ -467,7 +467,7 @@ function checkStructPseudoDat(model_def, pseudo_def)
             end
             if size(pseudo_def["y0"][i])[1] == size(pseudo_def["y0"][i])[2]
                 println("-------------------------- WARNING --------------------------")
-                println(string("Sorry, but the number of rows and columns of the y0 matrix in experiment ",i," is the same, so the checks on correct "))
+                println(string("Sorry, but the number of rows and columns of the y0 matrix in experiment ",i," is the same, so the checks on "))
                 println("correct orientation will not work. Please make sure that the dimensions follow: ")
                 println("y0[samples, states]")
             end
@@ -476,7 +476,7 @@ function checkStructPseudoDat(model_def, pseudo_def)
 
     if (model_def["Y0eqs"] != []) && pseudo_def["preInd"]==[]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("You specified computation of Y0 as steady state but you have not introduced an inducer value for it!")
+        println("You specified computation of Y0 as steady-state but you have not introduced an inducer value for it!")
         return
     end
 
@@ -494,11 +494,11 @@ function checkStructPseudoDat(model_def, pseudo_def)
         return
     end
 
-    # Check warning in case the matrix introduced is simetric
+    # Check warning in case the matrix introduced is symmetric
     if length(size(pseudo_def["theta"])) == 2
         if size(pseudo_def["theta"])[1] == size(pseudo_def["theta"])[2]
             println("-------------------------- WARNING --------------------------")
-            println("Sorry, but the number of rows and columns of the theta matrix is the same, so the checks on correct ")
+            println("Sorry, but the number of rows and columns of the theta matrix is the same, so the checks on ")
             println("correct orientation will not work. Please make sure that the dimensions follow: ")
             println("theta[samples, parameters]")
         end
@@ -627,7 +627,7 @@ function extractPseudoDatCSV(model_def, pseudo_def)
     entries = ["ObservablesFile", "EventInputsFile", "theta", "MainDir", "plot", "flag", "Obs", "Noise"]
     if symdiff(entries,keys(pseudo_def))!=[]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the entries of the dictionary, there is soemthign wrong...")
+        println("Please, check the entries of the dictionary, there is something wrong...")
         println(symdiff(entries,keys(pseudo_def)))
         return
     end

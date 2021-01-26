@@ -63,7 +63,7 @@ function checkStructMLE(model_def, mle_def)
                 "OPTsolver", "MaxTime", "MaxFuncEvals"]
     if symdiff(entries,keys(mle_def))!=[] && symdiff(entries,keys(mle_def)) != ["savepath", "savename"]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the entries of the dictionary, there is soemthign wrong...")
+        println("Please, check the entries of the dictionary, there is something wrong...")
         println(symdiff(entries,keys(mle_def)))
         return
     end
@@ -270,7 +270,7 @@ function checkStructMLE(model_def, mle_def)
 
     if (model_def["Y0eqs"] != []) && mle_def["preInd"]==[]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("You specified computation of Y0 as steady state but you have not introduced an inducer value for it!")
+        println("You specified computation of Y0 as steady-state but you have not introduced an inducer value for it!")
         return
     end
 
@@ -278,13 +278,13 @@ function checkStructMLE(model_def, mle_def)
     #     if (typeof(mle_def["thetaGUESS"]) == Array{Float64,1}) || (typeof(mle_def["thetaGUESS"]) == Array{Float32,1})
     #         if length(mle_def["thetaGUESS"]) != model_def["nPar"]
     #             println("-------------------------- Process STOPPED!!! --------------------------")
-    #             println("Number of parameters introduced for thetaGUESS does not match the specidied")
+    #             println("Number of parameters introduced for thetaGUESS does not match the specified")
     #             return
     #         end
     #     elseif (typeof(mle_def["thetaGUESS"]) == Array{Float64,2}) || (typeof(mle_def["thetaGUESS"]) == Array{Float32,2})
     #         if size(mle_def["thetaGUESS"])[1] != model_def["nPar"] && size(mle_def["thetaGUESS"])[2] != model_def["nPar"]
     #             println("-------------------------- Process STOPPED!!! --------------------------")
-    #             println("Number of parameters introduced for thetaGUESS does not match the specidied")
+    #             println("Number of parameters introduced for thetaGUESS does not match the specified")
     #             return
     #         end
     #     elseif (typeof(mle_def["thetaGUESS"]) == String)
@@ -436,7 +436,7 @@ function checkStructMLE(model_def, mle_def)
             if length(size(mle_def["DataError"][i][j])) == 2
                 if (size(mle_def["DataError"][i][j]))[1] != (size(mle_def["DataError"][i][j]))[2]
                     println("-------------------------- Process STOPPED!!! --------------------------")
-                    println("Sorry, but it seems that you have introduced a covariance matrix for the data but this is not simetric!")
+                    println("Sorry, but it seems that you have introduced a covariance matrix for the data but this is not symmetric!")
                     return
                 end
             end
@@ -444,7 +444,7 @@ function checkStructMLE(model_def, mle_def)
 
     end
 
-    # Check warning in case the matrix introduced is simetric
+    # Check warning in case the matrix introduced is symmetric
     #     if length(size(mle_def["thetaGUESS"])) == 2
     #         if size(mle_def["thetaGUESS"])[1] == size(mle_def["thetaGUESS"])[2]
     #             println("-------------------------- WARNING --------------------------")
@@ -794,7 +794,7 @@ function checkStructCrossValMLE(model_def, cvmle_def)
 
     if symdiff(entries,keys(cvmle_def))!=[] && symdiff(entries,keys(cvmle_def)) != ["savepath", "savename"]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the entries of the dictionary, there is soemthign wrong...")
+        println("Please, check the entries of the dictionary, there is something wrong...")
         println(symdiff(entries,keys(cvmle_def)))
         return
     end
@@ -934,7 +934,7 @@ function checkStructCrossValMLE(model_def, cvmle_def)
 
     if (model_def["Y0eqs"] != []) && cvmle_def["preInd"]==[]
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("You specified computation of Y0 as steady state but you have not introduced an inducer value for it!")
+        println("You specified computation of Y0 as steady-state but you have not introduced an inducer value for it!")
         return
     end
 
@@ -942,13 +942,13 @@ function checkStructCrossValMLE(model_def, cvmle_def)
     if (typeof(cvmle_def["theta"]) == Array{Float64,1}) || (typeof(cvmle_def["theta"]) == Array{Float32,1})
         if length(cvmle_def["theta"]) != model_def["nPar"]
             println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Number of parameters introduced for theta does not match the specidied")
+            println("Number of parameters introduced for theta does not match the specified")
             return
         end
     elseif (typeof(cvmle_def["theta"]) == Array{Float64,2}) || (typeof(cvmle_def["theta"]) == Array{Float32,2})
         if size(cvmle_def["theta"])[1] != model_def["nPar"] && size(cvmle_def["theta"])[2] != model_def["nPar"]
             println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Number of parameters introduced for theta does not match the specidied")
+            println("Number of parameters introduced for theta does not match the specified")
             return
         end
     elseif (typeof(cvmle_def["theta"]) == String)
@@ -1072,7 +1072,7 @@ function checkStructCrossValMLE(model_def, cvmle_def)
             if length(size(cvmle_def["DataError"][i][j])) == 2
                 if (size(cvmle_def["DataError"][i][j]))[1] != (size(cvmle_def["DataError"][i][j]))[2]
                     println("-------------------------- Process STOPPED!!! --------------------------")
-                    println("Sorry, but it seems that you have introduced a covariance matrix for the data but this is not simetric!")
+                    println("Sorry, but it seems that you have introduced a covariance matrix for the data but this is not symmetric!")
                     return
                 end
             end
@@ -1080,11 +1080,11 @@ function checkStructCrossValMLE(model_def, cvmle_def)
 
     end
 
-    #     Check warning in case the matrix introduced is simetric
+    #     Check warning in case the matrix introduced is symmetric
     if length(size(cvmle_def["theta"])) == 2
         if size(cvmle_def["theta"])[1] == size(cvmle_def["theta"])[2]
             println("-------------------------- WARNING --------------------------")
-            println("Sorry, but the number of rows and columns of the theta matrix is the same, so the checks on correct ")
+            println("Sorry, but the number of rows and columns of the theta matrix is the same, so the checks on ")
             println("correct orientation will not work. Please make sure that the dimensions follow: ")
             println("theta[samples, parameters]")
         end
@@ -1292,7 +1292,7 @@ function CrossValMLE(model_def, cvmle_def)
 
     println("")
     println("----------------------------------------- RESULTS -----------------------------------------")
-    println("Cross Validation of MLE results are saved in the directory: ")
+    println("Cross-Validation of MLE results are saved in the directory: ")
     println(string("                 ", cvmle_def["savepath"]))
     println(string("Under the name ",cvmle_def["savename"]))
     println("--------------------------------------------------------------------------------------")
@@ -1836,21 +1836,21 @@ function MLEtheta(model_def, mle_def)
 
         You have selected to run the optimisation in parallel. The necessary scripts have been generated,
         but you need to run the rest by yourself :(
-        I am working on this, but for now let me show you what to do:
+        I am working on this, but for now, let me show you what to do:
 
-        Step 1:First you will need to include the generated script into your path (the one printed avobe ^).
-            Remember that the start up time and memory usage of this will be really high!
+        Step 1:First you will need to include the generated script into your path (the one printed above ^).
+            Remember that the start-up time and memory usage of this will be really high!
             So, copy and paste this:
                 include(","\"",string(replace(cudi, "\\"=>"\\\\"), "\\\\Results\\\\", model_def["NameF"],"_",today(), "\\\\MLEscripts\\\\", model_def["NameF"], "_MLE.jl"),"\"",")
 
         Step 2: Now run the optimisation using the functions from the file you just uploaded.
             The function you need to call is named RunMLE", model_def["NameF"],".
-            You can copy and paste this line to run it (be carefull on how you named the function inputs!!!):
+            You can copy and paste this line to run it (be careful on how you named the function inputs!!!):
                 mle_res = RunMLE", model_def["NameF"],"(model_def, mle_def);
 
         Step 3: Finally, save the optimisation results and plots (if selected) in the same form as if no
             parallelisation was done. To do this use the function finishMLEres that will do everything for you!
-            You can copy and paste this line to run it (be carefull on how you named the function inputs!!!):
+            You can copy and paste this line to run it (be careful on how you named the function inputs!!!):
                 mle_res, model_def, mle_def = finishMLEres(mle_res, model_def, mle_def)
 
         Step 4: Enjoy your optimisation results!
