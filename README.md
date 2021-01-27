@@ -48,7 +48,7 @@ Pkg.clone("https://github.com/DavidGomezC/BOMBS.jl")
   
   ### 4.- Maximum Likelihood Estimation (MLE)
   The MLE section allows you to quickly estimate the parameters of your model using a (univariate or multivariate) Gaussian distribution form for your likelihood (as a distance measure for the optimisation) between simulations and data. If more than one observable or experiment is present, the average of these will be considered. \
-  For now (expansion might happen in the future), only global optimisation using genetic algorithms (thanks to the package BlackBoxOptim.jl) is present, but multiple instances of the optimisation can be run in parallel if the user desires it. \
+  For now (expansion might happen in the future), only global optimisation using genetic algorithms (thanks to the package BlackBoxOptim.jl) is present, but multiple instances of the optimisation can be run in parallel if the user desires it. However, if you desire to use a differnt optimiser, a new cost function script gets generated each time and you can use it, but note that you will need to apply modifications due to the use of global variables.\
   As in for the other sections, you only need to provide a dictionary with the specifications of the model, experiment and data making the process easy and quick. 
   
   For more information about this section and how to use it have a look at [Notebook4](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/4_MaximumLikelihoodEstimation.ipynb) or the brief function documentation of the section from [this document](https://github.com/DavidGomezC/BOMBS.jl/blob/main/FunctionDocs/BOMBS_Functions_Documentation.pdf).
