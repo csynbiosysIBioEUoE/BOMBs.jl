@@ -148,25 +148,25 @@ print(string(raw"
 
         STRUCTURE IF CSV FILES ARE USED
 
-model_def[","\"","ObservablesFile","\"","] = [];
+simul_def[","\"","ObservablesFile","\"","] = [];
         # Vector of strings containing the name of the files that have the information about the sampling
         # times and y0 values.
 
-model_def[","\"","EventInputsFile","\"","] = [];
+simul_def[","\"","EventInputsFile","\"","] = [];
         # Vector of strings containing the name of all the files that have the information about the stimuli
         # and events of the experiment.
 
-model_def[","\"","theta","\"","] = [];
+simul_def[","\"","theta","\"","] = [];
         # Vector/Matrix with the parameter samples or directory and file location of CSV file with them.
 
-model_def[","\"","MainDir","\"","] = [];
+simul_def[","\"","MainDir","\"","] = [];
         # Main directory path for the files in ObervablesFile and EventInputsFile.
 
-model_def[","\"","plot","\"","] = [];
+simul_def[","\"","plot","\"","] = [];
         # Boolean or yes/no string to save the resulting simulations in the results directory (false will be
         # considered as default).
 
-model_def[","\"","flag","\"","] = [];
+simul_def[","\"","flag","\"","] = [];
         # String to attach a unique flag to the generated scripts and result files so they are not overwritten.
         # If empty, nothing will be added.
 
