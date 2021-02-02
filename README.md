@@ -27,7 +27,9 @@ Pkg.clone("https://github.com/DavidGomezC/BOMBS.jl")
 ```
 ## Package Sections
   ### 1.- Model Generation
-  The model generation section allows you to generate the necessary Julia functions for simulation of your ODEs with time-varying inputs in an easy manner. You only need to provide some information about the model inside a dictionary structure and that is it! 
+  The model generation section allows you to generate the necessary Julia functions for simulation of your ODEs with time-varying inputs in an easy manner. You only need to provide some information about the model inside a dictionary structure and that is it!
+  
+  The way on how to introduce the model information is inspired in the Matlab toolbox AMIGO2 [**[1]**](https://sites.google.com/site/amigo2toolbox/), a really nice (frequentist) toolbox worth to check if you have a Matlab licence. 
   
   For more information about this section and how to use it have a look at [Notebook1](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/1_GenerateModel.ipynb) or the brief function documentation of the section from [this document](https://github.com/DavidGomezC/BOMBS.jl/blob/main/FunctionDocs/BOMBS_Functions_Documentation.pdf).
     
@@ -71,15 +73,15 @@ Instructions on how to install cmdstan (at least one way to do it, the one that 
 For more information about what functions are included in each section of the package and some basic information about them have a look at the file BOMBS_Functions_Documentation.pdf under the directory FunctionDocs. 
 
 ## References
-  **1. D. G. Cabeza, L. Bandiera, E. Balsa-Canto and F. Menolascina, "Information content analysis reveals desirable aspects of in vivo experiments of a synthetic circuit,"** 2019 IEEE Conference on Computational Intelligence in Bioinformatics and Computational Biology (CIBCB), Siena, Italy, 2019, pp. 1-8, doi: 10.1109/CIBCB.2019.8791449. \
+  **1. Balsa-Canto E, Henriques D, Gábor A, Banga JR. AMIGO2, a toolbox for dynamic modeling, optimization and control in systems biology.** Bioinformatics. 2016 Nov 1;32(21):3357-3359. doi: 10.1093/bioinformatics/btw411. Epub 2016 Jul 4. PMID: 27378288; PMCID: PMC5079478. \
   
-  **2. Bandiera, Lucia & Cabeza, D. & Balsa-Canto, Eva & Menolascina, Filippo. (2019). Bayesian model selection in synthetic biology: factor levels and observation functions.** IFAC-PapersOnLine. 52. 24-31. 10.1016/j.ifacol.2019.12.231.  \
+  **2. D. G. Cabeza, L. Bandiera, E. Balsa-Canto and F. Menolascina, "Information content analysis reveals desirable aspects of in vivo experiments of a synthetic circuit,"** 2019 IEEE Conference on Computational Intelligence in Bioinformatics and Computational Biology (CIBCB), Siena, Italy, 2019, pp. 1-8, doi: 10.1109/CIBCB.2019.8791449. \
   
-  **3. Bandiera L, Gomez-Cabeza D, Gilman J, Balsa-Canto E, Menolascina F. Optimally Designed Model Selection for Synthetic Biology.** ACS Synth Biol. 2020 Nov 20;9(11):3134-3144. doi: 10.1021/acssynbio.0c00393. Epub 2020 Nov 5. PMID: 33152239. \
+  **3. Bandiera, Lucia & Cabeza, D. & Balsa-Canto, Eva & Menolascina, Filippo. (2019). Bayesian model selection in synthetic biology: factor levels and observation functions.** IFAC-PapersOnLine. 52. 24-31. 10.1016/j.ifacol.2019.12.231.  \
   
-  **4. Stan Development Team. 2020. Stan Modeling Language Users Guide and Reference Manual**, 2.25. https://mc-stan.org \
+  **4. Bandiera L, Gomez-Cabeza D, Gilman J, Balsa-Canto E, Menolascina F. Optimally Designed Model Selection for Synthetic Biology.** ACS Synth Biol. 2020 Nov 20;9(11):3134-3144. doi: 10.1021/acssynbio.0c00393. Epub 2020 Nov 5. PMID: 33152239. \
   
-  **5. Balsa-Canto E, Henriques D, Gábor A, Banga JR. AMIGO2, a toolbox for dynamic modeling, optimization and control in systems biology.** Bioinformatics. 2016 Nov 1;32(21):3357-3359. doi: 10.1093/bioinformatics/btw411. Epub 2016 Jul 4. PMID: 27378288; PMCID: PMC5079478. \
+  **5. Stan Development Team. 2020. Stan Modeling Language Users Guide and Reference Manual**, 2.25. https://mc-stan.org \
   
   **6. M. F. Huber, T. Bailey, H. Durrant-Whyte and U. D. Hanebeck, "On entropy approximation for Gaussian mixture random vectors,"** 2008 IEEE International Conference on Multisensor Fusion and Integration for Intelligent Systems, Seoul, 2008, pp. 181-188, doi: 10.1109/MFI.2008.4648062. \
   
