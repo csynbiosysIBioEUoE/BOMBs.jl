@@ -29,7 +29,7 @@ Pkg.clone("https://github.com/DavidGomezC/BOMBS.jl")
   ### 1.- Model Generation
   The model generation section allows you to generate the necessary Julia functions for simulation of your ODEs with time-varying inputs in an easy manner. You only need to provide some information about the model inside a dictionary structure and that is it!
   
-  The way on how to introduce the model information is inspired in the Matlab toolbox AMIGO2 [**[1]**](https://sites.google.com/site/amigo2toolbox/), a really nice (frequentist) toolbox worth to check if you have a Matlab licence. 
+  The inspiration on how to introduce the model information to the package comes from the Matlab toolbox AMIGO2 [**[1]**](https://sites.google.com/site/amigo2toolbox/), a really nice (frequentist) toolbox worth to check if you have a Matlab licence! 
   
   For more information about this section and how to use it have a look at [Notebook1](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/1_GenerateModel.ipynb) or the brief function documentation of the section from [this document](https://github.com/DavidGomezC/BOMBS.jl/blob/main/FunctionDocs/BOMBS_Functions_Documentation.pdf).
     
@@ -50,13 +50,20 @@ Pkg.clone("https://github.com/DavidGomezC/BOMBS.jl")
   
   ### 4.- Maximum Likelihood Estimation (MLE)
   The MLE section allows you to quickly estimate the parameters of your model using a (univariate or multivariate) Gaussian distribution form for your likelihood (as a distance measure for the optimisation) between simulations and data. If more than one observable or experiment is present, the average of these will be considered. \
-  For now (expansion might happen in the future), only global optimisation using genetic algorithms (thanks to the package BlackBoxOptim.jl) is present, but multiple instances of the optimisation can be run in parallel if the user desires it. However, if you desire to use a differnt optimiser, a new cost function script gets generated each time and you can use it, but note that you will need to apply modifications due to the use of global variables.\
+  For now (expansion might happen in the future), only global optimisation using genetic algorithms (thanks to the package [BlackBoxOptim.jl](https://github.com/robertfeldt/BlackBoxOptim.jl)) is present, but multiple instances of the optimisation can be run in parallel if the user desires it. However, if you desire to use a different optimiser, a new cost function script gets generated each time and you can use it, but note that you will need to apply modifications due to the use of global variables.
+  
   Additionally, you can use the (univariate or multivariate) Gaussian log-likelihood distributions to perform a cross-validation step with additional data. \
   As in for the other sections, you only need to provide a dictionary with the specifications of the model, experiment and data making the process easy and quick. 
   
   For more information about this section and how to use it have a look at [Notebook4](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/4_MaximumLikelihoodEstimation.ipynb) or the brief function documentation of the section from [this document](https://github.com/DavidGomezC/BOMBS.jl/blob/main/FunctionDocs/BOMBS_Functions_Documentation.pdf).
   
   ### 5.- Bayesian Inference of Parameters (Stan)
+  The Bayesian inference section allows you to quickly and automatically perform Bayesian inference (multi-experimental inference is considered) of your model parameters using Stan [**[2]**](https://mc-stan.org/), a wonderful tool worth to check. To be able to perform the inference within the package, you will need to have CmdStan installed in your computer. Please, refer to [this document](https://github.com/DavidGomezC/BOMBS.jl/blob/main/InstallCmdstanInfo/InstallStanInJulia.pdf) to see how I installed it (there might be other ways, just make sure that it works and that you apply the mentioned modifications).
+  
+  This section of the package will automatically generate the data structure and Stan model script to perform the inference in a similar way than shown in references **[[3](https://ieeexplore.ieee.org/document/8791449),[4](https://www.sciencedirect.com/science/article/pii/S2405896319321123),[5](https://pubs.acs.org/doi/abs/10.1021/acssynbio.0c00393)]** (note that that code is in R, here I translated everything to Julia), allowing as much freedom as possible in the definition of your priors. The main intention of the section is to automatically generate the data structure and the main code to perform inference of your model considering event input experiments (external inputs that change across an experiment) without you having to spend a lot of time coding and debugging it (believe me, it takes a long time). Alternatively, you can use this section to generate the aforementioned script and then use it in a different environment for Stan (such as RStan or PyStan). 
+  
+  Additionally, this section allows you to compute an entropy approximation of your priors samples or definitions and posterior samples as we did in **[[3](https://ieeexplore.ieee.org/document/8791449)]** following the work in **[[6](https://ieeexplore.ieee.org/document/4648062)]** but in a general way so it can be quickly and easily applied to your model. 
+  
   For more information about this section and how to use it have a look at [Notebook5](https://github.com/DavidGomezC/BOMBS.jl/blob/main/Examples/5_BayesianInferenceStan.ipynb) or the brief function documentation of the section from [this document](https://github.com/DavidGomezC/BOMBS.jl/blob/main/FunctionDocs/BOMBS_Functions_Documentation.pdf).
   
   ### 6.- Optimal Experimental Design for Model Selection
@@ -67,23 +74,23 @@ Pkg.clone("https://github.com/DavidGomezC/BOMBS.jl")
   
 ## Documentation 
 All source code for the package is included in the directory src and tests sets in the test directory. \
-For deppendencies and version specification, please look at the file Project.toml. \
-A set of example jupyter ntoebooks and files can be found in the directory Examples. \
+For dependencies and version specification, please look at the file Project.toml. \
+A set of example jupyter notebooks and files can be found in the directory Examples. \
 Instructions on how to install cmdstan (at least one way to do it, the one that worked for me) can be found in the file InstallStanInJulia.pdf under the directory InstallCmdstanInfo. \
 For more information about what functions are included in each section of the package and some basic information about them have a look at the file BOMBS_Functions_Documentation.pdf under the directory FunctionDocs. 
 
 ## References
-  **1. Balsa-Canto E, Henriques D, Gábor A, Banga JR. AMIGO2, a toolbox for dynamic modeling, optimization and control in systems biology.** Bioinformatics. 2016 Nov 1;32(21):3357-3359. doi: 10.1093/bioinformatics/btw411. Epub 2016 Jul 4. PMID: 27378288; PMCID: PMC5079478. \
+  **1. Balsa-Canto E, Henriques D, Gábor A, Banga JR. AMIGO2, a toolbox for dynamic modeling, optimization and control in systems biology.** Bioinformatics. 2016 Nov 1;32(21):3357-3359. doi: 10.1093/bioinformatics/btw411. Epub 2016 Jul 4. PMID: 27378288; PMCID: PMC5079478. 
   
-  **2. D. G. Cabeza, L. Bandiera, E. Balsa-Canto and F. Menolascina, "Information content analysis reveals desirable aspects of in vivo experiments of a synthetic circuit,"** 2019 IEEE Conference on Computational Intelligence in Bioinformatics and Computational Biology (CIBCB), Siena, Italy, 2019, pp. 1-8, doi: 10.1109/CIBCB.2019.8791449. \
+  **2. Stan Development Team. 2020. Stan Modeling Language Users Guide and Reference Manual**, 2.25. https://mc-stan.org 
   
-  **3. Bandiera, Lucia & Cabeza, D. & Balsa-Canto, Eva & Menolascina, Filippo. (2019). Bayesian model selection in synthetic biology: factor levels and observation functions.** IFAC-PapersOnLine. 52. 24-31. 10.1016/j.ifacol.2019.12.231.  \
+  **3. D. G. Cabeza, L. Bandiera, E. Balsa-Canto and F. Menolascina, "Information content analysis reveals desirable aspects of in vivo experiments of a synthetic circuit,"** 2019 IEEE Conference on Computational Intelligence in Bioinformatics and Computational Biology (CIBCB), Siena, Italy, 2019, pp. 1-8, doi: 10.1109/CIBCB.2019.8791449. 
   
-  **4. Bandiera L, Gomez-Cabeza D, Gilman J, Balsa-Canto E, Menolascina F. Optimally Designed Model Selection for Synthetic Biology.** ACS Synth Biol. 2020 Nov 20;9(11):3134-3144. doi: 10.1021/acssynbio.0c00393. Epub 2020 Nov 5. PMID: 33152239. \
+  **4. Bandiera, Lucia & Cabeza, D. & Balsa-Canto, Eva & Menolascina, Filippo. (2019). Bayesian model selection in synthetic biology: factor levels and observation functions.** IFAC-PapersOnLine. 52. 24-31. 10.1016/j.ifacol.2019.12.231.  
   
-  **5. Stan Development Team. 2020. Stan Modeling Language Users Guide and Reference Manual**, 2.25. https://mc-stan.org \
+  **5. Bandiera L, Gomez-Cabeza D, Gilman J, Balsa-Canto E, Menolascina F. Optimally Designed Model Selection for Synthetic Biology.** ACS Synth Biol. 2020 Nov 20;9(11):3134-3144. doi: 10.1021/acssynbio.0c00393. Epub 2020 Nov 5. PMID: 33152239. 
   
-  **6. M. F. Huber, T. Bailey, H. Durrant-Whyte and U. D. Hanebeck, "On entropy approximation for Gaussian mixture random vectors,"** 2008 IEEE International Conference on Multisensor Fusion and Integration for Intelligent Systems, Seoul, 2008, pp. 181-188, doi: 10.1109/MFI.2008.4648062. \
+  **6. M. F. Huber, T. Bailey, H. Durrant-Whyte and U. D. Hanebeck, "On entropy approximation for Gaussian mixture random vectors,"** 2008 IEEE International Conference on Multisensor Fusion and Integration for Intelligent Systems, Seoul, 2008, pp. 181-188, doi: 10.1109/MFI.2008.4648062. 
   
   **7. OED model calibration paper**
 
