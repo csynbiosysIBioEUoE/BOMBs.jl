@@ -756,7 +756,7 @@ function genOptimMCFuncts(oedmc_def)
 
         # Compute Euclidean distances
     ",join([string("    EuObs",i,"_MC = sqrt(sum((LowqObs",i,"_MC-HighqObs",i,"_MC).^2)); \n") for i in 1:length(oedmc_def["Obs"])]),"
-        util = (",join([string("EuObs",i,"_MC") for i in 1:length(oedmc_def["Obs"])], ","),")^(1/",length(oedmc_def["Obs"]),");
+        util = (",join([string("EuObs",i,"_MC") for i in 1:length(oedmc_def["Obs"])], "+"),")*(1/",length(oedmc_def["Obs"]),");
     ")
 
     elseif oedmc_def["util"] == "entropy"
@@ -786,7 +786,7 @@ function genOptimMCFuncts(oedmc_def)
 
         HES = zeros(1,",length(oedmc_def["Obs"]),");
     ",join([string("    HES[1,",i,"] = sum(EntObs",i,"_MC); \n") for i in 1:length(oedmc_def["Obs"])]),"
-        util = sum(HES)
+        util = sum(HES)/",length(oedmc_def["Obs"]),"
     ")
     else
         println("-------------------------- Process STOPPED!!! --------------------------")
