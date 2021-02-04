@@ -61,7 +61,7 @@ function checkStruct(model_def)
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, introduce the parameter names!")
         return
-    elseif model_def["inpName"] == []
+    elseif model_def["inpName"] == [] && (model_def["nInp"] != 0 && model_def["nInp"] != [0])
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, introduce the stimuli names!")
         return
@@ -96,7 +96,7 @@ function checkStruct(model_def)
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the field parName!")
         return
-    elseif (typeof(model_def["inpName"])!=Array{String,1})
+    elseif (typeof(model_def["inpName"])!=Array{String,1}) && (typeof(model_def["inpName"])!=Array{Any,1})
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the field inpName!")
         return

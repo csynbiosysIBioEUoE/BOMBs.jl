@@ -45,12 +45,17 @@ function simulateODEs(model_def, simul_def)
         global theta = simul_def["theta"];
 
         # Inputs case
-        r = convert.(Int, 1:model_def["nInp"]:(length(simul_def["uInd"][i])));
-        global inputs = zeros(convert.(Int,length(simul_def["uInd"][i])));
-        for j in 1:convert.(Int,length(simul_def["uInd"][i])/model_def["nInp"])
-            for k in 0:(model_def["nInp"]-1)
-                inputs[r[j]+k] = simul_def["uInd"][i][j,(k+1)];
+        if model_def["nInp"] != 0
+            r = convert.(Int, 1:model_def["nInp"]:(length(simul_def["uInd"][i])));
+            global inputs = zeros(convert.(Int,length(simul_def["uInd"][i])));
+            for j in 1:convert.(Int,length(simul_def["uInd"][i])/model_def["nInp"])
+                for k in 0:(model_def["nInp"]-1)
+                    inputs[r[j]+k] = simul_def["uInd"][i][j,(k+1)];
+                end
             end
+        else
+            r=0
+        inputs=[];
         end
 
         simul = @eval $ODEsFun(ts, theta, sp, inputs, ivss, samps, pre);
@@ -267,11 +272,12 @@ function checkStructSimul(model_def, simul_def)
             println("Please, check finalTime. You have selected a sampling point past it.")
             return
         end
-
-        if length(simul_def["uInd"][i]) != (length(simul_def["switchT"][i])-1)
-            println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
-            return
+        if model_def["nInp"] != 0
+            if length(simul_def["uInd"][i]) != (length(simul_def["switchT"][i])-1)
+                println("-------------------------- Process STOPPED!!! --------------------------")
+                println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
+                return
+            end
         end
 
         if length(simul_def["y0"][i])/model_def["nStat"] == 1
@@ -518,12 +524,14 @@ function plotSimsODE(simuls,model_def,simul_def)
 
         titu = "";
         yl2 = "";
-        for k in 1:model_def["nInp"]
-            titu = hcat(titu, string(model_def["inpName"][k]));
-            yl2 = hcat(yl2, "u");
+        if model_def["nInp"] != 0
+            for k in 1:model_def["nInp"]
+                titu = hcat(titu, string(model_def["inpName"][k]));
+                yl2 = hcat(yl2, "u");
+            end
+            titu = titu[:,2:end];
+            yl2 = yl2[:,2:end];
         end
-        titu = titu[:,2:end];
-        yl2 = yl2[:,2:end];
 
         tuu = hcat(tit, titu);
         yuu = hcat(yl1, yl2);

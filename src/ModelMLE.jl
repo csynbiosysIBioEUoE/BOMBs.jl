@@ -255,10 +255,12 @@ function checkStructMLE(model_def, mle_def)
             return
         end
 
-        if length(mle_def["uInd"][i]) != (length(mle_def["switchT"][i])-1)
-            println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
-            return
+        if model_def["nInp"] != 0
+            if length(mle_def["uInd"][i]) != (length(mle_def["switchT"][i])-1)
+                println("-------------------------- Process STOPPED!!! --------------------------")
+                println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
+                return
+            end
         end
 
         if length(mle_def["y0"][i]) != model_def["nStat"]
@@ -575,12 +577,16 @@ end
 
 ## Function to restructure the inputs for the experiment the way it is needed for BOMBS
 function restructInputs_te(model_def, mle_def, expp)
-    r = convert.(Int, 1:model_def["nInp"]:(length(mle_def["uInd"][expp])));
-    inputs = zeros(convert.(Int,length(mle_def["uInd"][expp])));
-    for j in 1:convert.(Int,length(mle_def["uInd"][expp])/model_def["nInp"])
-        for k in 0:(model_def["nInp"]-1)
-            inputs[r[j]+k] = mle_def["uInd"][expp][j,(k+1)];
+    if model_def["nInp"] != 0
+        r = convert.(Int, 1:model_def["nInp"]:(length(mle_def["uInd"][expp])));
+        inputs = zeros(convert.(Int,length(mle_def["uInd"][expp])));
+        for j in 1:convert.(Int,length(mle_def["uInd"][expp])/model_def["nInp"])
+            for k in 0:(model_def["nInp"]-1)
+                inputs[r[j]+k] = mle_def["uInd"][expp][j,(k+1)];
+            end
         end
+    else
+        inputs = [];
     end
     return(inputs)
 end
@@ -705,12 +711,14 @@ function plotMLEResults(mle_res,model_def,mle_def)
 
         titu = "";
         yl2 = "";
-        for k in 1:model_def["nInp"]
-            titu = hcat(titu, string(model_def["inpName"][k]));
-            yl2 = hcat(yl2, "u");
+        if model_def["nInp"] != 0
+            for k in 1:model_def["nInp"]
+                titu = hcat(titu, string(model_def["inpName"][k]));
+                yl2 = hcat(yl2, "u");
+            end
+            titu = titu[:,2:end];
+            yl2 = yl2[:,2:end];
         end
-        titu = titu[:,2:end];
-        yl2 = yl2[:,2:end];
 
         tuu = hcat(tit, titu);
         yuu = hcat(yl1, yl2);
@@ -919,10 +927,12 @@ function checkStructCrossValMLE(model_def, cvmle_def)
             return
         end
 
-        if length(cvmle_def["uInd"][i]) != (length(cvmle_def["switchT"][i])-1)
-            println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
-            return
+        if model_def["nInp"] != 0
+            if length(cvmle_def["uInd"][i]) != (length(cvmle_def["switchT"][i])-1)
+                println("-------------------------- Process STOPPED!!! --------------------------")
+                println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
+                return
+            end
         end
 
         if length(cvmle_def["y0"][i]) != model_def["nStat"]
@@ -1175,12 +1185,14 @@ function plotCrossValMLEResults(cvmle_res,model_def,cvmle_def,simul_def)
 
         titu = "";
         yl2 = "";
-        for k in 1:model_def["nInp"]
-            titu = hcat(titu, string(model_def["inpName"][k]));
-            yl2 = hcat(yl2, "u");
+        if model_def["nInp"] != 0
+            for k in 1:model_def["nInp"]
+                titu = hcat(titu, string(model_def["inpName"][k]));
+                yl2 = hcat(yl2, "u");
+            end
+            titu = titu[:,2:end];
+            yl2 = yl2[:,2:end];
         end
-        titu = titu[:,2:end];
-        yl2 = yl2[:,2:end];
 
         tuu = hcat(tit, titu);
         yuu = hcat(yl1, yl2);
@@ -1574,6 +1586,12 @@ function MLEtheta(model_def, mle_def)
     end;
 
     # Generation of objective function and function to run optimisation in parallel
+
+    if model_def["nInp"] == 0
+        inps0 = "[]";
+    else
+        inps0 = "inp[i]";
+    end
     objec = string("
 
     ",join(paral),"function objectiveMLE",model_def["NameF"],"(theta)
@@ -1581,7 +1599,7 @@ function MLEtheta(model_def, mle_def)
         LLK_Exps = zeros(1, Nexp);
         simobs = Array{Any,1}(undef,Nexp);
         for i in 1:Nexp
-            simul = ",join(model_def["NameF"]),"_SolveAll(tim[i], theta, esp[i], inp[i], ini[i], smp[i], prr[i])
+            simul = ",join(model_def["NameF"]),"_SolveAll(tim[i], theta, esp[i], ",inps0,", ini[i], smp[i], prr[i])
             simobs[i] = selectObsSim(simul);
             llkobs = zeros(1,length(Obs));
             for j in 1:length(Obs)
@@ -1598,12 +1616,16 @@ function MLEtheta(model_def, mle_def)
     inpre = string("
 
     function restructInputs(model_def, mle_def, expp)
-        r = convert.(Int, 1:model_def[","\"","nInp","\"","]:(length(mle_def[","\"","uInd","\"","][expp])));
-        inputs = zeros(convert.(Int,length(mle_def[","\"","uInd","\"","][expp])));
-        for j in 1:convert.(Int,length(mle_def[","\"","uInd","\"","][expp])/model_def[","\"","nInp","\"","])
-            for k in 0:(model_def[","\"","nInp","\"","]-1)
-                inputs[r[j]+k] = mle_def[","\"","uInd","\"","][expp][j,(k+1)];
+        if model_def[","\"","nInp","\"","] != 0
+            r = convert.(Int, 1:model_def[","\"","nInp","\"","]:(length(mle_def[","\"","uInd","\"","][expp])));
+            inputs = zeros(convert.(Int,length(mle_def[","\"","uInd","\"","][expp])));
+            for j in 1:convert.(Int,length(mle_def[","\"","uInd","\"","][expp])/model_def[","\"","nInp","\"","])
+                for k in 0:(model_def[","\"","nInp","\"","]-1)
+                    inputs[r[j]+k] = mle_def[","\"","uInd","\"","][expp][j,(k+1)];
+                end
             end
+        else
+            inputs = [];
         end
         return(inputs)
     end

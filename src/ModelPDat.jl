@@ -46,12 +46,17 @@ function GenPseudoDat(model_def, pseudo_def)
         global theta = simul_def["theta"];
 
         # Inputs case
-        r = convert.(Int, 1:model_def["nInp"]:(length(simul_def["uInd"][i])));
-        global inputs = zeros(convert.(Int,length(simul_def["uInd"][i])));
-        for j in 1:convert.(Int,length(simul_def["uInd"][i])/model_def["nInp"])
-            for k in 0:(model_def["nInp"]-1)
-                inputs[r[j]+k] = simul_def["uInd"][i][j,(k+1)];
+        if model_def["nInp"] != 0
+            r = convert.(Int, 1:model_def["nInp"]:(length(simul_def["uInd"][i])));
+            global inputs = zeros(convert.(Int,length(simul_def["uInd"][i])));
+            for j in 1:convert.(Int,length(simul_def["uInd"][i])/model_def["nInp"])
+                for k in 0:(model_def["nInp"]-1)
+                    inputs[r[j]+k] = simul_def["uInd"][i][j,(k+1)];
+                end
             end
+        else
+            r=0
+        inputs=[];
         end
 
         simul = @eval $OEDsFun(ts, theta, sp, inputs, ivss, samps, pre);
@@ -183,7 +188,7 @@ function GenPseudoDat(model_def, pseudo_def)
                     pseudo_def["flag"],"_Simulations.csv"))
     println(string("        Observables: ", model_def["NameF"],"_EXP(i)", "_",
                     pseudo_def["flag"],"_Observables.csv"))
-    println(string("        Event Inputs: ", model_def["NameF"],"_EXP(i)", "_",
+    println(string("        Event Inputs (only if the model has inputs): ", model_def["NameF"],"_EXP(i)", "_",
                     pseudo_def["flag"],"_Event_Inputs.csv"))
     println("--------------------------------------------------------------------------------------")
     println("")
@@ -214,12 +219,14 @@ function plotPseudoDatODE(pseudo_res,model_def,pseudo_def)
 
         titu = "";
         yl2 = "";
-        for k in 1:model_def["nInp"]
-            titu = hcat(titu, string(model_def["inpName"][k]));
-            yl2 = hcat(yl2, "u");
+        if model_def["nInp"] != 0
+            for k in 1:model_def["nInp"]
+                titu = hcat(titu, string(model_def["inpName"][k]));
+                yl2 = hcat(yl2, "u");
+            end
+            titu = titu[:,2:end];
+            yl2 = yl2[:,2:end];
         end
-        titu = titu[:,2:end];
-        yl2 = yl2[:,2:end];
 
         tuu = hcat(tit, titu);
         yuu = hcat(yl1, yl2);
@@ -441,11 +448,12 @@ function checkStructPseudoDat(model_def, pseudo_def)
             println("Please, check finalTime. You have selected a sampling point past it.")
             return
         end
-
-        if length(pseudo_def["uInd"][i]) != (length(pseudo_def["switchT"][i])-1)
-            println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
-            return
+        if model_def["nInp"] != 0
+            if length(pseudo_def["uInd"][i]) != (length(pseudo_def["switchT"][i])-1)
+                println("-------------------------- Process STOPPED!!! --------------------------")
+                println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
+                return
+            end
         end
 
         if length(pseudo_def["y0"][i])/model_def["nStat"] == 1
@@ -789,30 +797,32 @@ function PDatCSVGen(pseudo_res,model_def,pseudo_def)
                 pseudo_def["flag"],"_Observables.csv"), df2);
 
         # Event Inputs matrix
-        EvnInputs = zeros(length(pseudo_def["uInd"][expp]),2+(model_def["nInp"]*2));
-        evins_head = Array{String,1}(undef,2+(model_def["nInp"]*2));
-        evins_head[1] = "Switchingtimes";
-        evins_head[2] = "FinalTime";
+        if model_def["nInp"] != 0
+            EvnInputs = zeros(length(pseudo_def["uInd"][expp]),2+(model_def["nInp"]*2));
+            evins_head = Array{String,1}(undef,2+(model_def["nInp"]*2));
+            evins_head[1] = "Switchingtimes";
+            evins_head[2] = "FinalTime";
 
-        EvnInputs[:,1] = pseudo_def["switchT"][expp][1:end-1];
-        EvnInputs[:,2] = repeat([pseudo_def["switchT"][expp][end]], outer = [length(pseudo_def["uInd"][expp])]);
+            EvnInputs[:,1] = pseudo_def["switchT"][expp][1:end-1];
+            EvnInputs[:,2] = repeat([pseudo_def["switchT"][expp][end]], outer = [length(pseudo_def["uInd"][expp])]);
 
-        for i in 1:model_def["nInp"]
-            if pseudo_def["preInd"] != []
-                EvnInputs[:,(2+i)] = repeat([pseudo_def["preInd"][expp][i]], outer = [length(pseudo_def["uInd"][expp])]);
-            else
-                EvnInputs[:,(2+i)] = repeat([0], outer = [length(pseudo_def["uInd"][expp])]);
+            for i in 1:model_def["nInp"]
+                if pseudo_def["preInd"] != []
+                    EvnInputs[:,(2+i)] = repeat([pseudo_def["preInd"][expp][i]], outer = [length(pseudo_def["uInd"][expp])]);
+                else
+                    EvnInputs[:,(2+i)] = repeat([0], outer = [length(pseudo_def["uInd"][expp])]);
+                end
+                evins_head[(2+i)] = string(model_def["inpName"][i],"_Pre");
+                EvnInputs[:,(2+model_def["nInp"])+i] = pseudo_def["uInd"][expp];
+                evins_head[(2+model_def["nInp"])+i] = string(model_def["inpName"][i]);
             end
-            evins_head[(2+i)] = string(model_def["inpName"][i],"_Pre");
-            EvnInputs[:,(2+model_def["nInp"])+i] = pseudo_def["uInd"][expp];
-            evins_head[(2+model_def["nInp"])+i] = string(model_def["inpName"][i]);
+
+
+            df3 = DataFrame[EvnInputs][1]
+            rename!(df3, [evins_head[i] for i in 1:2+(model_def["nInp"]*2)])
+            CSV.write(string(pseudo_def["savepath"], "\\PseudoDataFiles\\",model_def["NameF"],"_EXP",expp, "_",
+                    pseudo_def["flag"],"_Events_Inputs.csv"), df3);
         end
-
-
-        df3 = DataFrame[EvnInputs][1]
-        rename!(df3, [evins_head[i] for i in 1:2+(model_def["nInp"]*2)])
-        CSV.write(string(pseudo_def["savepath"], "\\PseudoDataFiles\\",model_def["NameF"],"_EXP",expp, "_",
-                pseudo_def["flag"],"_Events_Inputs.csv"), df3);
 
     end
 

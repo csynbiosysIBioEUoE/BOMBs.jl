@@ -635,11 +635,12 @@ function checkStructBayInfData(model_def, data_def)
             println("Please, check finalTime. You have selected a sampling point past it.")
             return
         end
-
-        if length(data_def["uInd"][i]) != (length(data_def["switchT"][i])-1)
-            println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
-            return
+        if model_def["nInp"] != 0
+            if length(data_def["uInd"][i]) != (length(data_def["switchT"][i])-1)
+                println("-------------------------- Process STOPPED!!! --------------------------")
+                println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
+                return
+            end
         end
 
         if length(data_def["y0"][i]) != model_def["nStat"]
@@ -1243,6 +1244,12 @@ functions{
             mnp="";
         end
 
+
+        if model_def["nInp"] != 0
+            ninduc = "nindu";
+        else
+            ninduc = "1";
+        end
         dats = string("
 
 data {
@@ -1266,9 +1273,9 @@ data {
     int tsl[1,m]; // Length of sampling time series per serie m
 
     int nindu; // -> Number of inducers/stimuly
-    real preInd[nindu,m]; // Values of inputs for each serie m for the ON incubation
+    real preInd[",ninduc,",m]; // Values of inputs for each serie m for the ON incubation
 
-    real inputs[(elm*nindu),m]; // Input values for each event ordered as IPTG, aTc, IPTG, aTc, ...
+    real inputs[(elm*",ninduc,"),m]; // Input values for each event ordered as IPTG, aTc, IPTG, aTc, ...
 
     int evnT[(elm+1),m]; // Event change time points for each serie m
     real Y0us[",model_def["nStat"],",m]; // Y0 vectors
@@ -1287,12 +1294,12 @@ transformed data {
     int nParms = ",model_def["nPar"],"; // Number of parameters of the model //--------> Introduce number in generation of script
     int Neq = ",model_def["nStat"],"; // Total number of equations of the model //-----> Introduce number in generation of script
     int x_i[0]; // Empty x_i object (needs to be defined)
-    real x_r[(elm*nindu),m]=inputs; // Input values for each event ordered as IPTG, aTc, IPTG, aTc, ...
+    real x_r[(elm*",ninduc,"),m]=inputs; // Input values for each event ordered as IPTG, aTc, IPTG, aTc, ...
     real ivss[Neq,m] = Y0us; // Initial experimental values for the calculation of the steady state ordered as LacI+RFP, TetR+GFP -------------------------> Careful to how I define this
-    real pre[nindu,m]; // Input values during the 24h incubation ordered as IPTG, aTc
+    real pre[",ninduc,",m]; // Input values during the 24h incubation ordered as IPTG, aTc
 
     for(i in 1:m){
-        for(k in 1:nindu){
+        for(k in 1:",ninduc,"){
           pre[k,i] = preInd[k,i]; //-> If people only give a Y0 value, this will be NO needed
         };
     };
@@ -1475,16 +1482,16 @@ model {
       // Calculation of the solution for the ODEs where for events that are not the first one. The time series starts one minute before the original point of the time serie overlaping with the last point of the previous event with same state values at the time
       if (q == 1){
         ivst = Y0[,j];
-        part1 = integrate_ode_bdf(",model_def["NameF"],"_ODEs,ivst,itp,ts[(evnT[q,j]+1):(evnT[q+1,j]+1),j],theta,to_array_1d(inputs[i:(i+(nindu-1)),j]), x_i, ",model_def["tols"][1],", ",model_def["tols"][2],", 1e7);
+        part1 = integrate_ode_bdf(",model_def["NameF"],"_ODEs,ivst,itp,ts[(evnT[q,j]+1):(evnT[q+1,j]+1),j],theta,to_array_1d(inputs[i:(i+(",ninduc,"-1)),j]), x_i, ",model_def["tols"][1],", ",model_def["tols"][2],", 1e7);
       }
       else{
-        part1 = integrate_ode_bdf(",model_def["NameF"],"_ODEs, ivst,(itp-1e-7),ts[(evnT[q,j]+1):(evnT[q+1,j]+1),j],theta,to_array_1d(inputs[i:(i+(nindu-1)),j]), x_i, ",model_def["tols"][1],", ",model_def["tols"][2],", 1e7);
+        part1 = integrate_ode_bdf(",model_def["NameF"],"_ODEs, ivst,(itp-1e-7),ts[(evnT[q,j]+1):(evnT[q+1,j]+1),j],theta,to_array_1d(inputs[i:(i+(",ninduc,"-1)),j]), x_i, ",model_def["tols"][1],", ",model_def["tols"][2],", 1e7);
       }
 
       // Modification of the initial state values for the next event
       ivst = part1[lts];
       // Increase index for inputs
-      i=i+nindu;
+      i=i+",ninduc,";
 
       // Introduction of the result of part1 into the object y_hat
       for (y in (itp+1):(itp+lts)){
@@ -1577,7 +1584,11 @@ function restructureDataInference(model_def, bayinf_def)
     mtimes  = zeros(bayinf_def["Data"]["Nexp"]); # Maximum time point for each file
 
     for i in collect(1:bayinf_def["Data"]["Nexp"]) # Loop that opens a file for each iteration to extract the file with maximum data points
-        mdpI[i] = length(bayinf_def["Data"]["uInd"][i]);
+        if model_def["nInp"] != 0
+            mdpI[i] = length(bayinf_def["Data"]["uInd"][i]);
+        else
+            mdpI[i] = 1;
+        end
         mtimes[i] = convert(Int,round(bayinf_def["Data"]["finalTime"][i]));
     end
 
@@ -1589,7 +1600,11 @@ function restructureDataInference(model_def, bayinf_def)
     mdpI2[1,:] = mdpI;
 
     evnT = zeros(mrowI+1,mcolI); # Event chance time points
-    preI = zeros(model_def["nInp"],mcolI); # Inducer initial values
+    if model_def["nInp"] != 0
+        preI = zeros(model_def["nInp"],mcolI); # Inducer initial values
+    else
+        preI = zeros(1,mcolI);
+    end
     time = zeros(mt+1,mcolI); # Time points vector
     inps = zeros(mrowI*model_def["nInp"],mcolI); # Inputs vector
 
@@ -1601,26 +1616,36 @@ function restructureDataInference(model_def, bayinf_def)
         ltimes[i] = length(tempT);
         evnT[1:length(bayinf_def["Data"]["switchT"][i]),i] = bayinf_def["Data"]["switchT"][i];
 
-        r = convert.(Int, 1:model_def["nInp"]:(length(bayinf_def["Data"]["uInd"][i])));
-        inputs = zeros(convert.(Int,length(bayinf_def["Data"]["uInd"][i])));
-        for j in 1:convert.(Int,length(bayinf_def["Data"]["uInd"][i])/model_def["nInp"])
-            for k in 0:(model_def["nInp"]-1)
-                inputs[r[j]+k] = bayinf_def["Data"]["uInd"][i][j,(k+1)];
+        if model_def["nInp"] != 0
+            r = convert.(Int, 1:model_def["nInp"]:(length(bayinf_def["Data"]["uInd"][i])));
+            inputs = zeros(convert.(Int,length(bayinf_def["Data"]["uInd"][i])));
+            for j in 1:convert.(Int,length(bayinf_def["Data"]["uInd"][i])/model_def["nInp"])
+                for k in 0:(model_def["nInp"]-1)
+                    inputs[r[j]+k] = bayinf_def["Data"]["uInd"][i][j,(k+1)];
+                end
             end
+            inps[1:length(inputs),i] = inputs;
+        else
+            inps = zeros(mrowI,mcolI)
         end
-        inps[1:length(inputs),i] = inputs;
 
         for l in 1:length(tempT)
             time[l,i] = tempT[l];
         end
 
-        try
-            if bayinf_def["Data"]["preInd"] == [];
-                 bayinf_def["Data"]["preInd"] = zeros(model_def["nInp"]);
+        if (typeof(bayinf_def["Data"]["preInd"]) == Array{Any,1}) || (typeof(bayinf_def["Data"]["preInd"]) == Array{Float64,1}) ||
+            (typeof(bayinf_def["Data"]["preInd"]) == Array{Float32,1}) || (typeof(bayinf_def["Data"]["preInd"]) == Array{Int,1});
+            if model_def["nInp"] != 0
+                bayinf_def["Data"]["preInd"] = zeros(model_def["nInp"]);
+            else
+                bayinf_def["Data"]["preInd"] = zeros(1);
             end
-        catch
-            if bayinf_def["Data"]["preInd"][i] == [];
+        elseif (typeof(bayinf_def["Data"]["preInd"]) == Array{Array{Any,1},1}) || (typeof(bayinf_def["Data"]["preInd"]) == Array{Array{Float64,1},1}) ||
+            (typeof(bayinf_def["Data"]["preInd"]) == Array{Array{Float32,1},1}) || (typeof(bayinf_def["Data"]["preInd"]) == Array{Array{Int,1},1});
+            if model_def["nInp"] != 0
                 bayinf_def["Data"]["preInd"][i] = zeros(model_def["nInp"]);
+            else
+                bayinf_def["Data"]["preInd"][i] = zeros(1);
             end
         end
         preI[:,i] = bayinf_def["Data"]["preInd"][i];
@@ -1917,12 +1942,14 @@ function plotStanResults(staninf_res, model_def, bayinf_def)
 
         titu = "";
         yl2 = "";
-        for k in 1:model_def["nInp"]
-            titu = hcat(titu, string(model_def["inpName"][k]));
-            yl2 = hcat(yl2, "u");
+        if model_def["nInp"] != 0
+            for k in 1:model_def["nInp"]
+                titu = hcat(titu, string(model_def["inpName"][k]));
+                yl2 = hcat(yl2, "u");
+            end
+            titu = titu[:,2:end];
+            yl2 = yl2[:,2:end];
         end
-        titu = titu[:,2:end];
-        yl2 = yl2[:,2:end];
 
         tuu = hcat(tit, titu);
         yuu = hcat(yl1, yl2);
