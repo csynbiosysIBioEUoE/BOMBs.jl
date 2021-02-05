@@ -41,7 +41,7 @@ model_def[","\"","nPar","\"","] = [];
         # Integer indicating the total number of parameters of the model.
 
 model_def[","\"","nInp","\"","] = [];
-        # Integer indicating the total number of stimuli (inducers) of the model
+        # Integer indicating the total number of stimuli (inducers) of the model. If the model has no inputs, set it to 0.
 
 model_def[","\"","stName","\"","] = [];
         # Vector of strings indicating the name of all the states of the model (without a d letter in front).
@@ -50,7 +50,8 @@ model_def[","\"","parName","\"","] = [];
         # Vector of strings indicating the name of all the parameters of the model.
 
 model_def[","\"","inpName","\"","] = [];
-        # Vector of strings indicating the name of all the stimuli (inducers) of the model
+        # Vector of strings indicating the name of all the stimuli (inducers) of the model. If the model has no inputs
+        # just give an empty vector.
 
 model_def[","\"","eqns","\"","] = [];
         # Vector of strings containing all the equations for the model (left and right-hand sides).
@@ -63,6 +64,7 @@ model_def[","\"","eqns","\"","] = [];
         # first generate the stan code and then apply all the necessary modifications there. However, if you do not care
         # for the Julia code and just want the Stan code go on. Just know that in this case, if there is a condition in
         # one of the states, in stan you need to type the full if statement in one same string.
+        # Note that models without external inputs are also supported except for the optimal experimental design sections.
 
 model_def[","\"","Y0eqs","\"","] = [];
         # Vector of strings containing the steady-state equations of the model if desired (if not, just leave
