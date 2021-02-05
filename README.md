@@ -87,10 +87,10 @@ All source code for the package is included in the directory src and tests sets 
 For dependencies and version specification, please look at the file Project.toml. \
 A set of example jupyter notebooks and files can be found in the directory Examples. \
 Instructions on how to install cmdstan (at least one way to do it, the one that worked for me) can be found in the file InstallStanInJulia.pdf under the directory InstallCmdstanInfo. \
-For more information about what functions are included in each section of the package and some basic information about them have a look at the file BOMBS_Functions_Documentation.pdf under the directory FunctionDocs. \
+For more information about what functions are included in each section of the package and some basic information about them have a look at the file BOMBS_Functions_Documentation.pdf under the directory FunctionDocs. 
 
-If you will use the package for your research, please refference it as: 
-  **Gomez-Cabeza D, **
+If you will use the package for your research, please refference it as: \
+**Gomez-Cabeza D** sas
 
 ## References
   **1. Balsa-Canto E, Henriques D, Gábor A, Banga JR. AMIGO2, a toolbox for dynamic modeling, optimization and control in systems biology.** Bioinformatics. 2016 Nov 1;32(21):3357-3359. doi: 10.1093/bioinformatics/btw411. Epub 2016 Jul 4. PMID: 27378288; PMCID: PMC5079478. 
