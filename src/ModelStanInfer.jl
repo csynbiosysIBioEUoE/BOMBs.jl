@@ -1369,7 +1369,7 @@ transformed parameters {
             if typeof(bayinf_def["Data"]["Obs"]) == Array{Int,1}
                 lik = string("
             for(ob in 1:obser){
-              yhat[t,j,ob] = y_hat[(sts[t,j]+1),obSta[ob]]; //---> Will need to double check if this is enough or there will be soem confusion on selecting the observable states and aching it with data
+              yhat[t,j,ob] = y_hat[(sts[t,j]+1),obSta[1,ob]]; //---> Will need to double check if this is enough or there will be soem confusion on selecting the observable states and aching it with data
               Means[t,j,ob] ~ normal(yhat[t,j,ob],Erros[t,j,ob]); //---> Normal as default, but should be able to include other optios. Also have a check in case the user whants to define different ones for different observables
             }
 
@@ -1412,7 +1412,7 @@ transformed parameters {
 
                 lik = string("
             for(ob in 1:obser){
-              yhat[t,j,ob] = y_hat[(sts[t,j]+1),obSta[ob]]; //---> Will need to double check if this is enough or there will be soem confusion on selecting the observable states and aching it with data
+              yhat[t,j,ob] = y_hat[(sts[t,j]+1),obSta[1,ob]]; //---> Will need to double check if this is enough or there will be soem confusion on selecting the observable states and aching it with data
             }
                     ");
             else
