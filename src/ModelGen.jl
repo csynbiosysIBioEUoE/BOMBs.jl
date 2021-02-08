@@ -173,7 +173,7 @@ function checkStruct(model_def)
 
     if model_def["solver"] == []
         model_def["solver"] = "Tsit5";
-    elseif model_def["solver"] == Array{String,1}
+    elseif typeof(model_def["solver"]) == Array{String,1}
         model_def["solver"] = model_def["solver"][1];
     end
 
