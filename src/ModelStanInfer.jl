@@ -2065,7 +2065,7 @@ function StanInfer(model_def, bayinf_def)
             stan_struct["inferdata"] = inferdata;
             stan_struct["init"] = init;
 
-        elseif bayinf_def["Priors"] == String
+        elseif typeof(bayinf_def["Priors"]) == String
             println("----------------------------------------- STAN INFERENCE INFO -----------------------------------------")
             println("Inference will be performed since there is enough information from the user:")
             println("Stan temporary files will be stored in your current working directory in the folder tmp.")
