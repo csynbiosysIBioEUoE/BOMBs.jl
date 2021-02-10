@@ -715,6 +715,11 @@ function EuclideanDist(sm1, sm2)
 end
 
 ## Function that will generate the necessary scripts for the optimisation
+
+# Note for the user: covariance matrices need to be regularised to ensure that they are positive definite (some really low variances will be considered as 0 as well) and full ranked. For this we add 0.1 in all the elements of the diagonal. So, the maximum resolution of this method is a variance of 0.1 for a given time point.
+# If you are working with a normalised observable note that variances might be really low and hence all of them will be considered 0.1. The method would not work anyway doe to the really low variances (issues computing determinatn and amtrix inverse) so for now it is recomended to not use normalised observables ranged between 0 and 1 (make it be between 0 and 100 minimum so the regularisation does not have a strong effect.)
+# Other ways to avoid issues with computation of determinatns and inverse of covariance matrices will be investigated and inplemented in the future (reduction of the number of time points considered can also be a way, since the more spaced the sampling points are the more likely numerical issues will be avoided and the number of linearly independent colums could increase, hence increase the rank). More work will be done in this section in the future.
+
 function genOptimMSFuncts(oedms_def)
 
     oedms_def = checkStructOEDMS(oedms_def);
