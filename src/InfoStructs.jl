@@ -576,8 +576,14 @@ oedms_def[","\"","Model_2","\"","] = [];
         # Model structure for Model 2. Dict. See Model Generation Section.
 
 oedms_def[","\"","Obs","\"","] = [];
-        # States of the model that are observables. This is a vector of strings.These could also be an
+        # States of the model that are observables. This is a vector of strings. These could also be an
         # expression combining states (Only +,-,*,/ and ^ will be considered).
+        # Note that due to the use of the covariance matrix in some computations an addition of a small
+        # number (0.1) is done in the diagonal elements (for now) to ensure this to be positive definite.
+        # If the observable(s) of your model are normalised or in a range between 0 and 1 we recommend to
+        # re-scale this to a larger range (0 to 100 for example) so the variances considered are as close
+        # as possible to the real ones. This can be done by just multiplying the observable by a constant
+        # (Obs*100 for example) in each entry of the vector.
 
 oedms_def[","\"","Theta_M1","\"","] = [];
         # Theta vector (frequentist OED or model with 1 parameter) or matrix (Bayesian OED) for model 1.
