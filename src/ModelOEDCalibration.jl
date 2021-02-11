@@ -760,6 +760,13 @@ function genOptimMCFuncts(oedmc_def)
     ")
 
     elseif oedmc_def["util"] == "entropy"
+
+        # If y0 is the same for all runs we need to ignore this time point since that would mean having a variance of 0 which will cause errors in the distribution fits.
+        if oedmc_def["Model"]["Y0eqs"] == [] && length(size(oedmc_def["y0"])) == 1
+            inn = 2;
+        else
+            inn = 1;
+        end
         ccomp = string("
     ",join([string("    EntObs",i,"_MC = zeros(size(solMC)[1]); \n") for i in 1:length(oedmc_def["Obs"])]),"
 
@@ -768,7 +775,7 @@ function genOptimMCFuncts(oedmc_def)
 
         names = [","\"","timePoint","\"","];
 
-        for j in 1:size(solMC)[1]
+        for j in ",inn,":size(solMC)[1]
     ",join([string("        fitts",i," = Dict(); \n        bestfit",i," = Dict(); \n        bestfitInd",i," = zeros(1,1); \n") for i in 1:length(oedmc_def["Obs"])]),"
     ",join([string("
             try
