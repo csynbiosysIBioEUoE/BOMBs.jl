@@ -136,12 +136,23 @@ function GenPseudoDat(model_def, pseudo_def)
 
                     pseudoDsd[string("PDExp_", j)][:,stat,p] = simObs[string("PDExp_", j)][:,stat,p] .* pseudo_def["Noise"][stat];
                     pseudoDme[string("PDExp_", j)][:,stat,p] = simObs[string("PDExp_", j)][:,stat,p] .+ rand(MvNormal(zeros(size(simObs[string("PDExp_", j)][:,stat,p])[1]),pseudoDsd[string("PDExp_", j)][:,stat,p][:]))
-
+                    if pseudoDsd[string("PDExp_", j)][1,stat,p] == 0 # This checks for the case wher ethe user gives y0 and this is 0. This will output a mean and standard deviation of 0 which will generate issues in lekelihood computation (MLE and Stan inference)
+                        pseudoDsd[string("PDExp_", j)][1,stat,p] = 1e-20;
+                    end
+                    if pseudoDme[string("PDExp_", j)][1,stat,p] == 0
+                        pseudoDme[string("PDExp_", j)][1,stat,p] = 1e-10;
+                    end
                 end
             else
                     p=1;
                     pseudoDsd[string("PDExp_", j)][:,stat,p] = simObs[string("PDExp_", j)][:,stat,p] .* pseudo_def["Noise"][stat];
                     pseudoDme[string("PDExp_", j)][:,stat,p] = simObs[string("PDExp_", j)][:,stat,p] .+ rand(MvNormal(zeros(size(simObs[string("PDExp_", j)][:,stat,p])[1]),pseudoDsd[string("PDExp_", j)][:,stat,p][:]))
+                    if pseudoDsd[string("PDExp_", j)][1,stat,p] == 0
+                        pseudoDsd[string("PDExp_", j)][1,stat,p] = 1e-20;
+                    end
+                    if pseudoDme[string("PDExp_", j)][1,stat,p] == 0
+                        pseudoDme[string("PDExp_", j)][1,stat,p] = 1e-10;
+                    end
             end
         end
     end
