@@ -41,7 +41,7 @@ Pkg.clone("https://github.com/DavidGomezC/BOMBS.jl")
   ### 3.- Pseudo-Data Generation
   The pseudo-data generation section works in a similar way than section two, but not also provides you with the simulations for your model but also generates pseudo-data for the observables you select. The only noise option (for now) is additive heteroscedastic noise for the observable where you can choose the percentage of noise used from the simulation. \
   Thus, the general formulation would be: \
-  <img src="https://render.githubusercontent.com/render/math?math=\hat{y}_t = y_t + \epsilon_t"> \
+  <img src="https://render.githubusercontent.com/render/math?math=\hat{y}_t = y_t %2B \epsilon_t"> \
   where \
   <img src="https://render.githubusercontent.com/render/math?math=\epsilon_t = \mathcal{N}(0,y_t*pr)"> \
   t indicates a time-point, y the observable and pr the percentage of y to be used for the noise. 
