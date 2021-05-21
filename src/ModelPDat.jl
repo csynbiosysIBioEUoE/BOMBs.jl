@@ -133,8 +133,11 @@ function GenPseudoDat(model_def, pseudo_def)
         for stat in 1:length(pseudo_def["Obs"])
             if length(size(pseudo_def["theta"]))==2
                 for p in 1:convert(Int, length(pseudo_def["theta"])/model_def["nPar"])
-
-                    pseudoDsd[string("PDExp_", j)][:,stat,p] = simObs[string("PDExp_", j)][:,stat,p] .* pseudo_def["Noise"][stat];
+                    if pseudo_def["NoiseType"] == "hetero"
+                        pseudoDsd[string("PDExp_", j)][:,stat,p] = simObs[string("PDExp_", j)][:,stat,p] .* pseudo_def["Noise"][stat];
+                    elseif pseudo_def["NoiseType"] == "homo"
+                        pseudoDsd[string("PDExp_", j)][:,stat,p] = ones(length(simObs[string("PDExp_", j)][:,stat,p])) .* pseudo_def["Noise"][stat];
+                    end
                     pseudoDme[string("PDExp_", j)][:,stat,p] = simObs[string("PDExp_", j)][:,stat,p] .+ rand(MvNormal(zeros(size(simObs[string("PDExp_", j)][:,stat,p])[1]),pseudoDsd[string("PDExp_", j)][:,stat,p][:]))
                     if pseudoDsd[string("PDExp_", j)][1,stat,p] == 0 # This checks for the case wher ethe user gives y0 and this is 0. This will output a mean and standard deviation of 0 which will generate issues in lekelihood computation (MLE and Stan inference)
                         pseudoDsd[string("PDExp_", j)][1,stat,p] = 1e-20;
@@ -142,16 +145,31 @@ function GenPseudoDat(model_def, pseudo_def)
                     if pseudoDme[string("PDExp_", j)][1,stat,p] == 0
                         pseudoDme[string("PDExp_", j)][1,stat,p] = 1e-10;
                     end
+                    for r in 1:size(pseudoDme[string("PDExp_", j)])[1]
+                        if pseudoDme[string("PDExp_", j)][r,stat,p] == 0 # If you have homoscedastic noise and high, this can generate negative values which do not make much sense. A proxi to a truncation of the distribution I suppsose.
+                            pseudoDme[string("PDExp_", j)][r,stat,p] = 1e-10;
+                        end
+                    end
                 end
             else
                     p=1;
-                    pseudoDsd[string("PDExp_", j)][:,stat,p] = simObs[string("PDExp_", j)][:,stat,p] .* pseudo_def["Noise"][stat];
+                    if pseudo_def["NoiseType"] == "hetero"
+                        pseudoDsd[string("PDExp_", j)][:,stat,p] = simObs[string("PDExp_", j)][:,stat,p] .* pseudo_def["Noise"][stat];
+                    elseif pseudo_def["NoiseType"] == "homo"
+                        pseudoDsd[string("PDExp_", j)][:,stat,p] = ones(length(simObs[string("PDExp_", j)][:,stat,p])) .* pseudo_def["Noise"][stat];
+                    end
                     pseudoDme[string("PDExp_", j)][:,stat,p] = simObs[string("PDExp_", j)][:,stat,p] .+ rand(MvNormal(zeros(size(simObs[string("PDExp_", j)][:,stat,p])[1]),pseudoDsd[string("PDExp_", j)][:,stat,p][:]))
                     if pseudoDsd[string("PDExp_", j)][1,stat,p] == 0
                         pseudoDsd[string("PDExp_", j)][1,stat,p] = 1e-20;
                     end
                     if pseudoDme[string("PDExp_", j)][1,stat,p] == 0
                         pseudoDme[string("PDExp_", j)][1,stat,p] = 1e-10;
+                    end
+
+                    for r in 1:size(pseudoDme[string("PDExp_", j)])[1]
+                        if pseudoDme[string("PDExp_", j)][r,stat,p] == 0 # If you have homoscedastic noise and high, this can generate negative values which do not make much sense. A proxi to a truncation of the distribution I suppsose.
+                            pseudoDme[string("PDExp_", j)][r,stat,p] = 1e-10;
+                        end
                     end
             end
         end
@@ -295,7 +313,8 @@ function defPseudoDatStruct()
     pseudo_def["flag"] = []; # String to attach a unique flag to the generated files so it is not overwritten. If empty, nothing will be added.
 
     pseudo_def["Obs"] = []; # States that are observable. This is either a vecotr of strings (that has the same order asmodel_def["stName"] and model_def["eqns"]), a vector of integers insidating which states are observable or the string "All" if all states are observables. This can also be an experssion combining states (Only +,-,*,\ and ^ will be considered)
-    pseudo_def["Noise"] = []; # Percentage of heteroscedastic noise (introduced as value from 0 to 1). If empty 10% will be assumed. This has to be a vector of noise values for each observable.
+    pseudo_def["NoiseType"] = []; # String indicating if the desired noise is homoscedastic or heteroscedastic. The allowed strings are homo, homoscedastic or hetero, heteroscedastic (case independent). If empty, default will be heteroscedastic. Note that for high homoscedastic noise data could become negative (which to me does not make much sense), for now this will be set to a value close to 0.
+    pseudo_def["Noise"] = []; # Percentage of heteroscedastic noise (introduced as value from 0 to 1). If empty 10% heteroscedastic noise will be assumed. In the homoscedastic case, if empty a standard deviation of 1 will be assumes. This has to be a vector of noise values for each observable.
 
     return(pseudo_def)
 
@@ -306,7 +325,7 @@ end
 function checkStructPseudoDat(model_def, pseudo_def)
 
     # Check taht all the dictionary entries are correct
-    entries = ["Nexp", "finalTime", "switchT", "y0", "preInd", "uInd", "theta", "tsamps", "plot", "flag", "Obs", "Noise"]
+    entries = ["Nexp", "finalTime", "switchT", "y0", "preInd", "uInd", "theta", "tsamps", "plot", "flag", "Obs", "NoiseType", "Noise"]
     if symdiff(entries,keys(pseudo_def))!=[] && symdiff(entries,keys(pseudo_def)) != ["savepath", "savename"]
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the entries of the dictionary, there is something wrong...")
@@ -385,13 +404,17 @@ function checkStructPseudoDat(model_def, pseudo_def)
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the field Obs! This should be a vector of strings or integers. ")
         return
-    elseif (typeof(pseudo_def["Noise"]) != Array{Float64,1}) && (typeof(pseudo_def["Noise"]) != Array{Float32,1})
+    elseif (typeof(pseudo_def["NoiseType"]) != Array{String,1}) && (typeof(pseudo_def["NoiseType"]) != String) && ((pseudo_def["NoiseType"]) != [])
+
+    elseif (typeof(pseudo_def["Noise"]) != Array{Float64,1}) && (typeof(pseudo_def["Noise"]) != Array{Float32,1})  &&
+        ((pseudo_def["NoiseType"]) != []) && (typeof(pseudo_def["Noise"]) != Array{Int,1})
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the field Noise! This should be a vector of error percentages from 0 to 1. ")
         return
     end
 
     # Extract necessary elements to ease generalisation
+
     if typeof(pseudo_def["Nexp"]) == Array{Int,1}
         pseudo_def["Nexp"] = pseudo_def["Nexp"][1];
     end
@@ -414,6 +437,9 @@ function checkStructPseudoDat(model_def, pseudo_def)
         pseudo_def["flag"] = "";
     end
 
+    if (typeof(pseudo_def["NoiseType"]) == Array{String,1})
+        pseudo_def["NoiseType"] = pseudo_def["NoiseType"][1];
+    end
 
     # Check that all the contents make sense
     if (pseudo_def["Nexp"] != length(pseudo_def["finalTime"])) || (pseudo_def["Nexp"] != length(pseudo_def["switchT"])) ||
@@ -499,11 +525,31 @@ function checkStructPseudoDat(model_def, pseudo_def)
         return
     end
 
+    if pseudo_def["NoiseType"] == []
+        pseudo_def["NoiseType"] = "hetero"
+    end
 
+    pseudo_def["NoiseType"] = lowercase(pseudo_def["NoiseType"]); # To avoid issues with uper cases and that
 
-    if maximum(pseudo_def["Noise"]) > 1
+    if (pseudo_def["NoiseType"] == "homoscedastic")
+        pseudo_def["NoiseType"] = "homo";
+    elseif (pseudo_def["NoiseType"] == "heteroscedastic")
+        pseudo_def["NoiseType"] = "hetero";
+    end
+
+    if pseudo_def["Noise"] == []
+        pseudo_def["Noise"] = ones(length(pseudo_def["Obs"])) .* 0.1;
+    end
+
+    if (pseudo_def["NoiseType"] == "hetero") && (maximum(pseudo_def["Noise"]) > 1)
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Sorry, but the noise percentage has to be between 0 and 1!")
+        return
+    end
+
+    if (minimum(pseudo_def["Noise"]) < 0)
+        println("-------------------------- Process STOPPED!!! --------------------------")
+        println("Sorry, but the noise percentage or standard deviation is negative and that CANNOT be!")
         return
     end
 
@@ -632,7 +678,8 @@ function defPseudoDatStructFiles()
     pseudo_def["flag"] = [];
 
     pseudo_def["Obs"] = []; # States that are observable. This is either a vecotr of strings (that has the same order asmodel_def["stName"] and model_def["eqns"]), a vector of integers insidating which states are observable or the string "All" if all states are observables. This can also be an experssion combining states (Only +,-,*,\ and ^ will be considered)
-    pseudo_def["Noise"] = []; # Percentage of heteroscedastic noise (introduced as value from 0 to 1). If empty 10% will be assumed. This has to be a vector of noise values for each observable.
+    pseudo_def["NoiseType"] = []; # String indicating if the desired noise is homoscedastic or heteroscedastic. The allowed strings are homo, homoscedastic or hetero, heteroscedastic (case independent). If empty, default will be heteroscedastic. Note that for high homoscedastic noise data could become negative (which to me does not make much sense), for now this will be set to a value close to 0.
+    pseudo_def["Noise"] = []; # Percentage of heteroscedastic noise (introduced as value from 0 to 1). If empty 10% heteroscedastic noise will be assumed. In the homoscedastic case, if empty a standard deviation of 1 will be assumes. This has to be a vector of noise values for each observable.
 
     return(pseudo_def)
 
@@ -736,6 +783,7 @@ function extractPseudoDatCSV(model_def, pseudo_def)
         simstu["plot"] = pseudo_def["plot"];
         simstu["flag"] = pseudo_def["flag"];
         simstu["Obs"] = pseudo_def["Obs"];
+        simstu["NoiseType"] = pseudo_def["NoiseType"];
         simstu["Noise"] = pseudo_def["Noise"];
     catch
         println("-------------------------- Process STOPPED!!! --------------------------")

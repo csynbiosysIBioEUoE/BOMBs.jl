@@ -227,9 +227,16 @@ pseudo_def[","\"","Obs","\"","] = [];
         # strings is given, these could also be an expression combining states (Only +,-,*,/ and ^ will be
         # considered).
 
+pseudo_def[","\"","NoiseType","\"","] = [];
+        # String indicating if the desired noise is homoscedastic or heteroscedastic. The allowed strings are
+        # homo, homoscedastic or hetero, heteroscedastic (case independent). If empty, default will be heteroscedastic.
+        # Note that for high homoscedastic noise data could become negative (which to me does not make much sense), for
+        # now this will be set to a value close to 0.
+
 pseudo_def[","\"","Noise","\"","] = [];
-        # Percentage of heteroscedastic noise (introduced as value from 0 to 1). If empty 10% will be
-        # assumed. This has to be a vector of noise values for each observable.
+        # Percentage of heteroscedastic noise (introduced as value from 0 to 1). If empty 10% heteroscedastic
+        # noise will be assumed. In the homoscedastic case, if empty a standard deviation of 1 will be assumed.
+        # This has to be a vector of noise values for each observable.
 
 "))
 
@@ -267,9 +274,16 @@ pseudo_def[","\"","Obs","\"","] = [];
         # strings is given, these could also be an expression combining states (Only +,-,*,/ and ^ will be
         # considered).
 
+pseudo_def[","\"","NoiseType","\"","] = [];
+        # String indicating if the desired noise is homoscedastic or heteroscedastic. The allowed strings are
+        # homo, homoscedastic or hetero, heteroscedastic (case independent). If empty, default will be heteroscedastic.
+        # Note that for high homoscedastic noise data could become negative (which to me does not make much sense), for
+        # now this will be set to a value close to 0.
+
 pseudo_def[","\"","Noise","\"","] = [];
-        # Percentage of heteroscedastic noise (introduced as value from 0 to 1). If empty 10% will be
-        # assumed. This has to be a vector of noise values for each observable.
+        # Percentage of heteroscedastic noise (introduced as value from 0 to 1). If empty 10% heteroscedastic
+        # noise will be assumed. In the homoscedastic case, if empty a standard deviation of 1 will be assumed.
+        # This has to be a vector of noise values for each observable.
 
 "))
 
