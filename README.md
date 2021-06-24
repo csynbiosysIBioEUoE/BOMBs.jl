@@ -117,4 +117,4 @@ If you will use the package for your research, please refference it as: \
   **5. DifferentialEquations.jl:** https://github.com/SciML/DifferentialEquations.jl \
   **6. GaussianProcesses.jl:** https://github.com/STOR-i/GaussianProcesses.jl \
   **7. GaussianMixtures.jl:** https://github.com/davidavdav/GaussianMixtures.jl \
-  **8. ScikitLearnBase.jl:** https://github.com/DavidGomezC/BOMBS.jl/blob/main/src/BOMBS.jl
+  **8. ScikitLearnBase.jl:** https://github.com/cstjean/ScikitLearnBase.jl
