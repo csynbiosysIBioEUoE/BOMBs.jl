@@ -1,4 +1,4 @@
-module BOMBS
+module Bombs
 
 # Load dependencies
 using BayesianOptimization
