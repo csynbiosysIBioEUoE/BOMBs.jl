@@ -1,4 +1,4 @@
-using Bombs
+using BOMBs
 using Test
 using CSV
 using DataFrames
@@ -603,11 +603,11 @@ end
     E = [[1 0; 0 1]];
     MU = reshape([10, 10], 2, 1);
     x = reshape([10, 10], 2, 1);
-    @test round(Bombs.H_Upper(w,E)) == 3;
-    @test round(Bombs.mvGauss(x, MU, E[1])[1], digits=2) == 0.16;
-    @test round(Bombs.H_Lower(w, E, MU'), digits = 1) == 2.5;
-    @test round(Bombs.GaussMix(x[:,1], convert(Array, MU'), E, w), digits=2) == 0.16;
-    @test round(Bombs.ZOTSE(MU', E, w)) == 2;
+    @test round(BOMBs.H_Upper(w,E)) == 3;
+    @test round(BOMBs.mvGauss(x, MU, E[1])[1], digits=2) == 0.16;
+    @test round(BOMBs.H_Lower(w, E, MU'), digits = 1) == 2.5;
+    @test round(BOMBs.GaussMix(x[:,1], convert(Array, MU'), E, w), digits=2) == 0.16;
+    @test round(BOMBs.ZOTSE(MU', E, w)) == 2;
     # Due to the use of global variables I cannot test the other functions... But I can test that the main script runs.
     # Do not know why, but I cannot make ScikitLearn work in the test file (works in scripts and jupyter)??? Need to have a look at it.
     # computeH(ps, model_def2, "test")
