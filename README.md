@@ -19,7 +19,7 @@ BOMBs (**B**ayesian **O**ptimisation of **M**odels for **B**io**s**ystems) is a 
 ## Installation
 ```julia
 using Pkg
-Pkg.add("BOMBs") # Note that this installation mode is still not available!
+Pkg.add("BOMBs")
 ```
 or latest master directly from github:
 ```julia
