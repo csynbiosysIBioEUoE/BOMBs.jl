@@ -407,7 +407,7 @@ function GenerateModel(model_def)
         else
             ONSim = string("
                 prob = ODEProblem(",join(model_def["NameF"]),"ODE!,y_al,(0.0,Float64(24*60-1)),pSS);
-                ssv = solve(prob, ",join(model_def["solver"]),"(),reltol=",model_def["tols"][1],",abstol=",model_def["tols"][2],");
+                ssv = Sundials.solve(prob, ",join(model_def["solver"]),"(),reltol=",model_def["tols"][1],",abstol=",model_def["tols"][2],");
                 y0 = ssv[:,end]; ");
         end
     elseif typeof(model_def["Y0Sim"]) == Float64 || typeof(model_def["Y0Sim"]) == Float32 || typeof(model_def["Y0Sim"]) == Int
@@ -419,7 +419,7 @@ function GenerateModel(model_def)
         else
             ONSim = string("
                 prob = ODEProblem(",join(model_def["NameF"]),"ODE!,y_al,(0.0,Float64(",model_def["Y0Sim"],"*24*60-1)),pSS);
-                ssv = solve(prob, ",join(model_def["solver"]),"(),reltol=",model_def["tols"][1],",abstol=",model_def["tols"][2],");
+                ssv = Sundials.solve(prob, ",join(model_def["solver"]),"(),reltol=",model_def["tols"][1],",abstol=",model_def["tols"][2],");
                 y0 = ssv[:,end]; ");
         end
     end
@@ -427,7 +427,7 @@ function GenerateModel(model_def)
     if model_def["solver"] == "CVOED_BDF"
         soso = "Sundials.";
     else
-        soso = "";
+        soso = "Sundials.";
     end
 
     fun3 = string("

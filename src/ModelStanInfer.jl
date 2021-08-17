@@ -1912,7 +1912,7 @@ function plotStanResults(staninf_res, model_def, bayinf_def)
     end
 
     # Plot 1, the bivariate distributions
-    pc = corrplot(staninf_res["posterior"], label = model_def["parName"], size = [4000, 4000]);
+    pc = corrplot(staninf_res["posterior"], label = model_def["parName"]);
     savefig(string(cudi, "\\Results\\", model_def["NameF"],"_",today(), "\\PosteriorPlots_", bayinf_def["flag"], ".png"));
 
     # Plot 2, the simulations
