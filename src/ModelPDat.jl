@@ -609,7 +609,13 @@ function checkStructPseudoDat(model_def, pseudo_def)
         if convert(Bool,sum(occursin.("+", pseudo_def["Obs"]))) || convert(Bool,sum(occursin.("-", pseudo_def["Obs"]))) ||
            convert(Bool,sum(occursin.("/", pseudo_def["Obs"]))) ||
            convert(Bool,sum(occursin.("*", pseudo_def["Obs"]))) || convert(Bool,sum(occursin.("^", pseudo_def["Obs"])))
-            nothing
+            
+            if sum([sum(occursin.(model_def["stName"], pseudo_def["Obs"][k])) for k in 1:length(model["Obs"])]) == 0
+                println("-------------------------- Process STOPPED!!! --------------------------")
+                println(string("Sorry, but there is some issue with the contents of the field Obs."))
+                println("It seems that the observable(s) selected do not match any state")
+                return
+            end
         else
             if sum([sum(occursin.(model_def["stName"], pseudo_def["Obs"][k])) for k in 1:length(model["Obs"])]) == 0
                 println("-------------------------- Process STOPPED!!! --------------------------")
