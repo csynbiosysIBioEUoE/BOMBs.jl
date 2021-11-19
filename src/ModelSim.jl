@@ -87,6 +87,12 @@ function simulateODEs(model_def, simul_def)
     println("--------------------------------------------------------------------------------------")
     println("")
 
+    if model_def["nInp"]>1
+        for i in 1:simul_def["Nexp"]
+            simul_def["uInd"][i] = Array(simul_def["uInd"][i]');
+        end
+    end
+
     return simuls, model_def, simul_def
 
 end
@@ -273,7 +279,7 @@ function checkStructSimul(model_def, simul_def)
             return
         end
         if model_def["nInp"] != 0
-            if size(simul_def["uInd"][i])[1] != (length(simul_def["switchT"][i])-1)
+            if size(simul_def["uInd"][i])[2] != (length(simul_def["switchT"][i])-1)
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
                 return

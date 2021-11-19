@@ -256,7 +256,7 @@ function checkStructMLE(model_def, mle_def)
         end
 
         if model_def["nInp"] != 0
-            if size(mle_def["uInd"][i])[1] != (length(mle_def["switchT"][i])-1)
+            if size(mle_def["uInd"][i])[2] != (length(mle_def["switchT"][i])-1)
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
                 return
@@ -928,7 +928,7 @@ function checkStructCrossValMLE(model_def, cvmle_def)
         end
 
         if model_def["nInp"] != 0
-            if size(cvmle_def["uInd"][i])[1] != (length(cvmle_def["switchT"][i])-1)
+            if size(cvmle_def["uInd"][i])[2] != (length(cvmle_def["switchT"][i])-1)
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
                 return
@@ -1321,6 +1321,12 @@ function CrossValMLE(model_def, cvmle_def)
         println("")
     end
 
+    if model_def["nInp"]>1
+        for i in 1:cvmle_def["Nexp"]
+            cvmle_def["uInd"][i] = Array(cvmle_def["uInd"][i]');
+        end
+    end
+
     return cvmle_res, model_def, cvmle_def
 
 end
@@ -1362,6 +1368,12 @@ function finishMLEres(mle_res, model_def, mle_def)
         println(string("Under the names PlotMLEResults_Exp(i)_",mle_def["flag"],".png", " and Plot_MLEConvergence_", mle_def["flag"], ".png"))
         println("--------------------------------------------------------------------------------------")
         println("")
+    end
+
+    if model_def["nInp"]>1
+        for i in 1:mle_def["Nexp"]
+            mle_def["uInd"][i] = Array(mle_def["uInd"][i]');
+        end
     end
 
     return(mle_res, model_def, mle_def)

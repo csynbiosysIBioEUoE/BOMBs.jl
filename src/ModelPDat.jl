@@ -222,6 +222,12 @@ function GenPseudoDat(model_def, pseudo_def)
     println("--------------------------------------------------------------------------------------")
     println("")
 
+    if model_def["nInp"]>1
+        for i in 1:pseudo_def["Nexp"]
+            pseudo_def["uInd"][i] = Array(pseudo_def["uInd"][i]');
+        end
+    end
+
     return pseudo_res, model_def, pseudo_def
 
 end
@@ -486,7 +492,7 @@ function checkStructPseudoDat(model_def, pseudo_def)
             return
         end
         if model_def["nInp"] != 0
-            if size(pseudo_def["uInd"][i])[1] != (length(pseudo_def["switchT"][i])-1)
+            if size(pseudo_def["uInd"][i])[2] != (length(pseudo_def["switchT"][i])-1)
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
                 return
@@ -617,7 +623,7 @@ function checkStructPseudoDat(model_def, pseudo_def)
                 return
             end
         else
-            if sum([sum(occursin.(model_def["stName"], pseudo_def["Obs"][k])) for k in 1:length(model["Obs"])]) == 0
+            if sum([sum(occursin.(model_def["stName"], pseudo_def["Obs"][k])) for k in 1:length(pseudo_def["Obs"])]) == 0
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println(string("Sorry, but there is some issue with the contents of the field Obs."))
                 println("It seems that the observable(s) selected do not match any state")
@@ -863,22 +869,26 @@ function PDatCSVGen(pseudo_res,model_def,pseudo_def)
 
         # Event Inputs matrix
         if model_def["nInp"] != 0
-            EvnInputs = zeros(length(pseudo_def["uInd"][expp]),2+(model_def["nInp"]*2));
+            EvnInputs = zeros(convert(Int, length(pseudo_def["uInd"][expp])/model_def["nInp"]),2+(model_def["nInp"]*2));
             evins_head = Array{String,1}(undef,2+(model_def["nInp"]*2));
             evins_head[1] = "Switchingtimes";
             evins_head[2] = "FinalTime";
 
             EvnInputs[:,1] = pseudo_def["switchT"][expp][1:end-1];
-            EvnInputs[:,2] = repeat([pseudo_def["switchT"][expp][end]], outer = [length(pseudo_def["uInd"][expp])]);
+            EvnInputs[:,2] = repeat([pseudo_def["switchT"][expp][end]], outer = [convert(Int,length(pseudo_def["uInd"][expp])/model_def["nInp"])]);
 
             for i in 1:model_def["nInp"]
                 if pseudo_def["preInd"] != []
-                    EvnInputs[:,(2+i)] = repeat([pseudo_def["preInd"][expp][i]], outer = [length(pseudo_def["uInd"][expp])]);
+                    EvnInputs[:,(2+i)] = repeat([pseudo_def["preInd"][expp][i]], outer = [convert(Int,length(pseudo_def["uInd"][expp])/model_def["nInp"])]);
                 else
-                    EvnInputs[:,(2+i)] = repeat([0], outer = [length(pseudo_def["uInd"][expp])]);
+                    EvnInputs[:,(2+i)] = repeat([0], outer = [convert(Int,length(pseudo_def["uInd"][expp])/model_def["nInp"])]);
                 end
                 evins_head[(2+i)] = string(model_def["inpName"][i],"_Pre");
-                EvnInputs[:,(2+model_def["nInp"])+i] = pseudo_def["uInd"][expp];
+                if model_def["nInp"] == 1
+                    EvnInputs[:,(2+model_def["nInp"])+i] = pseudo_def["uInd"][expp];
+                else
+                    EvnInputs[:,(2+model_def["nInp"])+i] = pseudo_def["uInd"][expp][:,i];
+                end
                 evins_head[(2+model_def["nInp"])+i] = string(model_def["inpName"][i]);
             end
 
