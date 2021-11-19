@@ -486,7 +486,7 @@ function checkStructPseudoDat(model_def, pseudo_def)
             return
         end
         if model_def["nInp"] != 0
-            if length(pseudo_def["uInd"][i]) != (length(pseudo_def["switchT"][i])-1)
+            if size(pseudo_def["uInd"][i])[1] != (length(pseudo_def["switchT"][i])-1)
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
                 return
@@ -571,7 +571,7 @@ function checkStructPseudoDat(model_def, pseudo_def)
 
     # Check that no step is no smaller than 2 unit of time
     for i in 1:pseudo_def["Nexp"]
-        for j in 1:length(pseudo_def["uInd"][i])
+        for j in 1:size(pseudo_def["uInd"][i])[2]
             if (pseudo_def["switchT"][i][j+1]-pseudo_def["switchT"][i][j])<=4
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println(string("Sorry, but 2 of the steps in experiment ", i, " are too close. This package cannot "))
@@ -609,7 +609,7 @@ function checkStructPseudoDat(model_def, pseudo_def)
         if convert(Bool,sum(occursin.("+", pseudo_def["Obs"]))) || convert(Bool,sum(occursin.("-", pseudo_def["Obs"]))) ||
            convert(Bool,sum(occursin.("/", pseudo_def["Obs"]))) ||
            convert(Bool,sum(occursin.("*", pseudo_def["Obs"]))) || convert(Bool,sum(occursin.("^", pseudo_def["Obs"])))
-            
+
             if sum([sum(occursin.(model_def["stName"], pseudo_def["Obs"][k])) for k in 1:length(model["Obs"])]) == 0
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println(string("Sorry, but there is some issue with the contents of the field Obs."))
