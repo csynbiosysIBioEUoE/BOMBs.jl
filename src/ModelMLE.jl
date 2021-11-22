@@ -1893,5 +1893,11 @@ function MLEtheta(model_def, mle_def)
         "));
     end
 
+    if model_def["nInp"]>1
+        for i in 1:mle_def["Nexp"]
+            mle_def["uInd"][i] = Array(mle_def["uInd"][i]');
+        end
+    end
+
     return(mle_res, model_def, mle_def)
 end
