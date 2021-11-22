@@ -688,10 +688,24 @@ function plotMLEResults(mle_res,model_def,mle_def)
     simul_def["theta"] = convert(Array, mle_res["Theta"]);
     simul_def["flag"] = "MLEsimulations1";
 
+    if model_def["nInp"]>1
+        for i in 1:simul_def["Nexp"]
+            simul_def["uInd"][i] = Array(simul_def["uInd"][i]');
+        end
+    end
+
     simuls, model_def, simul_def = simulateODEs(model_def, simul_def);
     simul_def["theta"] = convert(Array, mle_res["BestTheta"]);
     simul_def["flag"] = "MLEsimulations2";
     simulsBest, ~, ~ = simulateODEs(model_def, simul_def);
+
+    if model_def["nInp"]>1
+        for i in 1:simul_def["Nexp"]
+            if size(simul_def["uInd"][i])[2] != model_def["nInp"]>1
+                simul_def["uInd"][i] = Array(simul_def["uInd"][i]');
+            end
+        end
+    end
 
     for i in 1:mle_def["Nexp"]
 
