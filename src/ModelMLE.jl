@@ -1159,7 +1159,7 @@ function checkStructCrossValMLE(model_def, cvmle_def)
            convert(Bool,sum(occursin.("*", cvmle_def["Obs"]))) || convert(Bool,sum(occursin.("^", cvmle_def["Obs"])))
             nothing
         else
-            if sum(occursin.(model_def["stName"], cvmle_def["Obs"])) == 0
+            if sum(sum.([occursin.(model_def["stName"][k], cvmle_def["Obs"]) for k in 1:length(model_def["stName"])])) == 0
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println(string("Sorry, but there is some issue with the contents of the field Obs."))
                 println("It seems that the observable(s) selected do not match any state")

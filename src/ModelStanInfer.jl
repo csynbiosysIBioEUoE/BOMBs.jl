@@ -757,7 +757,8 @@ function checkStructBayInfData(model_def, data_def)
            convert(Bool,sum(occursin.("*", data_def["Obs"]))) || convert(Bool,sum(occursin.("^", data_def["Obs"])))
             nothing
         else
-            if sum(occursin.(model_def["stName"], data_def["Obs"])) == 0
+            if sum(sum.([occursin.(model_def["stName"][k], data_def["Obs"]) for k in 1:length(model_def["stName"])])) == 0
+            # if sum(occursin.(model_def["stName"], data_def["Obs"])) == 0
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println(string("Sorry, but there is some issue with the contents of the field Obs."))
                 println("It seems that the observable(s) selected do not match any state")
@@ -1055,14 +1056,18 @@ function reparamDictStan(standict, bayinf_def)
             fuus[dis,pa] = "";
             for k in keys(standict[dis])
                 if occursin(k, bayinf_def["Priors"]["transpars"][pa])
-                    t1 = replace(bayinf_def["Priors"]["transpars"][pa], bayinf_def["Priors"]["transpars"][pa][1:findfirst("=", bayinf_def["Priors"]["transpars"][pa])[1]] => "")
-                    t1 = replace(t1, "\n" => "")
-                    t1 = replace(t1, ";" => "")
-                    t1 = replace(t1, k => "x")
-                    tt = (string("f",dis,pa,"(x) = ", string("(", t1, ")-", standict[dis][k]), "; val = find_zero(f",dis,pa,", 0);"))
-                    fuus[dis,pa] = tt;
-                    s1 = Meta.parse(fuus[dis,pa]);
-                    standict2[dis][k] = @eval $s1;
+                    try
+                        t1 = replace(bayinf_def["Priors"]["transpars"][pa], bayinf_def["Priors"]["transpars"][pa][1:findfirst("=", bayinf_def["Priors"]["transpars"][pa])[1]] => "")
+                        t1 = replace(t1, "\n" => "")
+                        t1 = replace(t1, ";" => "")
+                        t1 = replace(t1, k => "x")
+                        tt = (string("f",dis,pa,"(x) = ", string("(", t1, ")-", standict[dis][k]), "; val = find_zero(f",dis,pa,", 0);"))
+                        fuus[dis,pa] = tt;
+                        s1 = Meta.parse(fuus[dis,pa]);
+                        standict2[dis][k] = @eval $s1;
+                    catch
+                        # An error can happen if a parameter name is the name of another parameter plus something else. In this case we ignore the error and do not account for the computations since it would be wrong.
+                    end
                 end
             end
         end
@@ -1233,7 +1238,7 @@ functions{
             erros = string("    real ErrosMul[stslm,stslm,m,obser]; \n")
         end
 
-        if bayinf_def["MultiNormFit"]
+        if bayinf_def["MultiNormFit"] && (sum(occursin.("multi_normal", bayinf_def["Priors"]["pridis"]))!=0)
             mnp = string("
     // Prior parameters
     int numN;
@@ -1751,11 +1756,11 @@ function getStanInferenceElements(model_def, bayinf_def)
         end
     end
 
-    if bayinf_def["StanSettings"]["init"] != [] && bayinf_def["Priors"] <: Dict
+    if bayinf_def["StanSettings"]["init"] != [] && typeof(bayinf_def["Priors"]) <: Dict
         if bayinf_def["Priors"]["transpars"] == []
             init = bayinf_def["StanSettings"]["init"];
         else
-            init = reparamDictStan(bayinf_def["StanSettings"], bayinf_def);
+            init = reparamDictStan(bayinf_def["StanSettings"]["init"], bayinf_def);
         end
     else
         init = [];

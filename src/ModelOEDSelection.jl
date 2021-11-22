@@ -372,7 +372,9 @@ function checkStructOEDMS(oedms_def)
            convert(Bool,sum(occursin.("*", oedms_def["Obs"]))) || convert(Bool,sum(occursin.("^", oedms_def["Obs"])))
             nothing
         else
-            if sum(occursin.(oedms_def["Model_1"]["stName"], oedms_def["Obs"])) == 0 || sum(occursin.(oedms_def["Model_2"]["stName"], oedms_def["Obs"])) == 0
+            if sum(sum.([occursin.(oedms_def["Model_1"]["stName"][k], oedms_def["Model_1"]["Obs"]) for k in 1:length(oedms_def["Model_1"]["stName"])])) == 0 ||
+                sum(sum.([occursin.(oedms_def["Model_2"]["stName"][k], oedms_def["Model_2"]["Obs"]) for k in 1:length(oedms_def["Model_2"]["stName"])])) == 0
+            # if sum(occursin.(oedms_def["Model_1"]["stName"], oedms_def["Obs"])) == 0 || sum(occursin.(oedms_def["Model_2"]["stName"], oedms_def["Obs"])) == 0
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println(string("Sorry, but there is some issue with the contents of the field Obs."))
                 println("It seems that the observable(s) selected do not match any state for one of the models")

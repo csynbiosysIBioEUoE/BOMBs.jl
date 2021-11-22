@@ -293,7 +293,8 @@ function checkStructOEDMC(oedmc_def)
            convert(Bool,sum(occursin.("*", oedmc_def["Obs"]))) || convert(Bool,sum(occursin.("^", oedmc_def["Obs"])))
             nothing
         else
-            if sum(occursin.(oedmc_def["Model"]["stName"], oedmc_def["Obs"])) == 0
+            if sum(sum.([occursin.(oedmc_def["Model"]["stName"][k], oedmc_def["Obs"]) for k in 1:length(oedmc_def["Model"]["stName"])])) == 0
+            # if sum(occursin.(oedmc_def["Model"]["stName"], oedmc_def["Obs"])) == 0
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println(string("Sorry, but there is some issue with the contents of the field Obs."))
                 println("It seems that the observable(s) selected do not match any state for one of the models")
