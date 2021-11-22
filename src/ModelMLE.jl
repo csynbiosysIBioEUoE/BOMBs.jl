@@ -498,7 +498,7 @@ function checkStructMLE(model_def, mle_def)
            convert(Bool,sum(occursin.("*", mle_def["Obs"]))) || convert(Bool,sum(occursin.("^", mle_def["Obs"])))
             nothing
         else
-            if sum(occursin.(model_def["stName"], mle_def["Obs"])) == 0
+            if sum(sum.([occursin.(model_def["stName"][k], mle_def["Obs"]) for k in 1:length(model_def["stName"])])) == 0
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println(string("Sorry, but there is some issue with the contents of the field Obs."))
                 println("It seems that the observable(s) selected do not match any state")
