@@ -1590,7 +1590,7 @@ function restructureDataInference(model_def, bayinf_def)
 
     for i in collect(1:bayinf_def["Data"]["Nexp"]) # Loop that opens a file for each iteration to extract the file with maximum data points
         if model_def["nInp"] != 0
-            mdpI[i] = length(bayinf_def["Data"]["uInd"][i]);
+            mdpI[i] = convert(Int,length(bayinf_def["Data"]["uInd"][i])/model_def["nInp"]);
         else
             mdpI[i] = 1;
         end
