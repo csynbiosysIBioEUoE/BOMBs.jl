@@ -113,7 +113,7 @@ function checkStructOEDMC(oedmc_def)
         typeof(oedmc_def["fixedStep"]) != Array{Tuple{Int,Array{Float32,1}},1} && typeof(oedmc_def["fixedStep"]) != Array{Tuple{Int,Array{Any,1}},1} &&
         typeof(oedmc_def["fixedStep"]) != Array{Tuple{Int,Array{T,1} where T},1}
         println("-------------------------- Process STOPPED!!! --------------------------")
-        println("Please, check the field fixedStep! This should have the structure of Array{Tuple{Int,Array{Number,1}},1}. ")
+        println("Please, check the field fixedStep! This should have the structure of Array{Tuple{Int,Array{Any,1}},1}. ")
         return
     elseif oedmc_def["equalStep"] != [] && typeof(oedmc_def["equalStep"]) != Array{Array{Int,1},1}
         println("-------------------------- Process STOPPED!!! --------------------------")
@@ -446,12 +446,14 @@ function checkStructOEDMC(oedmc_def)
         end
 
         fi = [oedmc_def["fixedStep"][j][2] for j in 1:length(oedmc_def["fixedStep"])];
-        if length(fi) != oedmc_def["Model"]["nInp"] - length(oedmc_def["fixedInp"])
-            println("-------------------------- Process STOPPED!!! --------------------------")
-            println("Sorry, but it seems that there is a mismatch between the number of inputs and the number of values in the second entry of the tuple for the fixed step entry.")
-            println("Remember that any fixed inputs (fixedInp) are not considered in this field, so you should not include them here.")
-            println("Tip: If you want a fixed input with a fixed value in the experiment, hard-code its value in the definition of the model.")
-            return
+        for k in 1:length(fi)
+            if length(fi[k]) != oedmc_def["Model"]["nInp"] - length(oedmc_def["fixedInp"])
+                println("-------------------------- Process STOPPED!!! --------------------------")
+                println("Sorry, but it seems that there is a mismatch between the number of inputs and the number of values in the second entry of the tuple for the fixed step entry.")
+                println("Remember that any fixed inputs (fixedInp) are not considered in this field, so you should not include them here.")
+                println("Tip: If you want a fixed input with a fixed value in the experiment, hard-code its value in the definition of the model.")
+                return
+            end
         end
     end
 
