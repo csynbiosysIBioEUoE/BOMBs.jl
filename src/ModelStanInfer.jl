@@ -636,7 +636,7 @@ function checkStructBayInfData(model_def, data_def)
             return
         end
         if model_def["nInp"] != 0
-            if size(data_def["uInd"][i])[1] != (length(data_def["switchT"][i])-1)
+            if size(data_def["uInd"][i])[2] != (length(data_def["switchT"][i])-1)
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
                 return
@@ -856,7 +856,7 @@ function checkStructBayInfDataFiles(model_def, data_def)
         datatu["finalTime"] = [tmpInp[i][1,2] for i in 1:length(data_def["Inputs"])];
         datatu["switchT"] = [vcat(tmpInp[i][:,1], tmpInp[i][1,2]) for i in 1:length(data_def["Inputs"])];
         datatu["preInd"] = [tmpInp[i][1,3:(2+model_def["nInp"])] for i in 1:length(data_def["Inputs"])];
-        datatu["uInd"] = [tmpInp[i][:,(3+model_def["nInp"]):(3+model_def["nInp"]+(model_def["nInp"]-1))] for i in 1:length(data_def["Inputs"])];
+        datatu["uInd"] = [Array(tmpInp[i][:,(3+model_def["nInp"]):(3+model_def["nInp"]+(model_def["nInp"]-1))]') for i in 1:length(data_def["Inputs"])];
         datatu["tsamps"] = [tmpObs[i][:,1] for i in 1:length(data_def["Inputs"])];
 
         tmp1 = Array{Any,1}(undef,datatu["Nexp"])

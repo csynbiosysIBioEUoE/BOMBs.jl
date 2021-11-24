@@ -497,7 +497,7 @@ function extractSimulCSV(model_def, simul_def)
         simstu["switchT"] = [vcat(tmpInp[i][:,1], tmpInp[i][1,2]) for i in 1:length(simul_def["EventInputsFile"])];
         simstu["y0"] = [tmpObs[i][1,2:(1+model_def["nStat"])] for i in 1:length(simul_def["ObservablesFile"])];
         simstu["preInd"] = [tmpInp[i][1,3:(2+model_def["nInp"])] for i in 1:length(simul_def["EventInputsFile"])];
-        simstu["uInd"] = [tmpInp[i][:,(3+model_def["nInp"]):(3+model_def["nInp"]+(model_def["nInp"]-1))] for i in 1:length(simul_def["EventInputsFile"])];
+        simstu["uInd"] = [Array(tmpInp[i][:,(3+model_def["nInp"]):(3+model_def["nInp"]+(model_def["nInp"]-1))]') for i in 1:length(simul_def["EventInputsFile"])];
         simstu["theta"] = simul_def["theta"];
         simstu["tsamps"] = [tmpObs[i][:,1] for i in 1:length(simul_def["ObservablesFile"])];
         simstu["plot"] = simul_def["plot"];
