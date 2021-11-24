@@ -68,6 +68,9 @@ Pkg.clone("https://github.com/csynbiosysIBioEUoE/BOMBs.jl")
 
   For more information about this section and how to use it have a look at [Notebook5](https://github.com/csynbiosysIBioEUoE/BOMBs.jl/blob/main/Examples/5_BayesianInferenceStan.ipynb) or the brief function documentation of the section from [this document](https://github.com/csynbiosysIBioEUoE/BOMBs.jl/blob/main/FunctionDocs/BOMBS_Functions_Documentation.pdf).
 
+  #### 5b.- Bayesian Inference of Parameters (Turing)
+  The Bayesian inference section also allows you to generate all the necessary scripts and structures in the same fashion as the previous section but to perform inference using [Turing.jl](https://turing.ml/stable/). Note that the user will have to run the inference outside BOMBs since the package only generates all necessary data structures and scripts. Finally, there is less flexibility in the prior definition (no multivariate priors for example), nonetheless, it is a much quicker way to start performing simple inferences all within Julia without you adventuring into Stan. 
+
   ### 6.- Optimal Experimental Design for Model Selection
   The OED for model selection section allows you to design an experiment to optimally discriminate between 2 competing models. For now, the only design available is the optimisation of the concentration for your external inputs where the rest of the experimental details (sampling times, input switching times, observables, etc.) have to be provided. However, a lot of work was been done to allow maximum flexibility on how to optimise your inputs. This is; allow some inputs to be fixed across all the experiment, set a fixed value for some of your inputs to a fixed value to not be optimised, set for your inputs to have the same optimised value in some of the selected steps and any possible combination between these. Average between different observables will be considered.
 
@@ -118,3 +121,4 @@ If you will use the package for your research, please refference it as: \
   **6. GaussianProcesses.jl:** https://github.com/STOR-i/GaussianProcesses.jl \
   **7. GaussianMixtures.jl:** https://github.com/davidavdav/GaussianMixtures.jl \
   **8. ScikitLearnBase.jl:** https://github.com/cstjean/ScikitLearnBase.jl
+  **9. Turing.jl: ** https://turing.ml/stable/
