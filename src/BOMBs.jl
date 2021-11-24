@@ -16,6 +16,7 @@ using GaussianProcesses
 using GaussianMixtures
 using JLD
 using LinearAlgebra
+using MCMCChains
 using ODEInterfaceDiffEq
 using OrdinaryDiffEq
 using Plots
@@ -28,6 +29,7 @@ using SharedArrays
 using StatsBase
 using StatsPlots
 using Sundials
+using Turing
 
 # laod logo
 include("logoBOMBS.jl")
@@ -103,6 +105,16 @@ export saveStanResults
 export runStanInference
 export plotStanResults
 export StanInfer
+
+include("ModelTuringInfer.jl")
+export defTurInfStruct
+export fitPriorSampsMultiNormTuring
+export checkStructTurInf
+export genTuringModel
+export getTuringInferenceElements
+export saveTuringResults
+export plotTuringResults
+export TuringInfer
 
 include("ModelEntropyTheta.jl")
 export genSamplesPrior

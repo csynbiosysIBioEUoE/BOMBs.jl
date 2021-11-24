@@ -87,10 +87,8 @@ function simulateODEs(model_def, simul_def)
     println("--------------------------------------------------------------------------------------")
     println("")
 
-    if model_def["nInp"]>1
-        for i in 1:simul_def["Nexp"]
-            simul_def["uInd"][i] = Array(simul_def["uInd"][i]');
-        end
+    for i in 1:simul_def["Nexp"]
+        simul_def["uInd"][i] = Array(simul_def["uInd"][i]');
     end
 
     return simuls, model_def, simul_def
@@ -336,11 +334,9 @@ function checkStructSimul(model_def, simul_def)
 
     # Check that the inputs for the experiment are given as collumns
     try
-        if model_def["nInp"]>1
-            for i in 1:simul_def["Nexp"]
-                if size(simul_def["uInd"][i])[2] != model_def["nInp"];
-                    simul_def["uInd"][i] = simul_def["uInd"][i]';
-                end
+        for i in 1:simul_def["Nexp"]
+            if size(simul_def["uInd"][i])[2] != model_def["nInp"];
+                simul_def["uInd"][i] = simul_def["uInd"][i]';
             end
         end
     catch

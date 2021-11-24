@@ -729,11 +729,9 @@ function checkStructBayInfData(model_def, data_def)
 
     # Check that the inputs for the experiment are given as collumns
     try
-        if model_def["nInp"]>1
-            for i in 1:data_def["Nexp"]
-                if size(data_def["uInd"][i])[2] != model_def["nInp"];
-                    data_def["uInd"][i] = data_def["uInd"][i]';
-                end
+        for i in 1:data_def["Nexp"]
+            if size(data_def["uInd"][i])[2] != model_def["nInp"];
+                data_def["uInd"][i] = data_def["uInd"][i]';
             end
         end
     catch

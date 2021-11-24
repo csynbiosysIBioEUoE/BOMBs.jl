@@ -470,11 +470,9 @@ function checkStructMLE(model_def, mle_def)
 
     # Check that the inputs for the experiment are given as collumns
     try
-        if model_def["nInp"]>1
-            for i in 1:mle_def["Nexp"]
-                if size(mle_def["uInd"][i])[2] != model_def["nInp"];
-                    mle_def["uInd"][i] = mle_def["uInd"][i]';
-                end
+        for i in 1:mle_def["Nexp"]
+            if size(mle_def["uInd"][i])[2] != model_def["nInp"];
+                mle_def["uInd"][i] = mle_def["uInd"][i]';
             end
         end
     catch
@@ -688,10 +686,8 @@ function plotMLEResults(mle_res,model_def,mle_def)
     simul_def["theta"] = convert(Array, mle_res["Theta"]);
     simul_def["flag"] = "MLEsimulations1";
 
-    if model_def["nInp"]>1
-        for i in 1:simul_def["Nexp"]
-            simul_def["uInd"][i] = Array(simul_def["uInd"][i]');
-        end
+    for i in 1:simul_def["Nexp"]
+        simul_def["uInd"][i] = Array(simul_def["uInd"][i]');
     end
 
     simuls, model_def, simul_def = simulateODEs(model_def, simul_def);
@@ -699,11 +695,9 @@ function plotMLEResults(mle_res,model_def,mle_def)
     simul_def["flag"] = "MLEsimulations2";
     simulsBest, ~, ~ = simulateODEs(model_def, simul_def);
 
-    if model_def["nInp"]>1
-        for i in 1:simul_def["Nexp"]
-            if size(simul_def["uInd"][i])[2] != model_def["nInp"]>1
-                simul_def["uInd"][i] = Array(simul_def["uInd"][i]');
-            end
+    for i in 1:simul_def["Nexp"]
+        if size(simul_def["uInd"][i])[2] != model_def["nInp"]>1
+            simul_def["uInd"][i] = Array(simul_def["uInd"][i]');
         end
     end
 
@@ -1131,11 +1125,9 @@ function checkStructCrossValMLE(model_def, cvmle_def)
 
     # Check that the inputs for the experiment are given as collumns
     try
-        if model_def["nInp"]>1
-            for i in 1:cvmle_def["Nexp"]
-                if size(cvmle_def["uInd"][i])[2] != model_def["nInp"];
-                    cvmle_def["uInd"][i] = cvmle_def["uInd"][i]';
-                end
+        for i in 1:cvmle_def["Nexp"]
+            if size(cvmle_def["uInd"][i])[2] != model_def["nInp"];
+                cvmle_def["uInd"][i] = cvmle_def["uInd"][i]';
             end
         end
     catch
@@ -1335,10 +1327,8 @@ function CrossValMLE(model_def, cvmle_def)
         println("")
     end
 
-    if model_def["nInp"]>1
-        for i in 1:cvmle_def["Nexp"]
-            cvmle_def["uInd"][i] = Array(cvmle_def["uInd"][i]');
-        end
+    for i in 1:cvmle_def["Nexp"]
+        cvmle_def["uInd"][i] = Array(cvmle_def["uInd"][i]');
     end
 
     return cvmle_res, model_def, cvmle_def
@@ -1384,10 +1374,8 @@ function finishMLEres(mle_res, model_def, mle_def)
         println("")
     end
 
-    if model_def["nInp"]>1
-        for i in 1:mle_def["Nexp"]
-            mle_def["uInd"][i] = Array(mle_def["uInd"][i]');
-        end
+    for i in 1:mle_def["Nexp"]
+        mle_def["uInd"][i] = Array(mle_def["uInd"][i]');
     end
 
     return(mle_res, model_def, mle_def)
@@ -1907,10 +1895,8 @@ function MLEtheta(model_def, mle_def)
         "));
     end
 
-    if model_def["nInp"]>1
-        for i in 1:mle_def["Nexp"]
-            mle_def["uInd"][i] = Array(mle_def["uInd"][i]');
-        end
+    for i in 1:mle_def["Nexp"]
+        mle_def["uInd"][i] = Array(mle_def["uInd"][i]');
     end
 
     return(mle_res, model_def, mle_def)

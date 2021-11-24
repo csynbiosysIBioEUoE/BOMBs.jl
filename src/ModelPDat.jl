@@ -222,10 +222,8 @@ function GenPseudoDat(model_def, pseudo_def)
     println("--------------------------------------------------------------------------------------")
     println("")
 
-    if model_def["nInp"]>1
-        for i in 1:pseudo_def["Nexp"]
-            pseudo_def["uInd"][i] = Array(pseudo_def["uInd"][i]');
-        end
+    for i in 1:pseudo_def["Nexp"]
+        pseudo_def["uInd"][i] = Array(pseudo_def["uInd"][i]');
     end
 
     return pseudo_res, model_def, pseudo_def
@@ -589,11 +587,9 @@ function checkStructPseudoDat(model_def, pseudo_def)
 
     # Check that the inputs for the experiment are given as collumns
     try
-        if model_def["nInp"]>1
-            for i in 1:pseudo_def["Nexp"]
-                if size(pseudo_def["uInd"][i])[2] != model_def["nInp"];
-                    pseudo_def["uInd"][i] = pseudo_def["uInd"][i]';
-                end
+        for i in 1:pseudo_def["Nexp"]
+            if size(pseudo_def["uInd"][i])[2] != model_def["nInp"];
+                pseudo_def["uInd"][i] = pseudo_def["uInd"][i]';
             end
         end
     catch

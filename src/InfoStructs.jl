@@ -16,6 +16,7 @@ Please, if you want information about one of the package structures, type:
     3) ","\"","pseudo-data","\"",", ","\"","pseudodata","\"",", ","\"","pseudo data","\""," for the model pseudo-data generation section
     4) ","\"","mle","\"",", ","\"","likelihood","\""," for the maximum likelihood estimation section
     5) ","\"","inference","\"",", ","\"","stan","\"",", ","\"","stan inference","\"",", ","\"","staninference","\""," for the Bayesian parameter inference section
+    5b) ","\"","turing","\"",", ","\"","turing inference","\"",", ","\"","turinginference","\""," for the Bayesian parameter inference section using Turing.jl
     6) ","\"","oedms","\"",", ","\"","model selection","\"",", ","\"","modelselection","\"",", ","\"","oed model selection","\""," for the optimal experimental design for model selection section
     7) ","\"","oedmc","\"",", ","\"","model calibration","\"",", ","\"","modelcalibration","\"",", ","\"","oed model calibration","\""," for the optimal experimental design for model calibration section
 
@@ -573,6 +574,60 @@ stan_def[","\"","jitter","\"","] = [];
 
 "));
 
+elseif woohoo == "turing" || woohoo == "turinginference"
+    print(string(raw"
+
+                CALL defTurInfStruct()
+
+            MAIN STRUCTURE
+
+    turinf_def[","\"","Priors","\"","] = []; # Three options for this:
+            # 1) A 2*N array containing the bounds for the parameters. Order of parameters will be assumed as
+                # the one introduced in model_def[","\"","parName","\"","]. As a prior a truncated Normal covering 2
+                # standard deviations in the bounds given will be generated as prior.
+            # 2) Path to a CSV file containing samples for the parameters. Fitting of the samples to
+                # different type of distributions will be done to generate the priors. Order of parameters
+                # will be assumed as the one introduced in model_def[","\"","parName","\"","]. You can also
+                # introduce a 2D array of floats with the samples (Array{Float64,2}).
+            # 3) Array containing any distribution from the Julia package Distributions.jl with their
+                # corresponding parameters. Order of parameters will be assumed as
+                # the one introduced in model_def[","\"","parName","\"","].
+
+    turinf_def[","\"","Data","\"","] = []; # Two options:
+            # 1) A dictionary containing 3 fields. Observables, for the path to the files containing the
+                # experimental data. Inputs, for the path to the files containing the input profiles for the
+                # experiments. Obs, a string vector containing the observables of the experiments.
+                # The format of the files has to be the same one as the ones generated in the
+                # pseudo-data section. For each of the 2 entries, more than one file can be given if a
+                # multi-experimental inference wants to be done. Obs file also needs to be given.
+                # A y0 in a field with the same name has to be given for each experiment. The field is
+                # compulsory, even if not used.
+                # WARNING: For now, this option does not include extraction of covariance matrix for data.
+            # 2) A dictionary containing the same structure as the simul_def plus the fields DataMean and
+                # DataError containing the experimental data. You can call the function defBayInfDataStruct()
+                # to obtain the empty structure of the dictionary.
+
+    turinf_def[","\"","flag","\"","] = [];
+                # String to attach a unique flag to the generated files so it is not overwritten.
+                # If empty, nothing will be added.
+
+    turinf_def[","\"","plot","\"","] = [];
+                # true, flase, ","\"","Yes","\"",", ","\"","yes","\"",", ","\"","No","\"",", ","\"","no","\""," or []
+                # indicating if plots with the results will be generated. Default is false.
+
+    turinf_def[","\"","MultiNormFit","\"","] = [];
+                # true, false, ","\"","yes","\"",", ","\"","no","\"",", ","\"","Yes","\"",", ","\"","No","\""," or []
+                # indicating that if samples are given to fit, the prior will be fitted as a set of Normal distributions
+                # or instead the best type of distributions that can be fit with the samples.
+
+    turinf_def[","\"","Trunc","\"","] = [];
+                # true, false, ","\"","yes","\"",", ","\"","no","\"",", ","\"","Yes","\"",", ","\"","No","\"",", [] or
+                # 2*N array indicating upper and lower bounds for the priors. If true then the truncations will be
+                # the smaller sample minus 10% its value (never allowing this go bellow 0) and the bigest sample plus
+                # 10% its value. If false no truncation will be applaied to any prior. In all cases, order of parameters
+                # will be assumed as the one introduced in model_def[","\"","parName","\"","]. Default will be true.
+
+    "))
 
 
     elseif woohoo == "oedms" || woohoo == "model selection" || woohoo == "modelselection" || replace("woohoo", " "=>"") == "oedmodelselection"
