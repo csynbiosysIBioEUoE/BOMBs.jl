@@ -99,6 +99,7 @@ function settingsBayesOptMCBU(oedmc_def)
           uppe,                                     # lowerbounds, upperbounds
           repetitions = 1,                          # evaluate the function for each input 1 times
           maxiterations = oedmc_def["maxiter"],     # evaluate at 50 input positions
+          maxduration = oedmc_def["maxtime"],
           sense = Max,                              # maximise the function
           verbosity = Progress);
 

@@ -28,6 +28,7 @@ function defODEModelSelectStruct()
     oedms_def["uUpper"] = []; # Vector indicating the upper bounds for the inducers
     oedms_def["uLower"] = []; # Vector indicating the lower bounds for the inducers
     oedms_def["maxiter"] = []; # Maximum number of iterations for the Bayesian Optimisation. If nothing is introduced a default of 100 iterations will be taken
+    oedms_def["maxtime"] = []; # Maximum time allowed for the Bayesian Optimisation. If nothing is introduced, only the maximum number of iterations will be taken into account.
 
     return(oedms_def)
 
@@ -40,7 +41,7 @@ function checkStructOEDMS(oedms_def)
     # Check that all the fields (and nothing more) are present
     entries = ["Model_1", "Model_2", "Obs", "Theta_M1", "Theta_M2", "y0_M1", "y0_M2", "preInd_M1", "preInd_M2",
                 "finalTime", "switchT", "tsamps", "equalStep",
-                "fixedInp", "fixedStep", "plot", "flag", "uUpper", "uLower", "maxiter"];
+                "fixedInp", "fixedStep", "plot", "flag", "uUpper", "uLower", "maxtime", "maxiter"];
     if symdiff(entries,keys(oedms_def))!=[] && symdiff(entries,keys(oedms_def)) != ["savepath", "savename"]
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the entries of the dictionary, there is something wrong...")
@@ -183,6 +184,11 @@ function checkStructOEDMS(oedms_def)
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the field maxiter! This should be an integer or an empty vector")
         return
+    elseif oedms_def["maxtime"] != [] && typeof(oedms_def["maxtime"]) != Array{Int,1} != typeof(oedms_def["maxtime"]) != Int &&
+        oedmc_def["maxtime"] != [Inf] && oedmc_def["maxtime"] != Inf
+        println("-------------------------- Process STOPPED!!! --------------------------")
+        println("Please, check the field maxtime! This should be an integer or an empty vector")
+        return
     end
 
     # Extract necessary elements to ease generalisation
@@ -204,6 +210,12 @@ function checkStructOEDMS(oedms_def)
         oedms_def["maxiter"] = 100;
     elseif typeof(oedms_def["maxiter"]) == Array{Int,1}
         oedms_def["maxiter"] = oedms_def["maxiter"][1];
+    end
+
+    if oedms_def["maxtime"] == []
+        oedms_def["maxtime"] = Inf;
+    elseif typeof(oedms_def["maxtime"]) == Array{Int,1}
+        oedms_def["maxtime"] = oedms_def["maxtime"][1];
     end
 
     if typeof(oedms_def["Theta_M1"]) == Array{String,1}
@@ -1438,6 +1450,7 @@ function settingsBayesOpt(oedms_def)
           uppe,                                     # lowerbounds, upperbounds
           repetitions = 1,                          # evaluate the function for each input 1 times
           maxiterations = oedms_def["maxiter"],     # evaluate at 50 input positions
+          maxduration = oedms_def["maxtime"],
           sense = Max,                              # maximise the function
           verbosity = Progress);
 

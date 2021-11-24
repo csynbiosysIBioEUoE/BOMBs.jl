@@ -681,6 +681,10 @@ oedms_def[","\"","maxiter","\"","] = [];
         # Maximum number of iterations for the Bayesian Optimisation. If nothing is introduced a default
         # of 100 iterations will be taken
 
+oedms_def[","\"","maxtime","\"","] = [];
+        # Maximum time allowed for the Bayesian Optimisation. If nothing is introduced, only the
+        # maximum number of iterations will be taken into account.
+
 "))
 
 
@@ -757,6 +761,10 @@ oedmc_def[","\"","uLower","\"","] = [];
 oedmc_def[","\"","maxiter","\"","] = [];
         # Maximum number of iterations for the Bayesian Optimisation. If nothing is introduced a default
         # of 100 iterations will be taken
+
+oedmc_def[","\"","maxtime","\"","] = [];
+        # Maximum time allowed for the Bayesian Optimisation. If nothing is introduced, only the
+        # maximum number of iterations will be taken into account.
 
 oedmc_def[","\"","util","\"","] = [];
         # String indicating entropy or perc (or percentile) as the core of the utility function to

@@ -120,6 +120,7 @@ function settingsBayesOpt(oedms_def)
           uppe,                                     # lowerbounds, upperbounds
           repetitions = 1,                          # evaluate the function for each input 1 times
           maxiterations = oedms_def["maxiter"],     # evaluate at 50 input positions
+          maxduration = oedms_def["maxtime"],
           sense = Max,                              # maximise the function
           verbosity = Progress);
 

@@ -21,6 +21,7 @@ function defODEModelCalibrStruct()
     oedmc_def["uUpper"] = []; # Vector indicating the upper bounds for the inducers
     oedmc_def["uLower"] = []; # Vector indicating the lower bounds for the inducers
     oedmc_def["maxiter"] = []; # Maximum number of iterations for the Bayesian Optimisation. If nothing is introduced a default of 100 iterations will be taken
+    oedmc_def["maxtime"] = []; # Maximum time allowed for the Bayesian Optimisation. If nothing is introduced, only the maximum number of iterations will be taken into account.
 
     oedmc_def["util"] = []; # String indicating entropy or perc (or percentile) as the core of the utility function to compute the uncertainty of the model simulations. The default will be to use percentiles.
 
@@ -32,7 +33,7 @@ function checkStructOEDMC(oedmc_def)
 
     # Check that all the fields (and nothing more) are present
     entries = ["Model", "Obs", "Theta", "y0", "preInd", "finalTime", "switchT", "tsamps", "equalStep",
-                "fixedInp", "fixedStep", "plot", "flag", "uUpper", "uLower", "maxiter", "util"];
+                "fixedInp", "fixedStep", "plot", "flag", "uUpper", "uLower", "maxiter", "maxtime", "util"];
     if symdiff(entries,keys(oedmc_def))!=[] && symdiff(entries,keys(oedmc_def)) != ["savepath", "savename"]
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the entries of the dictionary, there is something wrong...")
@@ -144,6 +145,11 @@ function checkStructOEDMC(oedmc_def)
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the field maxiter! This should be an integer or an empty vector")
         return
+    elseif oedmc_def["maxtime"] != [] && typeof(oedmc_def["maxtime"]) != Array{Int,1} != typeof(oedmc_def["maxtime"]) != Int &&
+        oedmc_def["maxtime"] != [Inf] && oedmc_def["maxtime"] != Inf
+        println("-------------------------- Process STOPPED!!! --------------------------")
+        println("Please, check the field maxtime! This should be an integer or an empty vector")
+        return
     elseif oedmc_def["util"] != [] && typeof(oedmc_def["util"]) != String && typeof(oedmc_def["util"]) != Array{String,1}
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the field util! This should be an empty vector or a string containing the word entropy or perc.")
@@ -169,6 +175,12 @@ function checkStructOEDMC(oedmc_def)
         oedmc_def["maxiter"] = 100;
     elseif typeof(oedmc_def["maxiter"]) == Array{Int,1}
         oedmc_def["maxiter"] = oedmc_def["maxiter"][1];
+    end
+
+    if oedmc_def["maxtime"] == []
+        oedmc_def["maxtime"] = Inf;
+    elseif typeof(oedmc_def["maxtime"]) == Array{Int,1}
+        oedmc_def["maxtime"] = oedmc_def["maxtime"][1];
     end
 
     if typeof(oedmc_def["Theta"]) == Array{String,1}
@@ -1030,6 +1042,7 @@ function settingsBayesOptMC(oedmc_def)
           uppe,                                     # lowerbounds, upperbounds
           repetitions = 1,                          # evaluate the function for each input 1 times
           maxiterations = oedmc_def["maxiter"],     # evaluate at 50 input positions
+          maxduration = oedmc_def["maxtime"],
           sense = Max,                              # maximise the function
           verbosity = Progress);
 
