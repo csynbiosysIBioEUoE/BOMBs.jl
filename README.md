@@ -70,7 +70,7 @@ Pkg.clone("https://github.com/csynbiosysIBioEUoE/BOMBs.jl")
 
   #### 5b.- Bayesian Inference of Parameters (Turing)
   The Bayesian inference section also allows you to generate all the necessary scripts and structures in the same fashion as the previous section but to perform inference using [Turing.jl](https://turing.ml/stable/). Note that the user will have to run the inference outside BOMBs since the package only generates all necessary data structures and scripts. Finally, there is less flexibility in the prior definition (no multivariate priors for example), nonetheless, it is a much quicker way to start performing simple inferences all within Julia without you adventuring into Stan. Also, to be able to use Turing you need to import Turing.jl and MCMCChains.jl (using Turing; using MCMCChains) since these are not included as dependencies of BOMBs. The main Turing model generated already imports these, so just make sure to have them installed.
-  
+
   For more information about this section and how to use it have a look at [Notebook5b](https://github.com/csynbiosysIBioEUoE/BOMBs.jl/blob/main/Examples/5b_BayesianInferenceTuring.ipynb) or the brief function documentation of the section from [this document](https://github.com/csynbiosysIBioEUoE/BOMBs.jl/blob/main/FunctionDocs/BOMBS_Functions_Documentation.pdf).
 
   ### 6.- Optimal Experimental Design for Model Selection
