@@ -16,7 +16,7 @@ using GaussianProcesses
 using GaussianMixtures
 using JLD
 using LinearAlgebra
-using MCMCChains
+# using MCMCChains
 using ODEInterfaceDiffEq
 using OrdinaryDiffEq
 using Plots
@@ -29,7 +29,7 @@ using SharedArrays
 using StatsBase
 using StatsPlots
 using Sundials
-using Turing
+# using Turing
 
 # laod logo
 include("logoBOMBS.jl")
