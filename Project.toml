@@ -35,7 +35,7 @@ Sundials = "c3572dad-4567-51f8-b174-8c6c989267f4"
 [compat]
 BayesianOptimization = "0.2"
 BlackBoxOptim = "0.5"
-CSV = "0.6"
+CSV = "0.6, 0.10"
 Calculus = "0.5"
 CmdStan = "6.0"
 DataFrames = "0.21, 1"
