@@ -222,7 +222,7 @@ function H_Lower(w, E, MU)
     for i in 1:comp
         inter = zeros(1,comp);
         for j in 1:comp
-            insu = w[j]*BOMBS.mvGauss(MU[i,:], MU[j,:], E[i]+E[j]);
+            insu = w[j]*BOMBs.mvGauss(MU[i,:], MU[j,:], E[i]+E[j]);
             inter[1,j] = insu;
         end
         Hl[1,i] = w[i]*log(sum(inter))

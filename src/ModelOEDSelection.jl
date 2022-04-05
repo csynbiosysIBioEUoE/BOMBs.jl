@@ -185,7 +185,7 @@ function checkStructOEDMS(oedms_def)
         println("Please, check the field maxiter! This should be an integer or an empty vector")
         return
     elseif oedms_def["maxtime"] != [] && typeof(oedms_def["maxtime"]) != Array{Int,1} != typeof(oedms_def["maxtime"]) != Int &&
-        oedmc_def["maxtime"] != [Inf] && oedmc_def["maxtime"] != Inf
+        oedms_def["maxtime"] != [Inf] && oedms_def["maxtime"] != Inf
         println("-------------------------- Process STOPPED!!! --------------------------")
         println("Please, check the field maxtime! This should be an integer or an empty vector")
         return
@@ -384,8 +384,8 @@ function checkStructOEDMS(oedms_def)
            convert(Bool,sum(occursin.("*", oedms_def["Obs"]))) || convert(Bool,sum(occursin.("^", oedms_def["Obs"])))
             nothing
         else
-            if sum(sum.([occursin.(oedms_def["Model_1"]["stName"][k], oedms_def["Model_1"]["Obs"]) for k in 1:length(oedms_def["Model_1"]["stName"])])) == 0 ||
-                sum(sum.([occursin.(oedms_def["Model_2"]["stName"][k], oedms_def["Model_2"]["Obs"]) for k in 1:length(oedms_def["Model_2"]["stName"])])) == 0
+            if sum(sum.([occursin.(oedms_def["Model_1"]["stName"][k], oedms_def["Obs"]) for k in 1:length(oedms_def["Model_1"]["stName"])])) == 0 ||
+                sum(sum.([occursin.(oedms_def["Model_2"]["stName"][k], oedms_def["Obs"]) for k in 1:length(oedms_def["Model_2"]["stName"])])) == 0
             # if sum(occursin.(oedms_def["Model_1"]["stName"], oedms_def["Obs"])) == 0 || sum(occursin.(oedms_def["Model_2"]["stName"], oedms_def["Obs"])) == 0
                 println("-------------------------- Process STOPPED!!! --------------------------")
                 println(string("Sorry, but there is some issue with the contents of the field Obs."))
@@ -1150,7 +1150,7 @@ function genOptimMSFuncts(oedms_def)
 
 ",join([string("    EUD",i, " = EuclideanDist(Obs",i,"_M1, Obs",i,"_M2); \n") for i in 1:length(oedms_def["Obs"])]),"
 
-    util = mean(",join([string("EUD",i) for i in 1:length(oedms_def["Obs"])], ","),");
+    util = mean([",join([string("EUD",i) for i in 1:length(oedms_def["Obs"])], ","),"])[1];
 ");
 else
 
@@ -1163,7 +1163,7 @@ else
 
 ",join([string("    BHD",i, " = BhattacharyyaDist(mu",i,"_M1[:,1], mu",i,"_M2[:,1], sd",i,"_M1, sd",i,"_M2); \n") for i in 1:length(oedms_def["Obs"])]),"
 
-    util = mean(",join([string("BHD",i) for i in 1:length(oedms_def["Obs"])], ","),");
+    util = mean([",join([string("BHD",i) for i in 1:length(oedms_def["Obs"])], ","),"])[1];
 
         ");
     end;

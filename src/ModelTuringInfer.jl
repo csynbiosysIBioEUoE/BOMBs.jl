@@ -628,7 +628,7 @@ function genTuringModel(model_def, turinf_def)
     if typeof(turinf_def["Data"]["Obs"]) == Array{Int,1}
 
         for i in 1:length(turinf_def["Data"]["Obs"])
-            simsB[i] = string("                        finalBay2[",i,",d] = part1[",turinf_def["Data"]["Obs"][i],", d-sp[q]]; \n");
+            simsB[i] = string("                        finalBay2[",i,",d] = part1[",turinf_def["Data"]["Obs"][i],", convert.(Int, d-sp[q])]; \n");
         end
 
     else
@@ -677,7 +677,7 @@ function genTuringModel(model_def, turinf_def)
             tmp2 = string("                        finalBay2[",i,",d] = ",turinf_def["Data"]["Obs"][i],"; \n");
             for j in 1:model_def["nStat"]
                 if occursin(model_def["stName"][j], tmp2)
-                    simsB[i] = replace(tmp2, model_def["stName"][j]=> string("part1[",j,", d-sp[q]]"))
+                    simsB[i] = replace(tmp2, model_def["stName"][j]=> string("part1[",j,", convert.(Int, d-sp[q])]"))
                 end
             end
 
@@ -689,16 +689,16 @@ function genTuringModel(model_def, turinf_def)
         if length(size(turinf_def["Data"]["DataError"][1][1])) == 1
             lik = string("
 
-
+                r = ",turinf_def["Data"]["Obs"],";
                 for ob in 1:",length(turinf_def["Data"]["Obs"]),"
                     if typeof(p) == Array{Float64, 1}
-                        obs = final[convert.(Int,round.(data[","\"","tsamps","\"","][exp])).+1, ",turinf_def["Data"]["Obs"],"];
+                        obs = final[convert.(Int,round.(data[","\"","tsamps","\"","][exp])).+1, [r[ob]]];
                     else
                         obs = finalBay2[ob, convert.(Int,round.(data[","\"","tsamps","\"","][exp])).+1];
                     end
 
                     for dat in 1:length(obs)
-                        data[","\"","DataMean","\"","][ob][dat] ~ Normal(obs[dat], data[","\"","DataError","\"","][ob][1][dat])
+                        data[","\"","DataMean","\"","][exp][:,ob][dat] ~ Normal(obs[dat], data[","\"","DataError","\"","][1][ob][dat])
                     end
                 end
                 ");
@@ -787,7 +787,7 @@ function genTuringModel(model_def, turinf_def)
 
                 for ob in 1:",length(turinf_def["Data"]["Obs"]),"
                     for dat in 1:length(obs)
-                        data[","\"","DataMean","\"","][ob][dat] ~ Normal(obs[ob][dat], data[","\"","DataError","\"","][ob][1][dat])
+                        data[","\"","DataMean","\"","][exp][:,ob][dat] ~ Normal(obs[dat], data[","\"","DataError","\"","][1][ob][dat])
                     end
                 end
                 ")
@@ -865,30 +865,30 @@ function genTuringModel(model_def, turinf_def)
 
                 for q in collect(1:Nevents)
 
-                    lts = length(ts[(sp[q]+1):sp[q+1]+1]);  # General way to define the number of elements in each event series
+                    lts = length(ts[convert.(Int, (sp[q]+1):sp[q+1]+1)]);  # General way to define the number of elements in each event series
 
-                    Tevent = ts[(sp[q]+1):sp[q+1]+1];  # General way to extract the times of each event
+                    Tevent = ts[convert.(Int,(sp[q]+1):sp[q+1]+1)];  # General way to extract the times of each event
                     I = inputs[i:(i+(",model_def["nInp"]-1,"))];
                     pSte = vcat(p, I);
 
                     if q == 1
                         if typeof(p) == Array{Float64, 1}
-                            prob = ODEProblem(",join(model_def["NameF"]),"ODE!,initialV,(ts[(sp[q]+1)],ts[sp[q+1]+1]),pSte);
+                            prob = ODEProblem(",join(model_def["NameF"]),"ODE!,initialV,(ts[convert.(Int, (sp[q]+1))],ts[convert.(Int, sp[q+1]+1)]),pSte);
                             part1 = ",soso,"solve(prob, ",soso,model_def["solver"],"(),reltol=",model_def["tols"][1],",abstol=",model_def["tols"][2],",saveat=1);
                         else
                             prob = remake(prob1, p=pSte)
                             prob = remake(prob, u0=initialV)
-                            prob = remake(prob, tspan = convert.(Int, (ts[(sp[q]+1)],ts[sp[q+1]+1])))
+                            prob = remake(prob, tspan = convert.(Int, (ts[convert.(Int,(sp[q]+1))],ts[convert.(Int,sp[q+1]+1)])))
                             part1 = ",soso,"solve(prob,",soso,model_def["solver"],"(),reltol=",model_def["tols"][1],",abstol=",model_def["tols"][2],",saveat=1)
                         end
                     else
                         if typeof(p) == Array{Float64, 1}
-                            prob = ODEProblem(",join(model_def["NameF"]),"ODE!,initialV,(ts[(sp[q]+1)],ts[sp[q+1]+1]),pSte);
+                            prob = ODEProblem(",join(model_def["NameF"]),"ODE!,initialV,(ts[convert.(Int, (sp[q]+1))],ts[convert.(Int,sp[q+1]+1)]),pSte);
                             part1 = ",soso,"solve(prob, ",soso,model_def["solver"],"(),reltol=",model_def["tols"][1],",abstol=",model_def["tols"][2],",saveat=1);
                         else
                             prob = remake(prob1, p=pSte)
                             prob = remake(prob, u0=initialV)
-                            prob = remake(prob, tspan = (ts[(sp[q]+1)],ts[sp[q+1]+1]))
+                            prob = remake(prob, tspan = (ts[convert.(Int,(sp[q]+1))],ts[convert.(Int,sp[q+1]+1)]))
                             part1 = ",soso,"solve(prob,",soso,model_def["solver"],"(),reltol=",model_def["tols"][1],",abstol=",model_def["tols"][2],",saveat=1)
                         end
                     end
@@ -904,10 +904,10 @@ function genTuringModel(model_def, turinf_def)
 
                     if typeof(p) == Array{Float64, 1}
                         for d in collect((sp[q]+1):(sp[q]+lts))
-                            final[d,:] = part1[d-sp[q]];
+                            final[convert.(Int,d),:] = part1[convert.(Int, d-sp[q])];
                         end
                     else
-                        for d in collect((sp[q]+1):(sp[q]+lts))
+                        for d in collect(convert.(Int,(sp[q]+1):(sp[q]+lts)))
     ",join(simsB),"
                         end
                     end

@@ -637,9 +637,12 @@ function checkStructBayInfData(model_def, data_def)
         end
         if model_def["nInp"] != 0
             if size(data_def["uInd"][i])[2] != (length(data_def["switchT"][i])-1)
-                println("-------------------------- Process STOPPED!!! --------------------------")
-                println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
-                return
+                data_def["uInd"][i] = Array(data_def["uInd"][i]');
+                if size(data_def["uInd"][i])[2] != (length(data_def["switchT"][i])-1)
+                    println("-------------------------- Process STOPPED!!! --------------------------")
+                    println("Please, check uInd and switchT. Number of steps does not match the number of values for the inputs.")
+                    return
+                end
             end
         end
 
@@ -1108,7 +1111,11 @@ function genStanModel(model_def, bayinf_def)
                 end
             end
             if !isassigned(eqs, i)
-                eqs[i] = string("      ", model_def["eqns"][i], "; \n")
+                if occursin("=", model_def["eqns"][i])
+                    eqs[i] = string("      real ", model_def["eqns"][i], "; \n")
+                else
+                    eqs[i] = string("      ", model_def["eqns"][i], "; \n")
+                end
             end
             for j in 1:model_def["nStat"]
                 if occursin(string("d", model_def["stName"][j]), eqs[i][(findfirst("=", eqs[i])[1]+1):end])
@@ -1639,14 +1646,14 @@ function restructureDataInference(model_def, bayinf_def)
         if (typeof(bayinf_def["Data"]["preInd"]) == Array{Any,1}) || (typeof(bayinf_def["Data"]["preInd"]) == Array{Float64,1}) ||
             (typeof(bayinf_def["Data"]["preInd"]) == Array{Float32,1}) || (typeof(bayinf_def["Data"]["preInd"]) == Array{Int,1});
             if model_def["nInp"] != 0
-                bayinf_def["Data"]["preInd"] = zeros(model_def["nInp"]);
+                # bayinf_def["Data"]["preInd"] = zeros(model_def["nInp"]);
             else
                 bayinf_def["Data"]["preInd"] = zeros(1);
             end
         elseif (typeof(bayinf_def["Data"]["preInd"]) == Array{Array{Any,1},1}) || (typeof(bayinf_def["Data"]["preInd"]) == Array{Array{Float64,1},1}) ||
             (typeof(bayinf_def["Data"]["preInd"]) == Array{Array{Float32,1},1}) || (typeof(bayinf_def["Data"]["preInd"]) == Array{Array{Int,1},1});
             if model_def["nInp"] != 0
-                bayinf_def["Data"]["preInd"][i] = zeros(model_def["nInp"]);
+                # bayinf_def["Data"]["preInd"][i] = zeros(model_def["nInp"]);
             else
                 bayinf_def["Data"]["preInd"][i] = zeros(1);
             end
@@ -1920,6 +1927,12 @@ function plotStanResults(staninf_res, model_def, bayinf_def)
 
     # Plot 2, the simulations
     # Simulation Results
+    for i in 1:bayinf_def["Data"]["Nexp"]
+        if size(bayinf_def["Data"]["uInd"][i])[1] != model_def["nInp"];
+            bayinf_def["Data"]["uInd"][i] = bayinf_def["Data"]["uInd"][i]';
+        end
+    end
+
     simul_def = defSimulStruct()
     simul_def = SimToMle(simul_def, bayinf_def["Data"])
     simul_def["plot"] = false
@@ -1927,6 +1940,12 @@ function plotStanResults(staninf_res, model_def, bayinf_def)
     simul_def["flag"] = "StanInferResults";
 
     simuls, model_def, simul_def = simulateODEs(model_def, simul_def);
+
+    for i in 1:bayinf_def["Data"]["Nexp"]
+        if size(bayinf_def["Data"]["uInd"][i])[2] != model_def["nInp"];
+            bayinf_def["Data"]["uInd"][i] = bayinf_def["Data"]["uInd"][i]';
+        end
+    end
 
     for i in 1:bayinf_def["Data"]["Nexp"]
         tit = "";
