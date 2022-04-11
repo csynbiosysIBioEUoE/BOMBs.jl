@@ -23,7 +23,7 @@ Pkg.add("BOMBs")
 ```
 or latest master directly from github:
 ```julia
-Pkg.clone("https://github.com/csynbiosysIBioEUoE/BOMBs.jl")
+Pkg.add(url="https://github.com/csynbiosysIBioEUoE/BOMBs.jl.git")
 ```
 ## Package Sections
   ### 1.- Model Generation
