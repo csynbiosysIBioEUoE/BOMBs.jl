@@ -185,7 +185,7 @@ function GenPseudoDat(model_def, pseudo_def)
     pseudo_res["PData"] = pseudoDme;
     pseudo_res["PError"] = pseudoDsd;
 
-    save(string(pseudo_def["savepath"], "\\", pseudo_def["savename"]), "PseudoData", pseudo_res, "model_def", model_def, "pseudo_def", pseudo_def)
+    JLD.save(string(pseudo_def["savepath"], "\\", pseudo_def["savename"]), "PseudoData", pseudo_res, "model_def", model_def, "pseudo_def", pseudo_def)
 
     println("")
     println("----------------------------------------- RESULTS -----------------------------------------")

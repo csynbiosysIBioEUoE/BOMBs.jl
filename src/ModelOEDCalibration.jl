@@ -1221,7 +1221,7 @@ function mainOEDMC(oedmc_def)
     oedmc_def["savepath"] = string(cudi, "\\Results\\", oedmc_def["Model"]["NameF"],"_",today());
     oedmc_def["savename"] = string("OEDModelCalibrationResults_",oedmc_def["flag"],".jld");
 
-    save(string(oedmc_def["savepath"], "\\", oedmc_def["savename"]), "oedmc_res", oedmc_res, "oedmc_def", oedmc_def);
+    JLD.save(string(oedmc_def["savepath"], "\\", oedmc_def["savename"]), "oedmc_res", oedmc_res, "oedmc_def", oedmc_def);
 
     println("")
     println("----------------------------------------- RESULTS -----------------------------------------")

@@ -1306,7 +1306,7 @@ function CrossValMLE(model_def, cvmle_def)
     cvmle_def["savepath"] = string(cudi, "\\Results\\", model_def["NameF"],"_",today());
     cvmle_def["savename"] = string(model_def["NameF"],"_",today(), "_MLEresults_",cvmle_def["flag"],".jld");
 
-    save(string(cvmle_def["savepath"], "\\", cvmle_def["savename"]), "CrossValMLEresults", cvmle_res, "model_def", model_def, "cvmle_def", cvmle_def);
+    JLD.save(string(cvmle_def["savepath"], "\\", cvmle_def["savename"]), "CrossValMLEresults", cvmle_res, "model_def", model_def, "cvmle_def", cvmle_def);
 
     println("")
     println("----------------------------------------- RESULTS -----------------------------------------")
@@ -1353,7 +1353,7 @@ function finishMLEres(mle_res, model_def, mle_def)
     mle_def["savepath"] = string(cudi, "\\Results\\", model_def["NameF"],"_",today());
     mle_def["savename"] = string(model_def["NameF"],"_",today(), "_MLEresults_",mle_def["flag"],".jld");
 
-    save(string(mle_def["savepath"], "\\", mle_def["savename"]), "MLEresults", mle_res, "model_def", model_def, "mle_def", mle_def);
+    JLD.save(string(mle_def["savepath"], "\\", mle_def["savename"]), "MLEresults", mle_res, "model_def", model_def, "mle_def", mle_def);
 
     println("")
     println("----------------------------------------- RESULTS -----------------------------------------")
@@ -1846,7 +1846,7 @@ function MLEtheta(model_def, mle_def)
         mle_def["savepath"] = string(cudi, "\\Results\\", model_def["NameF"],"_",today());
         mle_def["savename"] = string(model_def["NameF"],"_",today(), "_MLEresults_",mle_def["flag"],".jld");
 
-        save(string(mle_def["savepath"], "\\", mle_def["savename"]), "MLEresults", mle_res, "model_def", model_def, "mle_def", mle_def);
+        JLD.save(string(mle_def["savepath"], "\\", mle_def["savename"]), "MLEresults", mle_res, "model_def", model_def, "mle_def", mle_def);
 
         println("")
         println("----------------------------------------- RESULTS -----------------------------------------")

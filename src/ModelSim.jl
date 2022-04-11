@@ -77,7 +77,7 @@ function simulateODEs(model_def, simul_def)
         println("")
     end
 
-    save(string(simul_def["savepath"], "\\", simul_def["savename"]), "simuls", simuls, "model_def", model_def, "simul_def", simul_def)
+    JLD.save(string(simul_def["savepath"], "\\", simul_def["savename"]), "simuls", simuls, "model_def", model_def, "simul_def", simul_def)
 
     println("")
     println("----------------------------------------- RESULTS -----------------------------------------")

@@ -1675,7 +1675,7 @@ function mainOEDMS(oedms_def)
     oedms_def["savepath"] = string(cudi, "\\Results\\", oedms_def["Model_1"]["NameF"], "_VS_", oedms_def["Model_2"]["NameF"],"_",today());
     oedms_def["savename"] = string("OEDModelSelectResults_",oedms_def["flag"],".jld");
 
-    save(string(oedms_def["savepath"], "\\", oedms_def["savename"]), "oedms_res", oedms_res, "oedms_def", oedms_def);
+    JLD.save(string(oedms_def["savepath"], "\\", oedms_def["savename"]), "oedms_res", oedms_res, "oedms_def", oedms_def);
 
     println("")
     println("----------------------------------------- RESULTS -----------------------------------------")
