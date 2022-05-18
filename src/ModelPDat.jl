@@ -892,7 +892,7 @@ function PDatCSVGen(pseudo_res,model_def,pseudo_def)
             df3 = DataFrame[EvnInputs][1]
             rename!(df3, [evins_head[i] for i in 1:2+(model_def["nInp"]*2)])
             CSV.write(string(pseudo_def["savepath"], "\\PseudoDataFiles\\",model_def["NameF"],"_EXP",expp, "_",
-                    pseudo_def["flag"],"_Events_Inputs.csv"), df3);
+                    pseudo_def["flag"],"_Event_Inputs.csv"), df3);
         end
 
     end
