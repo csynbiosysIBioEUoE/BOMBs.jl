@@ -112,7 +112,7 @@ If you will use the package for your research, please refference it as: \
 
   **6. M. F. Huber, T. Bailey, H. Durrant-Whyte and U. D. Hanebeck, "On entropy approximation for Gaussian mixture random vectors,"** 2008 IEEE International Conference on Multisensor Fusion and Integration for Intelligent Systems, Seoul, 2008, pp. 181-188, doi: 10.1109/MFI.2008.4648062.
 
-  **7. OED model calibration paper**
+
 
 ## Usefull links to some of the packages used in BOMBS
   **1. BayesianOptimization.jl:** https://github.com/jbrea/BayesianOptimization.jl \
@@ -124,3 +124,6 @@ If you will use the package for your research, please refference it as: \
   **7. GaussianMixtures.jl:** https://github.com/davidavdav/GaussianMixtures.jl \
   **8. ScikitLearnBase.jl:** https://github.com/cstjean/ScikitLearnBase.jl
   **9. Turing.jl: ** https://turing.ml/stable/
+
+## Citing BOMBs.jl:
+  **Gomez-Cabeza, David & Bandiera, Lucia & Menolascina, Filippo. BOMBs.jl: a low-code Julia package for the simulation, Bayesian inference and optimal experimental design of biomodels.** Submitted to Bioinformatics, May 2022.
