@@ -33,7 +33,7 @@ using Sundials
 
 # laod logo
 include("logoBOMBS.jl")
-export printLogo
+export printBOMBsLogo
 export versionBOMBS
 
 # load info function
