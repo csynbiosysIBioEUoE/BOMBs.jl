@@ -769,8 +769,8 @@ function genTuringModel(model_def, turinf_def)
             tmp1 = string("obs[",i,"] = ",turinf_def["Data"]["Obs"][i],"; \n");
             for j in 1:model_def["nStat"]
                 if occursin(model_def["stName"][j], tmp1)
-                    Obsers1[i] = replace(tmp1, model_def["stName"][j]=> string("final[convert.(Int,round(data[","\"","tsamps","\"","][exp])).+1, ",j,"]"))
-                    Obsers2[i] = string("obs[",i,"] = finalBay2[",i,", convert.(Int,round(data[","\"","tsamps","\"","][exp])).+1];")
+                    Obsers1[i] = replace(tmp1, model_def["stName"][j]=> string("final[convert.(Int,round.(data[","\"","tsamps","\"","][exp])).+1, ",j,"]"))
+                    Obsers2[i] = string("obs[",i,"] = finalBay2[",i,", convert.(Int,round.(data[","\"","tsamps","\"","][exp])).+1];")
                 end
             end
 
@@ -786,8 +786,8 @@ function genTuringModel(model_def, turinf_def)
                 end
 
                 for ob in 1:",length(turinf_def["Data"]["Obs"]),"
-                    for dat in 1:length(obs)
-                        data[","\"","DataMean","\"","][exp][:,ob][dat] ~ Normal(obs[dat], data[","\"","DataError","\"","][1][ob][dat])
+                    for dat in 1:length(obs[ob])
+                        data[","\"","DataMean","\"","][exp][:,ob][dat] ~ Normal(obs[ob][dat], data[","\"","DataError","\"","][1][ob][dat])
                     end
                 end
                 ")
