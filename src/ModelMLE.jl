@@ -750,9 +750,16 @@ function plotMLEResults(mle_res,model_def,mle_def)
         [tu[k] = [] for k in 1:length(mle_def["Obs"])]
         su = Array{Array{Any,1}}(undef, length(mle_def["Obs"])+model_def["nInp"])
         [su[k] = [] for k in 1:length(mle_def["Obs"])]
-        for k in 1:model_def["nInp"]
+
+        if model_def["nInp"] == 1
+            k=1
             tu[k+length(mle_def["Obs"])] = round.(mle_def["switchT"][i]);
-            su[k+length(mle_def["Obs"])] = vcat(mle_def["uInd"][i][:,(k)], mle_def["uInd"][i][end,(k)])
+            su[k+length(mle_def["Obs"])] = vcat(mle_def["uInd"][i][(k),:], mle_def["uInd"][i][end,(k)])
+        else
+            for k in 1:model_def["nInp"]
+                tu[k+length(mle_def["Obs"])] = round.(mle_def["switchT"][i]);
+                su[k+length(mle_def["Obs"])] = vcat(mle_def["uInd"][i][:,(k)], mle_def["uInd"][i][end,(k)])
+            end
         end
 
         pl = plot(round.(simul_def["tsamps"][i]), mle_def["DataMean"][i],yerror = errorss,
