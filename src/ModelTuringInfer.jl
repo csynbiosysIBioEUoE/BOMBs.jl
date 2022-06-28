@@ -690,15 +690,22 @@ function genTuringModel(model_def, turinf_def)
             lik = string("
 
                 r = ",turinf_def["Data"]["Obs"],";
+                obs = Array{Any,1}(undef, ",turinf_def["Data"]["Nexp"],")
                 for ob in 1:",length(turinf_def["Data"]["Obs"]),"
                     if typeof(p) == Array{Float64, 1}
-                        obs = final[convert.(Int,round.(data[","\"","tsamps","\"","][exp])).+1, [r[ob]]];
+                        for exp in 1:",turinf_def["Data"]["Nexp"],"
+                            obs[exp] = finalExps[exp][convert.(Int,round.(data[","\"","tsamps","\"","][exp])).+1, [r[ob]]];
+                        end
                     else
-                        obs = finalBay2[ob, convert.(Int,round.(data[","\"","tsamps","\"","][exp])).+1];
+                        for exp in 1:",turinf_def["Data"]["Nexp"],"
+                            obs[exp] = finalBay2EXPS[exp][ob, convert.(Int,round.(data[","\"","tsamps","\"","][exp])).+1];
+                        end
                     end
 
-                    for dat in 1:length(obs)
-                        data[","\"","DataMean","\"","][exp][:,ob][dat] ~ Normal(obs[dat], data[","\"","DataError","\"","][1][ob][dat])
+                    for exp in 1:",turinf_def["Data"]["Nexp"],"
+                        for dat in 1:length(obs[exp])
+                            data[","\"","DataMean","\"","][exp][:,ob][dat] ~ Normal(obs[exp][dat], data[","\"","DataError","\"","][exp][ob][dat])
+                        end
                     end
                 end
                 ");
@@ -766,11 +773,11 @@ function genTuringModel(model_def, turinf_def)
                 turinf_def["Data"]["Obs"][i] = replace(turinf_def["Data"]["Obs"][i], "^"=>" .^ ")
             end
 
-            tmp1 = string("obs[",i,"] = ",turinf_def["Data"]["Obs"][i],"; \n");
+            tmp1 = string("obs[",i,",exp] = ",turinf_def["Data"]["Obs"][i],"; \n");
             for j in 1:model_def["nStat"]
                 if occursin(model_def["stName"][j], tmp1)
                     Obsers1[i] = replace(tmp1, model_def["stName"][j]=> string("final[convert.(Int,round.(data[","\"","tsamps","\"","][exp])).+1, ",j,"]"))
-                    Obsers2[i] = string("obs[",i,"] = finalBay2[",i,", convert.(Int,round.(data[","\"","tsamps","\"","][exp])).+1];")
+                    Obsers2[i] = string("obs[",i,",exp] = finalBay2[",i,", convert.(Int,round.(data[","\"","tsamps","\"","][exp])).+1];")
                 end
             end
 
@@ -780,14 +787,20 @@ function genTuringModel(model_def, turinf_def)
 
                 obs = Array{Any,1}(undef, ",length(turinf_def["Data"]["Obs"]),")
                 if typeof(p) == Array{Float64, 1}
-                    ",join(Obsers1),"
+                    for exp in 1:",turinf_def["Data"]["Nexp"],"
+                        ",join(Obsers1),"
+                    end
                 else
-                    ",join(Obsers2),"
+                    for exp in 1:",turinf_def["Data"]["Nexp"],"
+                        ",join(Obsers2),"
+                    end
                 end
 
-                for ob in 1:",length(turinf_def["Data"]["Obs"]),"
-                    for dat in 1:length(obs[ob])
-                        data[","\"","DataMean","\"","][exp][:,ob][dat] ~ Normal(obs[ob][dat], data[","\"","DataError","\"","][1][ob][dat])
+                for exp in 1:",turinf_def["Data"]["Nexp"],"
+                    for ob in 1:",length(turinf_def["Data"]["Obs"]),"
+                        for dat in 1:length(obs[ob,exp])
+                            data[","\"","DataMean","\"","][exp][:,ob][dat] ~ Normal(obs[ob,exp][dat], data[","\"","DataError","\"","][exp][ob][dat])
+                        end
                     end
                 end
                 ")
@@ -826,6 +839,9 @@ function genTuringModel(model_def, turinf_def)
 ",join(tp2),"
 
             Neq = ",model_def["nStat"],";
+
+            finalExps = Array{Any,1}(undef, ",turinf_def["Data"]["Nexp"],");
+            finalBay2EXPS = Array{Any,1}(undef, ",turinf_def["Data"]["Nexp"],");
 
             for exp in 1:",turinf_def["Data"]["Nexp"],"
 
@@ -914,9 +930,15 @@ function genTuringModel(model_def, turinf_def)
 
                 end
 
-",join(lik),"
+                if typeof(p) == Array{Float64, 1}
+                    finalExps[exp] = final;
+                else
+                    finalBay2EXPS[exp] = finalBay2;
+                end
 
             end
+
+",join(lik),"
 
         end
     ")
