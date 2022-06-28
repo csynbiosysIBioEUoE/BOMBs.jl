@@ -371,7 +371,7 @@ function checkStructOEDMC(oedmc_def)
 
     # Check that no step is no smaller than 2 unit of time
     for j in 1:length(oedmc_def["tsamps"])-1
-        if (round(oedmc_def["tsamps"][j+1])-round(oedmc_def["tsamps"][j]))<=1
+        if (round(oedmc_def["tsamps"][j+1])-round(oedmc_def["tsamps"][j]))<1
             println("-------------------------- Process STOPPED!!! --------------------------")
             println(string("Sorry, but 2 of the sampling times are too close. "))
             println("Remember that for now, the minimum time discretisation allowed is 1 so adjust the parameter scales according to it.")
