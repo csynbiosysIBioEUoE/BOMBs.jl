@@ -122,7 +122,7 @@ If you will use the package for your research, please refference it as: \
   **5. DifferentialEquations.jl:** https://github.com/SciML/DifferentialEquations.jl \
   **6. GaussianProcesses.jl:** https://github.com/STOR-i/GaussianProcesses.jl \
   **7. GaussianMixtures.jl:** https://github.com/davidavdav/GaussianMixtures.jl \
-  **8. ScikitLearnBase.jl:** https://github.com/cstjean/ScikitLearnBase.jl
+  **8. ScikitLearnBase.jl:** https://github.com/cstjean/ScikitLearnBase.jl \
   **9. Turing.jl: ** https://turing.ml/stable/
 
 ## Citing BOMBs.jl:
