@@ -1,0 +1,10 @@
+
+--- Translating Stan model to C++ code ---
+bin/stanc.exe  --o=e:/UNI/D_Drive/PhD/Year_1/2022_06_23_JuliaCon2022/tmp/JuliaConExamp_Stan_JuliaConBayInfStan.hpp e:/UNI/D_Drive/PhD/Year_1/2022_06_23_JuliaCon2022/tmp/JuliaConExamp_Stan_JuliaConBayInfStan.stan
+Model name=JuliaConExamp_Stan_JuliaConBayInfStan_model
+Input file=e:/UNI/D_Drive/PhD/Year_1/2022_06_23_JuliaCon2022/tmp/JuliaConExamp_Stan_JuliaConBayInfStan.stan
+Output file=e:/UNI/D_Drive/PhD/Year_1/2022_06_23_JuliaCon2022/tmp/JuliaConExamp_Stan_JuliaConBayInfStan.hpp
+
+--- Compiling, linking C++ code ---
+g++ -std=c++1y -m64 -Wall -Wno-unused-function -Wno-uninitialized -Wno-unused-but-set-variable -Wno-unused-variable -Wno-sign-compare -Wno-unused-local-typedefs     -O3 -I src -I stan/src -I stan/lib/stan_math/ -I stan/lib/stan_math/lib/eigen_3.3.3 -I stan/lib/stan_math/lib/boost_1.69.0 -I stan/lib/stan_math/lib/sundials_4.1.0/include  -D_USE_MATH_DEFINES  -DBOOST_RESULT_OF_USE_TR1 -DBOOST_NO_DECLTYPE -DBOOST_DISABLE_ASSERTS -DBOOST_PHOENIX_NO_VARIADIC_EXPRESSION     -c  -x c++ -o e:/UNI/D_Drive/PhD/Year_1/2022_06_23_JuliaCon2022/tmp/JuliaConExamp_Stan_JuliaConBayInfStan.o e:/UNI/D_Drive/PhD/Year_1/2022_06_23_JuliaCon2022/tmp/JuliaConExamp_Stan_JuliaConBayInfStan.hpp
+g++ -std=c++1y -m64 -Wall -Wno-unused-function -Wno-uninitialized -Wno-unused-but-set-variable -Wno-unused-variable -Wno-sign-compare -Wno-unused-local-typedefs     -O3 -I src -I stan/src -I stan/lib/stan_math/ -I stan/lib/stan_math/lib/eigen_3.3.3 -I stan/lib/stan_math/lib/boost_1.69.0 -I stan/lib/stan_math/lib/sundials_4.1.0/include  -D_USE_MATH_DEFINES  -DBOOST_RESULT_OF_USE_TR1 -DBOOST_NO_DECLTYPE -DBOOST_DISABLE_ASSERTS -DBOOST_PHOENIX_NO_VARIADIC_EXPRESSION            e:/UNI/D_Drive/PhD/Year_1/2022_06_23_JuliaCon2022/tmp/JuliaConExamp_Stan_JuliaConBayInfStan.o src/cmdstan/main.o  -static-libgcc -static-libstdc++      stan/lib/stan_math/lib/sundials_4.1.0/lib/libsundials_nvecserial.a stan/lib/stan_math/lib/sundials_4.1.0/lib/libsundials_cvodes.a stan/lib/stan_math/lib/sundials_4.1.0/lib/libsundials_idas.a  -o e:/UNI/D_Drive/PhD/Year_1/2022_06_23_JuliaCon2022/tmp/JuliaConExamp_Stan_JuliaConBayInfStan.exe
