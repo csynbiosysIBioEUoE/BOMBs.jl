@@ -52,7 +52,7 @@ Roots = "1.0"
 ScikitLearn = "0.6"
 ScikitLearnBase = "0.5"
 StatsBase = "0.33"
-StatsPlots = "0.14"
+StatsPlots = "0.14, 0.15"
 Sundials = "4.2"
 julia = "1"
 
